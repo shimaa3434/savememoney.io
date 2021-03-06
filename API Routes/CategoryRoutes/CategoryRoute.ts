@@ -1,6 +1,6 @@
-const SQL = require('../../DBConnection');
-const Express = require('express');
-const Router = Express.Router();
+var SQL = require('../../DBConnection');
+var Express = require('express');
+var Router = Express.Router();
  
 Router.get('/:category', (req, res) => {
     const Parameter = req.params.category;

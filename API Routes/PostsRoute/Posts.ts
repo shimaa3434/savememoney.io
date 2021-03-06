@@ -1,13 +1,21 @@
-const SQL = require('../../DBConnection');
-const Axios = require('axios');
+var SQL = require('../../DBConnection');
+var Axios = require('axios');
+
+
+interface Post {
+    data: any
+}
+
+type Thumbnail = false | string;
+type Price = string | number;
 
 const Posts = {
     grabNewPosts: async () => {
         const Response = await Axios.get('https://www.reddit.com/r/buildapcsales/new.json')
-        .then((resp) => {
+        .then((resp:any) => {
             const Data = resp.data.data.children;
             let count = 1
-            Data.map((post, i) => {
+            Data.map((post:Post, i:number) => {
                 const {data} = post;
                 const {
                     title, link_flair_text, thumbnail, url,
@@ -16,14 +24,14 @@ const Posts = {
                 const postid = name; // reference ID variable for the query, this will make it more understandable over name variable from reddit.
 
                 // Cleans thumbnails, if thumbnails don't exist, set to false. Takes in the thumbnail key's value of a post.
-                const cleanThumbnails = (thumbnail) => {
+                const cleanThumbnails = (thumbnail:string):Thumbnail => {
                     const linkRegex = /http/gi;
                     if (linkRegex.test(thumbnail)) return thumbnail
                     if (!linkRegex.test(thumbnail)) return false
                 }
 
                 // Pulls price from post titles
-                const pullPrice = (title) => {
+                const pullPrice = (title:string) => {
                     const PriceRegexF = /\$[0-9]*\.[0-9]*/gi;
                     const PriceRegexS = /[0-9]*\.[0-9]*\$/gi;
                     const DollarRegex  = /\$/gi;
@@ -40,7 +48,6 @@ const Posts = {
                         }
                     } else if (PriceRegexS.test(title)) {
                         const conditionMatch = title.match(PriceRegexS)
-
                         if (conditionMatch.length === 1) return Number(conditionMatch[0].replace(/$/gi, ''));
                         if (conditionMatch.length > 1) {
                             const cleanMatches = conditionMatch.map((match) => {
@@ -52,17 +59,17 @@ const Posts = {
                 }
 
                 // Clean Categories -- if expired, it will remove reddit emotes within the flair category to just 'EXPIRED'
-                const cleanCategory = (category) => {
+                const cleanCategory = (category:string):string => {
                     const ExpiredRegex = /expired/gi;
                     const ExpRegexTest = ExpiredRegex.test(category);
                     if (ExpRegexTest) return 'EXPIRED'
                     if (!ExpRegexTest) return category
                 }
 
-                // Contains INSERT query for SQL Database -- sends each row of data into the db.
-                const insertQuery = (postid, title, category, image, url, urldomain, tstamp, price) => {
+                // Contains INSERT query for SQL Database -- sends each row of data into the db.l
+                const insertQuery = (postid:string, title:string, category:string, image:Thumbnail, url:string, urldomain:string, tstamp:number, price:Price) => {
                     const QUERY = `INSERT IGNORE INTO posts(postid, title, category, image, url, urldomain, tstamp, price) VALUES ('${postid}','${title}','${category}','${image}','${url}','${urldomain}','${tstamp}', '${price}')`
-                    SQL.query(QUERY, (err, results) => {
+                    SQL.query(QUERY, (err:any, results:any) => {
 
                         if (err) console.log(err);
                         if (!err) console.log(`Post #${count++} data entered to DB.`)

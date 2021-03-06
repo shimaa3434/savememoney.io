@@ -1,5 +1,5 @@
 {
-  "name": "bapcdeals",
+  "name": "dealmoola-backend",
   "version": "1.0.0",
   "description": "Affiliate marketing website.",
   "main": "server.js",
@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/express": "^4.17.11",
     "axios": "^0.21.1",
     "concurrently": "^6.0.0",
     "express": "^4.17.1",

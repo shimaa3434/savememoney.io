@@ -1,6 +1,6 @@
-const SQL = require('../../DBConnection');
-const Express = require('express');
-const Router = Express.Router();
+var SQL = require('../../DBConnection');
+var Express = require('express');
+var Router = Express.Router();
 const Posts = require('./Posts');
 const cron = require('node-schedule');
 
@@ -8,15 +8,15 @@ const cron = require('node-schedule');
 
 const getAllQuery = 'SELECT * FROM posts';
 
-Router.get('/', (req, res) => {
-    SQL.query(getAllQuery, (err, results) => {
+Router.get('/', (req:any, res:any) => {
+    SQL.query(getAllQuery, (err:any, results:any) => {
         if (err)  console.log(err);
         if (!err) res.send(results);
     })
 })
 
 
-Router.post('/', (req, res) => {
+Router.post('/', (req:any, res:any) => {
     Posts.grabNewPosts()
     res.send('All new posts have been added.')
 })

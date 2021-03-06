@@ -1,7 +1,7 @@
 
 
-const CategoryValidator = (categoryparam) => {
-    const Parameter = req.params.category;
+const CategoryValidator = (categoryparam:string) => {
+    const Parameter = categoryparam;
 
     const PossibleCategories = [
         'psu', 'cpu', 'ssd',
