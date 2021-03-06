@@ -1,0 +1,42 @@
+.navbar {
+    justify-content: space-evenly;
+    padding: 20px 0px;
+}
+
+.navbar__brand {
+    font-size: 1.5em;
+}
+
+.nav__link {
+    border-bottom: 3px solid transparent;
+    transition: 0.5s;
+    font-size: 1em;
+    margin: 0px 15px;
+}
+
+.nav__link:hover {
+    border-bottom: 3px solid white;
+}
+
+.navbar__mobilemenuicon {
+    display: none;
+}
+
+@media only screen and (max-width: 700px) {
+    .navbar {
+        justify-content: space-between;
+    }
+
+    .navbar__mobilemenuicon {
+        display:block;
+        margin: 0px 15px;
+    }
+
+    .nav {
+        display: none;
+    }
+
+    .navbar__brand {
+        margin: 0px 15px;
+    }
+}
