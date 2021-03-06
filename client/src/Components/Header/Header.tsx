@@ -2,9 +2,8 @@ import MobileMenuIcon from '../../Media/Images/MobileMenuIcon.svg'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navbar, Nav} from 'react-bootstrap'
 import React, {useState} from 'react'
-import './Header.css'
 import MobileMenu from '../MobileMenu/MobileMenu';
-import {Link as RouterLink} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 
 const Header = () => {
 
@@ -12,20 +11,27 @@ const Header = () => {
 
     return (
         <>
-            <Navbar bg="primary" variant="dark" className='navbar'>
-                <RouterLink to='/'>
-                    <Navbar.Brand className='navbar__brand'>buildapcdeals</Navbar.Brand>
-                </RouterLink>
-                <img src={MobileMenuIcon} alt='mobile navigation menu icon' className='navbar__mobilemenuicon' onClick={() => {
+            <div className='w-screen h-16 flex flex-row justify-between items-center bg-indigo-500 md:justify-around'>
+                <Link to='/' className='no-underline'>
+                    <h1 className='text-white'>dealmoola</h1>
+                </Link>
+                <img className='block sm:hidden' src={MobileMenuIcon} alt='mobile navigation menu icon' onClick={() => {
                     setShowMenu(true);
                     document.body.style.overflowY = 'hidden';
                 }} />
-                <Nav className='nav'>
-                    <Nav.Link className='nav__link'>Hey</Nav.Link>
-                    <Nav.Link className='nav__link'>Hey</Nav.Link>
-                </Nav>
+                <ul className='hidden py-0 px-0 mx-0 my-0 sm:flex sm:flex-row'>
+                    <Link to='/' className='mx-4 no-underline text-white'>
+                        <ul className='nav__link'>HOME</ul>
+                    </Link>
+                    <Link to='/search' className='mx-4 no-underline text-white'>
+                        <ul className='nav__link'>SEARCH</ul>
+                    </Link>
+                    <Link to='/categories' className='mx-4 no-underline text-white'>
+                        <ul className='nav__link'>CATEGORIES</ul>
+                    </Link>
+                </ul>
                 {showMenu && <MobileMenu setShowMenu={setShowMenu} />}
-            </Navbar>
+            </div>
         </>
     )
 }
