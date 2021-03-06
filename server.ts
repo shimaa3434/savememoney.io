@@ -1,6 +1,6 @@
-const Express = require('express');
+var Express = require('express');
 const App = Express();
-const Port = 5000;
+const Port = 6000;
 const PostsRoute = require('./API Routes/PostsRoute/PostsRoute');
 const CategoryRoute = require('./API Routes/CategoryRoutes/CategoryRoute')
 const SearchRoute = require('./API Routes/SearchRoute/SearchRoute')

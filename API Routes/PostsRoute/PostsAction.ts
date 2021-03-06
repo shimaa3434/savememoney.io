@@ -9,7 +9,7 @@ interface Post {
 type Thumbnail = false | string;
 type Price = string | number;
 
-const Posts = {
+const posts = {
     grabNewPosts: async () => {
         const Response = await Axios.get('https://www.reddit.com/r/buildapcsales/new.json')
         .then((resp:any) => {
@@ -85,4 +85,4 @@ const Posts = {
     }
 }
 
-module.exports = Posts;
+module.exports = posts;

@@ -1,7 +1,7 @@
 var SQL = require('../../DBConnection');
 var Express = require('express');
 var Router = Express.Router();
-const Posts = require('./Posts');
+var Posts = require('./PostsAction');
 const cron = require('node-schedule');
 
 // ESSENTIAL QUERIES
