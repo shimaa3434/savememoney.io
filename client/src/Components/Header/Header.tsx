@@ -1,6 +1,4 @@
 import MobileMenuIcon from '../../Media/Images/MobileMenuIcon.svg'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import {Navbar, Nav} from 'react-bootstrap'
 import React, {useState} from 'react'
 import MobileMenu from '../MobileMenu/MobileMenu';
 import {Link} from 'react-router-dom'

@@ -104,13 +104,13 @@ const Search:React.FC<SearchProps> = ({DATA, INPUT, CATEGORY, PRICERANGE, LOADIN
                 </div>
             </form>
             <div className='w-full bg-gray-300 flex justify-center md:w-3/4'>
-                {/* {DATA && DATA.map((post:PostProps, i:number) => {
+                {DATA && DATA.map((post:PostProps, i:number) => {
                     const {title, category, image, url, urldomain, tstamp, price} = post;
 
                     return <Post title={title} category={category} image={image}
                     url={url} urldomain={urldomain} tstamp={tstamp} price={price}
                     />
-                })} */}
+                })}
             </div>
         </div>
     )

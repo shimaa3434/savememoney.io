@@ -1,28 +1,62 @@
 var Express = require('express');
 var Router = Express.Router();
-var SQL = require('../../DBConnection')
-var QS = require('qs')
+var SQL = require('../../DBConnection');
+var QS = require('qs');
 var ParameterValidation = require('../Validation Middleware/Validation');
-var {CategoryValidator} = ParameterValidation;
-
-// QUERY
+var {
+    CategoryValidator,
+    PriceRangeValidator,
+    InputIntegrityValidator
+} = ParameterValidation;
 
 // GET REQUEST OF SEARCH
+
 Router.get('', (req:any, res:any)=> {
     
     const {category, input, pricerange} = req.query;
+    type ParameterMatch = string | false | Array<number>;
+    type EnteringParameter = string | undefined;
 
-    type CategoryMatch = string | false;
-
-    const checkCategoryMatch = (category:any, CategoryValidator:Function):CategoryMatch => {
+    const checkCategoryMatch = (category:EnteringParameter, CategoryValidator:Function):ParameterMatch => {
         if (CategoryValidator(category)) return category;
-        if (!CategoryValidator(category)) return false
+        if (!CategoryValidator(category)) return false;
+    };
+
+    const checkPriceRangeMatch = (pricerange:EnteringParameter, PriceRangeValidator:Function):ParameterMatch => {
+        if (PriceRangeValidator(pricerange)) return pricerange.split(',').map((bound:string, i:number) => {
+            return Number(bound);
+        });
+        if (!PriceRangeValidator(pricerange)) return false;
+    };
+
+    const checkInputIntegrity = (input:EnteringParameter, InputIntegrityValidator:Function):ParameterMatch => {
+        if (InputIntegrityValidator(input)) return InputIntegrityValidator(input);
+        if (!InputIntegrityValidator(input)) return false
     }
 
-    checkCategoryMatch(category, CategoryValidator);
 
-    const IncomingQueryObj = QS.parse(req.query);
-    console.log(QS.stringify(req.query))
-})
+    const createQuery = (input:ParameterMatch, category:ParameterMatch, pricerange:ParameterMatch):string => {
+        if (input && category && pricerange) return `SELECT * FROM posts WHERE title LIKE '%${input}%' AND category LIKE '${category}' and price BETWEEN ${pricerange[0]} AND ${pricerange[1]};`
+        if (!input && category && pricerange) return `SELECT * FROM posts WHERE category LIKE '${category}' and price BETWEEN ${pricerange[0]} AND ${pricerange[1]};`
+        if (!input && !category && pricerange) return `SELECT * FROM posts WHERE price BETWEEN ${pricerange[0]} AND ${pricerange[1]};`
+        if (!input && category && !pricerange) return `SELECT * FROM posts WHERE category LIKE '${category}';`
+        if (!input && category && pricerange) return `SELECT * FROM posts WHERE category LIKE '${category}' price LIKE '${pricerange[0]} AND ${pricerange[1]}';`
+        if (input && !category && !pricerange) return `SELECT * FROM posts WHERE title LIKE '%${input}%';`
+        if (input && category && !pricerange) return `SELECT * FROM posts WHERE title LIKE '%${input}%' AND category LIKE '${category}';`
+        if (input && !category && pricerange) return `SELECT * FROM posts WHERE title LIKE '%${input}%' AND price BETWEEN ${pricerange[0]} AND ${pricerange[1]};`
+    }
+
+    SQL.query(
+        createQuery(
+            checkInputIntegrity(input, InputIntegrityValidator),
+            checkCategoryMatch(category, CategoryValidator),
+            checkPriceRangeMatch(pricerange, PriceRangeValidator)
+        ),
+        (err:any, results:any) => {
+            if (err) console.log(err);
+            if (!err) res.send(results);
+        }
+    )
+});
 
 module.exports = Router;
