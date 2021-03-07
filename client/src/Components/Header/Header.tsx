@@ -1,5 +1,5 @@
 import MobileMenuIcon from '../../Media/Images/MobileMenuIcon.svg'
-import React, {useState} from 'react'
+import {useState} from 'react'
 import MobileMenu from '../MobileMenu/MobileMenu';
 import {Link} from 'react-router-dom'
 

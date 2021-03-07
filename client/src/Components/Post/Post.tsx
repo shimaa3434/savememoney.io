@@ -1,15 +1,9 @@
 import React from 'react'
 import HyperLinkChainIcon from '../../Media/Images/noimagelink.svg'
 import {Link} from 'react-router-dom';
+import {PostPropsInt} from '../../TypeScript/App Interfaces'
 
-interface PostProps {
-    postid?: string, title: string,
-    category: string, image: string,
-    url: string, urldomain: string,
-    tstamp: number, price: string
-}
-
-const Post:React.FC<PostProps> = ({postid, title, category, image, url, urldomain, tstamp, price}) => {
+const Post:React.FC<PostPropsInt> = ({postid, title, category, image, url, urldomain, tstamp, price}) => {
     
     const setCategoryColor = (category:string) => {
         if (category === 'CPU') return 'bg-blue-400 text-white px-2 py-1 rounded'

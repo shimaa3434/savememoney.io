@@ -2,10 +2,7 @@ import MobileMenuIcon from '../../Media/Images/XCloseIcon.svg'
 import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Link} from 'react-router-dom'
-
-interface MobileMenuProps {
-    setShowMenu: Function
-};
+import {MobileMenuProps} from '../../TypeScript/App Interfaces'
 
 const MobileMenu:React.FC<MobileMenuProps> = ({setShowMenu}) => {
     return (

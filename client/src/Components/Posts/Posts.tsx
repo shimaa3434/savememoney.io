@@ -2,21 +2,9 @@ import React, {useEffect} from 'react'
 import {connect} from 'react-redux'
 import {getPosts} from '../../Redux/Actions/PostsActions'
 import Post from '../Post/Post'
+import {PostPropsInt, PostsPropsInt} from '../../TypeScript/App Interfaces' // Post vs PostsPropsInt.
 
-interface PostsInt {
-    postid?: string, title: string,
-    category: string, image: string,
-    url: string, urldomain: string,
-    tstamp: number, price: string
-}
-
-interface Props {
-    LOADING: boolean, POSTS: null | Array<PostsInt>, getPosts: Function
-}
-
-
-const Posts:React.FC<Props> = ({LOADING, POSTS, getPosts}) => {
-
+const Posts:React.FC<PostsPropsInt> = ({LOADING, POSTS, getPosts}) => {
     useEffect(() => {
         getPosts()
     }, [])
@@ -27,7 +15,7 @@ const Posts:React.FC<Props> = ({LOADING, POSTS, getPosts}) => {
                 <button className='bg-green-500'>Hey</button>
             </div>
             <>
-            {POSTS && POSTS.map((post:PostsInt, i:number) => {
+            {POSTS && POSTS.map((post:PostPropsInt, i:number) => {
                 const {title, category, image, url, urldomain, tstamp, price} = post;
                 return <Post key={i} title={title} category={category}
                 image={image} url={url} urldomain={urldomain}

@@ -4,69 +4,27 @@ import Select from 'react-select'
 import {connect} from 'react-redux';
 import {GetSearch, setSearchInput, setSearchCategory, setSearchPriceRange} from '../../Redux/Actions/SearchActions'
 import Post from '../Post/Post';
-const qs = require('qs');
+import {PostPropsInt, SearchPropsInt} from '../../TypeScript/App Interfaces'
+import {searchParameter} from '../../TypeScript/App Types'
+import {priceSelectOptions, categorySelectOptions} from './searchSelectOptions';
 
-interface PostProps {
-    postid?: string, title: string,
-    category: string, image: string,
-    url: string, urldomain: string,
-    tstamp: number, price: string
-}
-
-type Parameter = null | string;
-
-interface SearchProps {
-    DATA: null | Array<PostProps>
-    INPUT: Parameter,
-    CATEGORY: Parameter,
-    PRICERANGE: Parameter,
-    LOADING: boolean,
-    GetSearch: Function
-    setSearchInput: Function,
-    setSearchCategory: Function,
-    setSearchPriceRange: Function
-};
-
-interface PriceSelectInt {
-    value: Array<number>,
-    label: string
-}
-
-interface CategorySelectInt {
-    value: string,
-    label: string
-}
-
-const Search:React.FC<SearchProps> = ({DATA, INPUT, CATEGORY, PRICERANGE, LOADING, GetSearch, setSearchInput, setSearchCategory, setSearchPriceRange}) => {
+const Search:React.FC<SearchPropsInt> = ({DATA, INPUT, CATEGORY, PRICERANGE, LOADING, GetSearch, setSearchInput, setSearchCategory, setSearchPriceRange}) => {
     useEffect(() => {
         if (window.location.search) {
             GetSearch(window.location.search);
+        } else {
+            setSearchInput(null);
+            setSearchCategory(null);
+            setSearchPriceRange(null);
         }
-        console.log(DATA)
-    }, [])
-    const onInputChange = (event:any) => {setSearchInput(event.target.value)}
-    const onCategoryChange = (event:any) => {setSearchCategory(event.value)}
-    const onPriceRangeChange = (event:any) => {setSearchPriceRange(event.value)}
-    const priceSelectOptions:Array<PriceSelectInt> = [
-        {value: [0,25], label: '$0-$25'}, {value: [25,50], label: '$25-$50'}, {value: [50,100], label: '$50-$100'},
-        {value: [100,250], label: '$100-$250'}, {value: [250,500], label: '$250-$500'}, {value: [500,1000], label: '$500-$1000'},
-        {value: [1000,5000], label: '$1000+'}
-    ]
-    const categorySelectOptions:Array<CategorySelectInt> = [
-        {value: 'cpu', label: 'CPU'}, {value: 'gpu', label: 'GPU'}, {value: 'ram', label: 'RAM'},
-        {value: 'hdd', label: 'HDD'}, {value: 'ssd', label: 'SSD'}, {value: 'motherboard', label: 'Motherboard'},
-        {value: 'monitor', label: 'Monitor'}, {value: 'psu', label: 'PSU'}, {value: 'controller', label: 'Controller'},
-        {value: 'laptop', label: 'Laptop'}, {value: 'other', label: 'Other'}, {value: 'vr', label: 'VR'},
-        {value: 'case', label: 'Case'}, {value: 'cooler', label: 'Cooler'}, {value: 'headphones', label: 'Headphones'},
-        {value: 'fan', label: 'Fan'}, {value: 'prebuilt', label: 'Prebuilt'}, {value: 'headset', label: 'Headset'},
-        {value: 'optical-drive', label: 'Optical Drive'}, {value: 'os', label: 'OS'}, {value: 'speakers', label: 'Speakers'},
-        {value: 'keyboard', label: 'Keyboard'}, {value: 'networking', label: 'Networking'}, {value: 'furniture', label: 'Furniture'},
-        {value: 'mouse', label: 'Mouse'}, {value: 'bundle', label: 'Bundle'}, {value: 'htpc', label: 'HTPC'},
-        {value: 'cables', label: 'Cables'}, {value: 'mouse', label: 'Mouse'}, {value: 'flash-drive', label: 'Flash Drive'},
-        {value: 'router', label: 'Router'}, {value: 'mic', label: 'Mic'}
-    ]
+    }, []);
 
-    const setQueryLink = (input:Parameter, category:Parameter, pricerange:Parameter) => {
+    const onInputChange = (event:any) => {setSearchInput(event.target.value)};
+    const onCategoryChange = (event:any) => {setSearchCategory(event.value)};
+    const onPriceRangeChange = (event:any) => {setSearchPriceRange(event.value)};
+    const onSubmit = (event:any) => {event.preventDefault()};
+
+    const setQueryLink = (input:searchParameter, category:searchParameter, pricerange:searchParameter) => {
         if (input) {
             if (category && pricerange) return `?input=${input}&category=${category}&pricerange=${pricerange}`
             if (category && !pricerange) return `?input=${input}&category=${category}`
@@ -77,12 +35,12 @@ const Search:React.FC<SearchProps> = ({DATA, INPUT, CATEGORY, PRICERANGE, LOADIN
             if (category && !pricerange) return `?category=${category}`
             if (!category && pricerange) return `?pricerange=${pricerange}`
             if (!category && !pricerange) return `?pricerange=${pricerange}`
-        }
-    }
+        };
+    };
 
     return (
         <div className='flex flex-column w-screen items-center'>
-            <form className='w-full bg-gray-300 flex flex-column justify-center md:w-3/4 md:flex-row'>
+            <form className='w-full bg-gray-300 flex flex-column justify-center md:w-3/4 md:flex-row' onSubmit={onSubmit}>
                 <div className='w-full flex flex-column items-center'>
                     <TextField onChange={onInputChange} className='w-4/5 mx-4 mt-2 lg:w-1/2' label='Search for any item...' />
                 </div>
@@ -96,15 +54,15 @@ const Search:React.FC<SearchProps> = ({DATA, INPUT, CATEGORY, PRICERANGE, LOADIN
                             event.preventDefault();
                         } else {
                             GetSearch(setQueryLink(INPUT, CATEGORY, PRICERANGE));
-                           // window.location.assign(`http://localhost:3000/search${setQueryLink(INPUT, CATEGORY, PRICERANGE)}`)
+                           window.location.assign(`http://localhost:3000/search${setQueryLink(INPUT, CATEGORY, PRICERANGE)}`)
                         }
                     }}>
                         SEARCH
                     </button>
                 </div>
             </form>
-            <div className='w-full bg-gray-300 flex justify-center md:w-3/4'>
-                {DATA && DATA.map((post:PostProps, i:number) => {
+            <div className='w-screen bg-white flex flex-column justify-center md:w-3/4'>
+                {DATA && DATA.map((post:PostPropsInt, i:number) => {
                     const {title, category, image, url, urldomain, tstamp, price} = post;
 
                     return <Post title={title} category={category} image={image}
