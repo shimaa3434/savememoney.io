@@ -31,12 +31,12 @@ const Post:React.FC<PostProps> = ({postid, title, category, image, url, urldomai
         <div className='flex flex-column w-screen items-center my-4 py-4 border'>
             {
             image === 'false' ? 
-            <a className='items-center flex flex-column border w-1/2 rounded' href={url}>
-                <img className='object-cover rounded' src={HyperLinkChainIcon} alt={`NO IMAGE --- ${title} on domain ${urldomain}`}/>
+            <a className='flex flex-column items-center w-1/2 h-36 rounded' href={url}>
+                <img className='object-contain rounded h-full' src={HyperLinkChainIcon} alt={`NO IMAGE --- ${title} on domain ${urldomain}`}/>
             </a>
             :
-            <a className='items-center flex flex-column border w-1/2 rounded' href={url}>
-                <img className='object-cover rounded' src={image} alt={`${title} on domain ${urldomain}`}/>
+            <a className='flex flex-column items-center w-1/2 h-36 rounded' href={url}>
+                <img className='object-contain rounded h-full' src={image} alt={`${title} on domain ${urldomain}`}/>
             </a>
             }
             {category !== 'EXPIRED' ?

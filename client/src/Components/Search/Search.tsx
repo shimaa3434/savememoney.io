@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react'
-import {TextField, Select, MenuItem} from '@material-ui/core'
+import {TextField} from '@material-ui/core'
+import Select from 'react-select'
 import {connect} from 'react-redux';
 import {GetSearch, setSearchInput, setSearchCategory, setSearchPriceRange} from '../../Redux/Actions/SearchActions'
 import Post from '../Post/Post';
-import { Link } from 'react-router-dom';
-const queryString = require('query-string');
+const qs = require('qs');
 
 interface PostProps {
     postid?: string, title: string,
@@ -27,34 +27,46 @@ interface SearchProps {
     setSearchPriceRange: Function
 };
 
+interface PriceSelectInt {
+    value: Array<number>,
+    label: string
+}
+
+interface CategorySelectInt {
+    value: string,
+    label: string
+}
+
 const Search:React.FC<SearchProps> = ({DATA, INPUT, CATEGORY, PRICERANGE, LOADING, GetSearch, setSearchInput, setSearchCategory, setSearchPriceRange}) => {
-    
-
-    const onInputChange = (event:any) => {
-        setSearchInput(event.target.value)
-    }
-
-    const onCategoryChange = (event:any) => {
-        setSearchCategory(event.target.value)
-    }
-
-    const onPriceRangeChange = (event:any) => {
-        setSearchPriceRange(event.target.value)
-    }
     useEffect(() => {
-        const Queries = queryString.stringify(window.location.search);
-        console.log(Queries)
-        const QueriesLength = (Object.keys(queryString.parse(window.location.search))).length;
         if (window.location.search) {
             GetSearch(window.location.search);
         }
+        console.log(DATA)
     }, [])
-
-    
+    const onInputChange = (event:any) => {setSearchInput(event.target.value)}
+    const onCategoryChange = (event:any) => {setSearchCategory(event.value)}
+    const onPriceRangeChange = (event:any) => {setSearchPriceRange(event.value)}
+    const priceSelectOptions:Array<PriceSelectInt> = [
+        {value: [0,25], label: '$0-$25'}, {value: [25,50], label: '$25-$50'}, {value: [50,100], label: '$50-$100'},
+        {value: [100,250], label: '$100-$250'}, {value: [250,500], label: '$250-$500'}, {value: [500,1000], label: '$500-$1000'},
+        {value: [1000,5000], label: '$1000+'}
+    ]
+    const categorySelectOptions:Array<CategorySelectInt> = [
+        {value: 'cpu', label: 'CPU'}, {value: 'gpu', label: 'GPU'}, {value: 'ram', label: 'RAM'},
+        {value: 'hdd', label: 'HDD'}, {value: 'ssd', label: 'SSD'}, {value: 'motherboard', label: 'Motherboard'},
+        {value: 'monitor', label: 'Monitor'}, {value: 'psu', label: 'PSU'}, {value: 'controller', label: 'Controller'},
+        {value: 'laptop', label: 'Laptop'}, {value: 'other', label: 'Other'}, {value: 'vr', label: 'VR'},
+        {value: 'case', label: 'Case'}, {value: 'cooler', label: 'Cooler'}, {value: 'headphones', label: 'Headphones'},
+        {value: 'fan', label: 'Fan'}, {value: 'prebuilt', label: 'Prebuilt'}, {value: 'headset', label: 'Headset'},
+        {value: 'optical-drive', label: 'Optical Drive'}, {value: 'os', label: 'OS'}, {value: 'speakers', label: 'Speakers'},
+        {value: 'keyboard', label: 'Keyboard'}, {value: 'networking', label: 'Networking'}, {value: 'furniture', label: 'Furniture'},
+        {value: 'mouse', label: 'Mouse'}, {value: 'bundle', label: 'Bundle'}, {value: 'htpc', label: 'HTPC'},
+        {value: 'cables', label: 'Cables'}, {value: 'mouse', label: 'Mouse'}, {value: 'flash-drive', label: 'Flash Drive'},
+        {value: 'router', label: 'Router'}, {value: 'mic', label: 'Mic'}
+    ]
 
     const setQueryLink = (input:Parameter, category:Parameter, pricerange:Parameter) => {
-
-        
         if (input) {
             if (category && pricerange) return `?input=${input}&category=${category}&pricerange=${pricerange}`
             if (category && !pricerange) return `?input=${input}&category=${category}`
@@ -70,36 +82,27 @@ const Search:React.FC<SearchProps> = ({DATA, INPUT, CATEGORY, PRICERANGE, LOADIN
 
     return (
         <div className='flex flex-column w-screen items-center'>
-            <div className='w-full bg-gray-300 flex justify-center md:w-3/4'>
-                <TextField onChange={onInputChange} className='mx-4' label='Search for any item...' />
-                <div className='flex flex-row'>
-                    <Select onChange={onCategoryChange} className='mx-4'>
-                        <MenuItem value={'MONITOR'}>MONITOR</MenuItem>
-                        <MenuItem value={'KEYBOARD'}>KEYBOARD</MenuItem>
-                        <MenuItem value={'PREBUILT'}>PREBUILT</MenuItem>
-                        <MenuItem value={'MOUSE'}>MOUSE</MenuItem>
-                        <MenuItem value={'CABLES'}>CABLES</MenuItem>
-                        <MenuItem value={'COOLER'}>COOLER</MenuItem>
-                        <MenuItem value={'PSU'}>PSU</MenuItem>
-                        <MenuItem value={'CPU'}>CPU</MenuItem>
-                        <MenuItem value={'SSD'}>SSD</MenuItem>
-                        <MenuItem value={'HDD'}>HDD</MenuItem>
-                        <MenuItem value={'OTHER'}>OTHER</MenuItem>
-                    </Select>
-                    <Select onChange={onPriceRangeChange} className='mx-4'>
-                        <MenuItem value={'0-25'}>$0 - $25</MenuItem>
-                        <MenuItem value={'25-50'}>$25 - $50</MenuItem>
-                        <MenuItem value={'50-100'}>OTHER</MenuItem>
-                        <MenuItem value={'100-1000'}>OTHER</MenuItem>
-                    </Select>
-                        <button className='bg-red-900 text-blue-500' onClick={() => {
-                            GetSearch(INPUT, CATEGORY, PRICERANGE)
-                            window.location.assign(`http://localhost:3000/search${setQueryLink(INPUT, CATEGORY, PRICERANGE)}`)
-                        }}>
-                            Go!
-                        </button>
+            <form className='w-full bg-gray-300 flex flex-column justify-center md:w-3/4 md:flex-row'>
+                <div className='w-full flex flex-column items-center'>
+                    <TextField onChange={onInputChange} className='w-4/5 mx-4 mt-2 lg:w-1/2' label='Search for any item...' />
                 </div>
-            </div>
+                <div className='flex flex-row justify-center my-4'>
+                    <Select onChange={onCategoryChange} options={categorySelectOptions} placeholder='Category' className='mx-2 w-2/5 md:w-1/3 lg:w-1/6' />
+                    <Select onChange={onPriceRangeChange} options={priceSelectOptions} placeholder='Price Range' className='mx-2 w-2/5 md:w-1/3 lg:w-1/6' />
+                </div>
+                <div className='flex flex-row justify-center items-center mb-4'>
+                    <button type='submit' className=' text-white ring-4 ring-indigo-300 bg-indigo-400 w-1/3 rounded px-1 py-1 md:w-1/5' onClick={(event:any) => {
+                        if (INPUT === null && CATEGORY === null && PRICERANGE === null) {
+                            event.preventDefault();
+                        } else {
+                            GetSearch(setQueryLink(INPUT, CATEGORY, PRICERANGE));
+                           // window.location.assign(`http://localhost:3000/search${setQueryLink(INPUT, CATEGORY, PRICERANGE)}`)
+                        }
+                    }}>
+                        SEARCH
+                    </button>
+                </div>
+            </form>
             <div className='w-full bg-gray-300 flex justify-center md:w-3/4'>
                 {/* {DATA && DATA.map((post:PostProps, i:number) => {
                     const {title, category, image, url, urldomain, tstamp, price} = post;

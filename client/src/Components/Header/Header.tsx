@@ -11,23 +11,23 @@ const Header = () => {
 
     return (
         <>
-            <div className='w-screen h-16 flex flex-row justify-between items-center bg-indigo-500 md:justify-around'>
+            <div className='w-screen h-20 flex flex-row justify-between items-center bg-indigo-500 md:justify-around'>
                 <Link to='/' className='no-underline'>
                     <h1 className='text-white'>dealmoola</h1>
                 </Link>
-                <img className='block sm:hidden' src={MobileMenuIcon} alt='mobile navigation menu icon' onClick={() => {
+                <img className='block md:hidden' src={MobileMenuIcon} alt='mobile navigation menu icon' onClick={() => {
                     setShowMenu(true);
                     document.body.style.overflowY = 'hidden';
                 }} />
-                <ul className='hidden py-0 px-0 mx-0 my-0 sm:flex sm:flex-row'>
+                <ul className='hidden py-0 px-0 mx-0 my-0 md:flex md:flex-row'>
                     <Link to='/' className='mx-4 no-underline text-white'>
-                        <ul className='nav__link'>HOME</ul>
+                        <ul>HOME</ul>
                     </Link>
                     <Link to='/search' className='mx-4 no-underline text-white'>
-                        <ul className='nav__link'>SEARCH</ul>
+                        <ul>SEARCH</ul>
                     </Link>
                     <Link to='/categories' className='mx-4 no-underline text-white'>
-                        <ul className='nav__link'>CATEGORIES</ul>
+                        <ul>CATEGORIES</ul>
                     </Link>
                 </ul>
                 {showMenu && <MobileMenu setShowMenu={setShowMenu} />}

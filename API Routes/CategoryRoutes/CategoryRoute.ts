@@ -1,22 +1,16 @@
 var SQL = require('../../DBConnection');
 var Express = require('express');
 var Router = Express.Router();
- 
-Router.get('/:category', (req, res) => {
+var ParameterValidation = require('../Validation Middleware/Validation');
+var {CategoryValidator} = ParameterValidation;
+// GET ROUTE FOR CATEGORY PARAMETER
+Router.get('/:category', (req:any, res:any) => {
+    
     const Parameter = req.params.category;
-
-    const PossibleCategories = [
-        'psu', 'cpu', 'ssd',
-        'monitor', 'prebuilt', 'mouse',
-        'cables', 'keyboard', 'hdd', 'cooler',
-        'other'
-    ]
     
-    const CheckMatch = PossibleCategories.includes(Parameter)
-    
-    if (CheckMatch) {
+    if (CategoryValidator(req.params.category)) {
         const FilterQuery = `SELECT * FROM posts WHERE category LIKE '%${req.params.category}%';`
-        SQL.query(FilterQuery, (err, results) => {
+        SQL.query(FilterQuery, (err:any, results:any) => {
             if (err) res.send('Error.')
             if (!err) res.send(results)
         })
