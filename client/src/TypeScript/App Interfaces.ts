@@ -31,15 +31,16 @@ export interface PostsPropsInt {
 // FOR USE IN THE SEARCH.TSX FOR PROPS
 
 export interface SearchPropsInt {
-    DATA: null | Array<PostPropsInt>
+    DATA?: null | Array<PostPropsInt>
     INPUT: searchParameter,
     CATEGORY: searchParameter,
     PRICERANGE: searchParameter,
     LOADING: boolean,
+    BGCOLOR?: 'string',
     GetSearch: Function
     setSearchInput: Function,
     setSearchCategory: Function,
-    setSearchPriceRange: Function
+    setSearchPriceRange: Function,
 };
 
 
@@ -53,4 +54,14 @@ export interface SearchPriceRangeSelectInt {
 export interface SearchCategorySelectInt {
     value: string,
     label: string
+};
+
+// FOR USE IN APP.TSX FOR ROUTES ARRAY
+
+export interface RoutesInt {
+    path: string,
+    name?: string,
+    exact: boolean,
+    component: any,
+    props?: any
 };

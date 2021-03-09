@@ -1,7 +1,7 @@
-import MobileMenuIcon from '../../Media/Images/MobileMenuIcon.svg'
-import {useState} from 'react'
-import MobileMenu from '../MobileMenu/MobileMenu';
-import {Link} from 'react-router-dom'
+import MobileMenuIcon from '../../../Media/Images/MobileMenuIcon.svg';
+import MobileMenu from '../../MobileMenu/MobileMenu';
+import {Link} from 'react-router-dom';
+import {useState} from 'react';
 
 const Header = () => {
 
@@ -9,7 +9,7 @@ const Header = () => {
 
     return (
         <>
-            <div className='w-screen h-20 flex flex-row justify-between items-center bg-indigo-500 md:justify-around'>
+            <div className='w-screen h-20 flex flex-row justify-between items-center bg-seagreen md:justify-around'>
                 <Link to='/' className='no-underline'>
                     <h1 className='text-white'>dealmoola</h1>
                 </Link>

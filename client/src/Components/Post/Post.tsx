@@ -1,7 +1,7 @@
-import React from 'react'
 import HyperLinkChainIcon from '../../Media/Images/noimagelink.svg'
-import {Link} from 'react-router-dom';
 import {PostPropsInt} from '../../TypeScript/App Interfaces'
+import {Link} from 'react-router-dom';
+import React from 'react'
 
 const Post:React.FC<PostPropsInt> = ({postid, title, category, image, url, urldomain, tstamp, price}) => {
     
@@ -22,7 +22,7 @@ const Post:React.FC<PostPropsInt> = ({postid, title, category, image, url, urldo
     }
 
     return (
-        <div className='flex flex-column w-screen items-center my-4 py-4 border'>
+        <div className='flex flex-col w-screen items-center my-4 py-4 border'>
             {
             image === 'false' ? 
             <a className='flex flex-column items-center w-1/2 h-36 rounded' href={url}>

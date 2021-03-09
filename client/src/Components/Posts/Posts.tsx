@@ -1,8 +1,8 @@
+import {PostPropsInt, PostsPropsInt} from '../../TypeScript/App Interfaces' // Post vs PostsPropsInt.
+import {getPosts} from '../../Redux/Actions/PostsActions'
 import React, {useEffect} from 'react'
 import {connect} from 'react-redux'
-import {getPosts} from '../../Redux/Actions/PostsActions'
 import Post from '../Post/Post'
-import {PostPropsInt, PostsPropsInt} from '../../TypeScript/App Interfaces' // Post vs PostsPropsInt.
 
 const Posts:React.FC<PostsPropsInt> = ({LOADING, POSTS, getPosts}) => {
     useEffect(() => {

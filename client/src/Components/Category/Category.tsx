@@ -1,9 +1,9 @@
+import {PostPropsInt, CategoryPropsInt} from '../../TypeScript/App Interfaces'
+import {getCategory} from '../../Redux/Actions/CategoryActions'
+import {categoryParameter} from '../../TypeScript/App Types'
 import React, {useEffect} from 'react'
 import {connect} from 'react-redux';
-import {getCategory} from '../../Redux/Actions/CategoryActions'
 import Post from '../Post/Post';
-import {PostPropsInt, CategoryPropsInt} from '../../TypeScript/App Interfaces'
-import {categoryParameter} from '../../TypeScript/App Types'
 
 const Category:React.FC<CategoryPropsInt> = ({match, DATA, LOADING, CATEGORY, PARAMALERT, getCategory}) => {
 
@@ -32,9 +32,7 @@ const mapStateToProps = (store:any) => {
     }
 }
 const mapDispatchToProps = (dispatch:Function) => {
-    return {
-        getCategory: (parameter:categoryParameter) => {dispatch(getCategory(parameter))}
-    }
+    return {getCategory: (parameter:categoryParameter) => {dispatch(getCategory(parameter))}}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Category)

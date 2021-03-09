@@ -1,28 +1,22 @@
-import React from 'react';
-import Posts from './Components/Posts/Posts';
-import {Provider} from 'react-redux'
-import Store from './Redux/Main/Store'
-import Header from './Components/Header/Header';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
-import {RouteComponentProps} from 'react-router-dom'
+import Header from './Components/Layout/Header/Header';
 import Category from './Components/Category/Category';
+import {RoutesInt} from './TypeScript/App Interfaces';
+import {RouteComponentProps} from 'react-router-dom';
 import Search from './Components/Search/Search';
-import './App.css';
+import Posts from './Components/Posts/Posts';
+import Home from './Components/Home/Home';
+import Store from './Redux/Main/Store';
+import {Provider} from 'react-redux';
 
-interface RouteInt {
-  path: string,
-  name?: string,
-  exact: boolean,
-  component: any,
-  props?: any
-}
 
-const Routes: RouteInt[] = [
+
+const Routes: RoutesInt[] = [
   {
     path: '/',
-    name: 'Posts Page',
+    name: 'Home Page',
     exact: true,
-    component: Posts
+    component: Home
   },
   {
     path: '/categories/:category',
@@ -36,14 +30,14 @@ const Routes: RouteInt[] = [
     exact: true,
     component: Search
   }
-]
+];
 
 function App() {
 
   return (
     <Provider store={Store}>
       <Router>
-        <div className="App">
+        <div className="bg-coolwhite">
           <Header />
           <Switch>
             {Routes.map((route, i) => {
