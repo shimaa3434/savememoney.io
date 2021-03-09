@@ -29,7 +29,7 @@ var ParameterValidation:any = {
         return PossiblePriceRanges.includes(Parameter)
     },
     InputIntegrityValidator: (userinput:EnteringParameter) => {
-        if (userinput) return SQL.escape(userinput);
+        if (userinput) return SQL.escape("%"+userinput+"%")
         if (!userinput) return false;
     }
 }

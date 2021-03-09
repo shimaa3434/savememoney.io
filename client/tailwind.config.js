@@ -7,25 +7,19 @@ module.exports = {
       height: {
         vh50: '50vh'
       },
+      screens: {
+        phone: '200px'
+      },
       backgroundImage: (theme) => ({
-        'hero-pattern': "url('./Media/Images/heroimage3.svg')"
-      })
+        'hero-pattern': "url('./Media/Images/heroimageclearlefttorightslow.svg')"
+      }),
+      colors: {
+        seagreen: '#16c79a',
+        darkblue: '#19456b',
+        lighterblue: '#11698e',
+        coolwhite: '#ffffff'
+      }
     },
-    colors: {
-      transparent: 'transparent',
-      black: colors.black,
-      white: colors.white,
-      gray: colors.coolGray,
-      red: colors.red,
-      yellow: colors.amber,
-      blue: colors.blue,
-      indigo: colors.indigo,
-      pink: colors.pink,
-      seagreen: '#16c79a',
-      darkblue: '#19456b',
-      lighterblue: '#11698e',
-      coolwhite: '#f8f1f1'
-    }
   },
   variants: {
     extend: {},

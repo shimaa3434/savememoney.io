@@ -1,7 +1,6 @@
 var Express = require('express');
 var Router = Express.Router();
 var SQL = require('../../DBConnection');
-var QS = require('qs');
 var ParameterValidation = require('../Validation Middleware/Validation');
 var {
     CategoryValidator,
@@ -36,14 +35,14 @@ Router.get('', (req:any, res:any)=> {
 
 
     const createQuery = (input:ParameterMatch, category:ParameterMatch, pricerange:ParameterMatch):string => {
-        if (input && category && pricerange) return `SELECT * FROM posts WHERE title LIKE '%${input}%' AND category LIKE '${category}' and price BETWEEN ${pricerange[0]} AND ${pricerange[1]};`
+        if (input && category && pricerange) return `SELECT * FROM posts WHERE title LIKE ${input} AND category LIKE '${category}' and price BETWEEN ${pricerange[0]} AND ${pricerange[1]};`
         if (!input && category && pricerange) return `SELECT * FROM posts WHERE category LIKE '${category}' and price BETWEEN ${pricerange[0]} AND ${pricerange[1]};`
         if (!input && !category && pricerange) return `SELECT * FROM posts WHERE price BETWEEN ${pricerange[0]} AND ${pricerange[1]};`
         if (!input && category && !pricerange) return `SELECT * FROM posts WHERE category LIKE '${category}';`
         if (!input && category && pricerange) return `SELECT * FROM posts WHERE category LIKE '${category}' price LIKE '${pricerange[0]} AND ${pricerange[1]}';`
-        if (input && !category && !pricerange) return `SELECT * FROM posts WHERE title LIKE '%${input}%';`
-        if (input && category && !pricerange) return `SELECT * FROM posts WHERE title LIKE '%${input}%' AND category LIKE '${category}';`
-        if (input && !category && pricerange) return `SELECT * FROM posts WHERE title LIKE '%${input}%' AND price BETWEEN ${pricerange[0]} AND ${pricerange[1]};`
+        if (input && !category && !pricerange) return `SELECT * FROM posts WHERE title LIKE ${input};`
+        if (input && category && !pricerange) return `SELECT * FROM posts WHERE title LIKE ${input} AND category LIKE '${category}';`
+        if (input && !category && pricerange) return `SELECT * FROM posts WHERE title LIKE ${input} AND price BETWEEN ${pricerange[0]} AND ${pricerange[1]};`
     }
 
     SQL.query(
@@ -56,7 +55,7 @@ Router.get('', (req:any, res:any)=> {
             if (err) console.log(err);
             if (!err) res.send(results);
         }
-    )
+    );
 });
 
 module.exports = Router;

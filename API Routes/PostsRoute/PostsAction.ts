@@ -11,7 +11,7 @@ type Price = string | number;
 
 const posts = {
     grabNewPosts: async () => {
-        const Response = await Axios.get('https://www.reddit.com/r/buildapcsales/new.json')
+        await Axios.get('https://www.reddit.com/r/buildapcsales/new.json')
         .then((resp:any) => {
             const Data = resp.data.data.children;
             let count = 1
@@ -34,7 +34,6 @@ const posts = {
                 const pullPrice = (title:string) => {
                     const PriceRegexF = /\$[0-9]*\.[0-9]*/gi;
                     const PriceRegexS = /[0-9]*\.[0-9]*\$/gi;
-                    const DollarRegex  = /\$/gi;
                     if (PriceRegexF.test(title)) {
                         const conditionMatch = title.match(PriceRegexF)
                         console.log(conditionMatch)
