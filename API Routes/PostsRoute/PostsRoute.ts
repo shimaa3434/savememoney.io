@@ -5,7 +5,7 @@ var Posts = require('./PostsAction');
 
 // ESSENTIAL QUERIES
 
-const getAllQuery = 'SELECT * FROM posts';
+const getAllQuery = 'SELECT * FROM posts ORDER BY tstamp DESC';
 
 Router.get('/', (req:any, res:any) => {
     SQL.query(getAllQuery, (err:any, results:any) => {

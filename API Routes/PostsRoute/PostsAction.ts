@@ -1,6 +1,8 @@
+import { privateDecrypt } from "node:crypto";
+
+const S3Bucket = require('../../AWS/AWSDetails');
 var SQL = require('../../DBConnection');
 var Axios = require('axios');
-
 
 interface Post {
     data: any
@@ -32,29 +34,48 @@ const posts = {
 
                 // Pulls price from post titles
                 const pullPrice = (title:string) => {
-                    const PriceRegexF = /\$[0-9]*\.[0-9]*/gi;
+                    const PriceRegexFV1 = /\$[0-9]*\.[0-9]*/gi;
+                    const PriceRegexFV2 = /\$[0-9]*\.[0-9]*/gi;
                     const PriceRegexS = /[0-9]*\.[0-9]*\$/gi;
-                    if (PriceRegexF.test(title)) {
-                        const conditionMatch = title.match(PriceRegexF)
-                        console.log(conditionMatch)
-                        if (conditionMatch.length === 1) return Number(conditionMatch[0].replace(/\$/gi, ''));
+                    const PriceRegexThousandsV1 = /\$[0-9],[0-9]{0,3}/gi;
+                    const NoDollarRegex = /\$[0-9]{0,4}/gi;
+                    const DollarRegex = /\$/gi;
+                    if (PriceRegexFV1.test(title)) {
+                        const conditionMatch = title.match(PriceRegexFV1)
+                        if (conditionMatch.length === 1) return Number(conditionMatch[0].replace(DollarRegex, ''));
                         if (conditionMatch.length > 1) {
                             const cleanMatches = conditionMatch.map((match) => {
                                 Number(match.replace(/\$/gi, ''))
-                                    return Number(match.replace(/\$/gi, ''))
+                                    return Number(match.replace(DollarRegex, ''))
                             })
                             return `${cleanMatches.sort()[0]}`
                         }
                     } else if (PriceRegexS.test(title)) {
                         const conditionMatch = title.match(PriceRegexS)
-                        if (conditionMatch.length === 1) return Number(conditionMatch[0].replace(/$/gi, ''));
+                        if (conditionMatch.length === 1) return Number(conditionMatch[0].replace(DollarRegex, ''));
                         if (conditionMatch.length > 1) {
                             const cleanMatches = conditionMatch.map((match) => {
-                                return Number(match.replace(/\$/gi, ''))
+                                return Number(match.replace(DollarRegex, ''))
                             })
                             return `${cleanMatches.sort()[0]}`
+
                         }
-                    } else if (!PriceRegexF.test(title) && !PriceRegexS.test(title)) return 'CHECK TITLE'
+                    } else if (PriceRegexThousandsV1.test(title) || NoDollarRegex.test(title)) {
+                        const conditionMatch = PriceRegexThousandsV1.test(title) ? title.match(PriceRegexThousandsV1) : title.match(NoDollarRegex);
+                        if (conditionMatch.length === 1) return Number(conditionMatch[0].replace(DollarRegex, ''));
+                        if (conditionMatch.length > 1) {
+                            const cleanMatches = conditionMatch.map((match) => {
+                                return Number(match.replace(DollarRegex, ''))
+                            })
+                            return `${cleanMatches.sort()[0]}`
+
+                        }
+                    } else if (!PriceRegexFV1.test(title) &&
+                               !PriceRegexS.test(title) &&
+                               !PriceRegexThousandsV1.test(title) &&
+                               !NoDollarRegex.test(title)
+                               )
+                        return 'CHECK TITLE'
                 }
 
                 // Clean Categories -- if expired, it will remove reddit emotes within the flair category to just 'EXPIRED'

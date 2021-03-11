@@ -1,10 +1,10 @@
 const SQLConnection = require('mysql');
 
 const Database = SQLConnection.createConnection({
-    host: 'localhost',
-    database: 'buildapcdeals',
-    user: 'root',
-    password: '123456'
+    host: 'eyw6324oty5fsovx.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+    database: 'nf5wqzeuwg5xsj5r',
+    user: 'a4t89ifpkit3u1ye',
+    password: 's24tvk2ejpslkmnz'
 })
 
 Database.connect((err:any) => {
