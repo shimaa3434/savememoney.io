@@ -14,14 +14,15 @@ const Posts:React.FC<PostsPropsInt> = ({LOADING, POSTS, getPosts}) => {
             <div className='flex'>
                 <button className='bg-green-500'>Hey</button>
             </div>
-            <>
+            <div className='flex flex-col md:flex-row md:flex-wrap'>
+
             {POSTS && POSTS.map((post:PostPropsInt, i:number) => {
                 const {title, category, image, url, urldomain, tstamp, price} = post;
                 return <Post key={i} title={title} category={category}
                 image={image} url={url} urldomain={urldomain}
                 tstamp={tstamp} price={price} />
             })}
-            </>
+            </div>
         </div>
     )
 }

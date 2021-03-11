@@ -17,7 +17,7 @@ module.exports = {
         seagreen: '#16c79a',
         darkblue: '#19456b',
         lighterblue: '#11698e',
-        coolwhite: '#ffffff'
+        coolwhite: '#f1f2f3'
       }
     },
   },

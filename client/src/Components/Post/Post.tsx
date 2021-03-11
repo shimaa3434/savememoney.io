@@ -22,27 +22,27 @@ const Post:React.FC<PostPropsInt> = ({postid, title, category, image, url, urldo
     }
 
     return (
-        <div className='flex flex-col w-screen items-center my-4 py-4 border'>
+        <div className='flex flex-col w-screen items-center my-4 py-4 border lg:w-1/4'>
             {
             image === 'false' ? 
-            <a className='flex flex-column items-center w-1/2 h-36 rounded' href={url}>
+            <a className='flex flex-col items-center w-1/2 h-36 rounded' href={url}>
                 <img className='object-contain rounded h-full' src={HyperLinkChainIcon} alt={`NO IMAGE --- ${title} on domain ${urldomain}`}/>
             </a>
             :
-            <a className='flex flex-column items-center w-1/2 h-36 rounded' href={url}>
+            <a className='flex flex-col items-center w-1/2 h-36 rounded' href={url}>
                 <img className='object-contain rounded h-full' src={image} alt={`${title} on domain ${urldomain}`}/>
             </a>
             }
             {category !== 'EXPIRED' ?
             <Link className='no-underline my-4 py-0' to={`/categories/${category.toLowerCase()}`}>
-                <span className={`${setCategoryColor(category)}`}>{category}</span>
+                <span className={`${setCategoryColor(category)} text-center`}>{category}</span>
             </Link>
             :
-            <span className={`${setCategoryColor(category)} my-4`}>{category}</span>
+            <span className={`${setCategoryColor(category)} my-4 text-center`}>{category}</span>
             }
-            <a href={url} className='text-sm w-3/4'>{title}</a>
+            <a href={url} className='text-sm w-3/4 text-center'>{title}</a>
         </div>
     )
 }
 
-export default Post
+export default Post;

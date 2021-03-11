@@ -19,7 +19,7 @@ const Search:React.FC<SearchPropsInt> = ({DATA, GetSearch, setSearchInput, setSe
     return (
         <div className='flex flex-col w-screen items-center'>
             <SearchForm />
-            <div className='w-screen bg-white flex flex-col justify-center md:w-3/4'>
+            <div className='w-screen bg-white flex flex-row flex-wrap justify-center md:w-3/4'>
                 {DATA && DATA.map((post:PostPropsInt, i:number) => {
                     const {title, category, image, url, urldomain, tstamp, price} = post;
                     return <Post title={title} category={category} image={image}
