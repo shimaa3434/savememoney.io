@@ -1,8 +1,9 @@
+
 const CategoryRoute = require('./API Routes/CategoryRoutes/CategoryRoute');
 const SearchRoute = require('./API Routes/SearchRoute/SearchRoute');
-const PostActions = require('./API Routes/PostsRoute/PostsAction');
+import PostClass from './API Routes/Objects/Post'
+var Post = new PostClass();
 const PostsRoute = require('./API Routes/PostsRoute/PostsRoute');
-const {grabNewPosts} = PostActions;
 const Cron = require('node-cron');
 var Express = require('express');
 const AWS = require('aws-sdk');
@@ -16,7 +17,7 @@ App.use('/api/categories', CategoryRoute);
 App.use('/api/search', SearchRoute);
 
 Cron.schedule('*/59 * * * *', () => {
-    grabNewPosts();
+    Post.getNewPosts();
 })
 
 App.listen(Port, () => {console.log(`Listening on port ${Port}.`)});

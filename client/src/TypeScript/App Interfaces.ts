@@ -50,7 +50,7 @@ export interface SearchPropsInt {
     DATA?: null | Array<PostPropsInt>
     INPUT: searchParameter,
     CATEGORY: searchParameter,
-    PRICERANGE: searchParameter,
+    PRICERANGE: searchParameter | Array<string>,
     LOADING: boolean,
     BGCOLOR?: 'string',
     GetSearch: Function

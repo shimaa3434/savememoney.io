@@ -36,7 +36,7 @@ Router.get('', (req:any, res:any)=> {
 
     const createQuery = (input:ParameterMatch, category:ParameterMatch, pricerange:ParameterMatch):string => {
         if (input && category && pricerange) return `SELECT * FROM posts WHERE title LIKE ${input} AND category LIKE '${category}' and price BETWEEN ${pricerange[0]} AND ${pricerange[1]} ORDER BY tstamp DESC;`
-        if (!input && category && pricerange) return `SELECT * FROM posts WHERE category LIKE '${category}' and price BETWEEN ${pricerange[0]} AND ${pricerange[1]} ORDER tstamp BY DESC;`
+        if (!input && category && pricerange) return `SELECT * FROM posts WHERE category LIKE '${category}' and price BETWEEN ${pricerange[0]} AND ${pricerange[1]} ORDER BY tstamp DESC;`
         if (!input && !category && pricerange) return `SELECT * FROM posts WHERE price BETWEEN ${pricerange[0]} AND ${pricerange[1]} ORDER BY tstamp DESC;`
         if (!input && category && !pricerange) return `SELECT * FROM posts WHERE category LIKE '${category}' ORDER BY tstamp DESC;`
         if (!input && category && pricerange) return `SELECT * FROM posts WHERE category LIKE '${category}' price LIKE '${pricerange[0]} AND ${pricerange[1]}' ORDER BY tstamp DESC;`
