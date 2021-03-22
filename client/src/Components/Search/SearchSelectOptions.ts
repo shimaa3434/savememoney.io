@@ -2,9 +2,9 @@ import {SearchPriceRangeSelectInt, SearchCategorySelectInt} from '../../TypeScri
 
 
 export const priceSelectOptions:Array<SearchPriceRangeSelectInt> = [
-    {value: [0,25], label: '$0-$25'}, {value: [25,50], label: '$25-$50'}, {value: [50,100], label: '$50-$100'},
-    {value: [100,250], label: '$100-$250'}, {value: [250,500], label: '$250-$500'}, {value: [500,1000], label: '$500-$1000'},
-    {value: [1000,5000], label: '$1000+'}
+    {value: ['0','25'], label: '$0-$25'}, {value: ['25','50'], label: '$25-$50'}, {value: ['50','100'], label: '$50-$100'},
+    {value: ['100','250'], label: '$100-$250'}, {value: ['250','500'], label: '$250-$500'}, {value: ['500','1000'], label: '$500-$1000'},
+    {value: ['1000','5000'], label: '$1000+'}
 ];
 
 export const categorySelectOptions:Array<SearchCategorySelectInt> = [

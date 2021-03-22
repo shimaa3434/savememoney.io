@@ -9,26 +9,26 @@ const Header = () => {
 
     return (
         <>
-            <div className='w-screen h-20 flex flex-row justify-between items-center bg-coolwhite border-b-8 border-seagreen md:justify-around'>
+            <div className='w-screen h-20 flex flex-row justify-between items-center px-2 bg-blue-800 border-white border-b-2 md:justify-around'>
                 <Link to='/' className='no-underline'>
-                    <h1 className='text-seagreen text-3xl font-bold'>DEALMOOLA</h1>
+                    <h1 className='text-white text-3xl font-bold'>DEALMOOLA</h1>
                 </Link>
                 <img className='md:hidden' src={MobileMenuIcon} alt='mobile navigation menu icon' onClick={() => {
                     setShowMenu(true);
                     document.body.style.overflowY = 'hidden';
                 }} />
                 <ul className='hidden py-0 px-0 mx-0 my-0 md:flex'>
-                    <Link to='/' className='mx-4 no-underline text-seagreen'>
+                    <Link to='/' className='mx-4 no-underline text-white'>
                         <li>HOME</li>
                     </Link>
-                    <Link to='/search' className='mx-4 no-underline text-seagreen'>
+                    <Link to='/search' className='mx-4 no-underline text-white'>
                         <li>SEARCH</li>
                     </Link>
-                    <Link to='/categories' className='mx-4 no-underline text-seagreen'>
+                    <Link to='/categories' className='mx-4 no-underline text-white'>
                         <li>CATEGORIES</li>
                     </Link>
                 </ul>
-                {showMenu && <MobileMenu setShowMenu={setShowMenu} />}
+                {showMenu && <MobileMenu setShowMenu={setShowMenu} showMenu={showMenu} />}
             </div>
         </>
     );

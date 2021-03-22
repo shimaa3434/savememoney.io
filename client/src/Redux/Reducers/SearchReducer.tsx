@@ -9,17 +9,17 @@ import {
 
 interface StateInt {
     DATA: null | Object
-    INPUT: null | string,
-    CATEGORY: null | string,
-    PRICERANGE: null | string,
+    INPUT: string,
+    CATEGORY: string,
+    PRICERANGE: string,
     LOADING: boolean
 };
 
 const InitialState:StateInt = {
     DATA: null,
-    INPUT: null,
-    CATEGORY: null,
-    PRICERANGE: null,
+    INPUT: '',
+    CATEGORY: '',
+    PRICERANGE: '',
     LOADING: false
 }
 const SearchReducer = (state = InitialState, action:any) => {

@@ -1,4 +1,19 @@
+import { ReactNode } from 'react';
 import {searchParameter} from './App Types';
+
+
+// FOR USE IN MODAL.TSX
+
+export interface modalPropsInt {
+    children: ReactNode,
+    underlayclassName?: string,
+    modalclassName?: string,
+    containerclassName?: string,
+    toggleStatus: boolean,
+    toggleModal: Function,
+    closeOnUnderlayClick?: boolean,
+}
+
 // FOR USE IN CATEGORY.TSX, POSTS.TSX, POST.TSX FOR DATA VARIABLE RESPONSE SHAPE.
 
 export interface PostPropsInt {
@@ -19,7 +34,8 @@ export interface CategoryPropsInt {
 // FOR USE IN MOBILEMENU.TSX FOR PROPS FROM HEADER.TSX TO ALTER SHOW MENU USESTATE.
 
 export interface MobileMenuProps {
-    setShowMenu: Function
+    setShowMenu: Function,
+    showMenu: boolean
 };
 
 // FOR USE IN THE POSTS.TSX FOR PROPS
@@ -47,7 +63,7 @@ export interface SearchPropsInt {
 // FOR USE IN THE SEARCHSELECTOPTIONS.TS to feed SEARCH.TSX
 
 export interface SearchPriceRangeSelectInt {
-    value: Array<number>,
+    value: Array<string>,
     label: string
 };
 

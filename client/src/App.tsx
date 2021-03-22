@@ -37,7 +37,7 @@ function App() {
   return (
     <Provider store={Store}>
       <Router>
-        <div className="bg-coolwhite">
+        <div className="bg-white">
           <Header />
           <Switch>
             {Routes.map((route, i) => {

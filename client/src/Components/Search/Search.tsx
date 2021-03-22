@@ -1,34 +1,44 @@
 import {GetSearch, setSearchInput, setSearchCategory, setSearchPriceRange} from '../../Redux/Actions/SearchActions'
 import {PostPropsInt, SearchPropsInt} from '../../TypeScript/App Interfaces'
-import React, {useEffect} from 'react';
+import { Component } from 'react';
 import SearchForm from './SearchForm';
 import {connect} from 'react-redux';
 import Post from '../Post/Post';
 
-const Search:React.FC<SearchPropsInt> = ({DATA, GetSearch, setSearchInput, setSearchCategory, setSearchPriceRange}) => {
-    useEffect(() => {
+class Search extends Component<SearchPropsInt> {
+
+    constructor (props:SearchPropsInt) {
+        super(props);
+    }
+
+    componentWillMount () {
         if (window.location.search) {
             GetSearch(window.location.search);
         } else {
-            setSearchInput(null);
-            setSearchCategory(null);
-            setSearchPriceRange(null);
+            setSearchInput('');
+            setSearchCategory('');
+            setSearchPriceRange('');
         }
-    }, []);
+    }
 
-    return (
-        <div className='flex flex-col w-screen items-center'>
-            <SearchForm />
-            <div className='w-screen bg-white flex flex-row flex-wrap justify-center md:w-3/4'>
-                {DATA && DATA.map((post:PostPropsInt, i:number) => {
-                    const {title, category, image, url, urldomain, tstamp, price} = post;
-                    return <Post title={title} category={category} image={image}
-                    url={url} urldomain={urldomain} tstamp={tstamp} price={price}
-                    />
-                })};
+    render () {
+
+        const { DATA } = this.props;
+        
+        return (
+            <div className='flex flex-col w-screen items-center'>
+                <SearchForm />
+                <div className='w-screen bg-white flex flex-col md:flex-row md:flex-wrap justify-center'>
+                    {DATA && DATA.map((post:PostPropsInt, i:number) => {
+                        const {title, category, image, url, urldomain, tstamp, price} = post;
+                        return <Post title={title} category={category} image={image}
+                        url={url} urldomain={urldomain} tstamp={tstamp} price={price}
+                        />
+                    })}
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
 }
 
 const mapStateToProps = (state:any) => {

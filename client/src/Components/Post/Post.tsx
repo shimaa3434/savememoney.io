@@ -11,7 +11,7 @@ const Post:React.FC<PostPropsInt> = ({postid, title, category, image, url, urldo
         if (category === 'PSU') return 'bg-red-400 text-white px-2 py-1 rounded'
         if (category === 'Monitor') return 'bg-purple-400 text-white px-2 py-1 rounded'
         if (category === 'Prebuilt') return 'bg-green-400 text-white px-2 py-1 rounded'
-        if (category === 'Motherboard') return 'bg-yellow-400 text-white px-2 py-1 rounded'
+        if (category === 'Motherboard') return 'bg-yellow-500 text-white px-2 py-1 rounded'
         if (category === 'Keyboard') return 'bg-red-700 text-white px-2 py-1 rounded'
         if (category === 'Cooler') return 'bg-yellow-700 text-white px-2 py-1 rounded'
         if (category === 'HDD') return 'bg-green-700 text-white px-2 py-1 rounded'
@@ -19,6 +19,17 @@ const Post:React.FC<PostPropsInt> = ({postid, title, category, image, url, urldo
         if (category === 'Cables') return 'bg-purple-700 text-white px-2 py-1 rounded'
         if (category === 'Other') return 'bg-gray-400 text-white px-2 py-1 rounded'
         if (category === 'SSD - M.2') return 'bg-gray-600 text-white px-2 py-1 rounded'
+        if (category === 'Fan') return 'bg-darkblue text-white px-2 py-1 rounded'
+        if (category === 'RAM') return 'bg-lighterblue text-white px-2 py-1 rounded'
+        if (category === 'Speakers') return 'bg-pink-400 text-white px-2 py-1 rounded'
+        if (category === 'SSD - SATA') return 'bg-junglegreen text-white px-2 py-1 rounded'
+        if (category === 'Case') return 'bg-pink-700 text-white px-2 py-1 rounded'
+        if (category === 'GPU') return 'bg-indigo-500 text-white px-2 py-1 rounded'
+        if (category === 'Bundle') return 'bg-darksand text-white px-2 py-1 rounded'
+        if (category === 'Controller') return 'bg-wine text-white px-2 py-1 rounded'
+        if (category === 'Mouse Pad') return 'bg-diarrheagreen text-white px-2 py-1 rounded'
+        if (category === 'Webcam') return 'bg-tangerine text-white px-2 py-1 rounded'
+        if (category === 'Headphones') return 'bg-skyblue text-white px-2 py-1 rounded'
     }
 
     return (

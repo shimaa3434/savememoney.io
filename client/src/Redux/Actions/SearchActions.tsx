@@ -10,7 +10,7 @@ import {
 
 export const GetSearch:Function = (query:string) => {
     return async (dispatch:Function) => {
-        setLoading(true);
+        dispatch(setLoading(true));
         const Response = await axios.get(`/api/search${query}`)
         .then((resp) => {
             dispatch(setSearch(resp.data));

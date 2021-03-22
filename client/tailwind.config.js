@@ -17,7 +17,13 @@ module.exports = {
         seagreen: '#16c79a',
         darkblue: '#19456b',
         lighterblue: '#11698e',
-        coolwhite: '#f1f2f3'
+        modalunderlay: 'rgba(0,0,0,0.4)',
+        darksand: '#b68973',
+        wine: '#835858',
+        diarrheagreen: '#799351',
+        tangerine: '#f9813a',
+        junglegreen: '#81b214',
+        skyblue: '#1cb3c8'
       }
     },
   },
