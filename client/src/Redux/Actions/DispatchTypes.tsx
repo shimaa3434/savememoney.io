@@ -11,7 +11,18 @@ import {
     SET_LOGIN_USEROREMAIL,
     SET_USER_LOGGED_IN,
     SET_LOGIN_MESSAGE,
-    SET_USER_ATTEMPTED_AUTH
+    SET_USER_ATTEMPTED_AUTH,
+    SET_REGISTER_PASSWORD,
+    SET_REGISTER_EMAIL,
+    SET_REGISTER_LOADING,
+    SET_REGISTER_RESPONSE_MESSAGE,
+    SET_REGISTER_NAME,
+    SET_REGISTER_USERNAME,
+    SET_PROFILE_USERNAME,
+    SET_PROFILE_BIO,
+    SET_PROFILE_NAMEHEAD,
+    SET_PROFILE_DATA,
+    SET_PROFILE_LOADING
 } from '../types';
 
 // GENERAL & REUSABLE
@@ -80,4 +91,51 @@ export const dispatchLoggedIn = (status: boolean) => {
 
 export const dispatchUserAttemptedAuth = () => {
     return {type: SET_USER_ATTEMPTED_AUTH, payload: true};
+}
+
+
+// register reducer  and component
+
+
+export const dispatchRegisterPassword = (password:string) => {
+    return {type: SET_REGISTER_PASSWORD, payload: password};
+};
+
+export const dispatchRegisterEmail = (email:string) => {
+    return {type: SET_REGISTER_EMAIL, payload: email};
+};
+
+export const dispatchRegisterName = (name:string) => {
+    return {type: SET_REGISTER_NAME, payload: name};
+};
+
+export const dispatchRegisterUsername = (username:string) => {
+    return {type: SET_REGISTER_USERNAME, payload: username};
+};
+
+export const dispatchRegisterLoading = (type:boolean) => {
+    return {type: SET_REGISTER_LOADING, payload: type}
+}
+
+export const dispatchRegisterMessage = (response:{message: string, err?: any} | null) => {
+    return {type: SET_REGISTER_RESPONSE_MESSAGE, payload: response}
+}
+
+
+// for profile reducer
+
+export const dispatchProfileUsername = (username:string) => {
+    return {type: SET_PROFILE_USERNAME, payload: username}
+}
+export const dispatchProfileBio = (bio:string) => {
+    return {type: SET_PROFILE_BIO, payload: bio}
+}
+export const dispatchProfileNamehead = (namehead:string) => {
+    return {type: SET_PROFILE_NAMEHEAD, payload: namehead}
+}
+export const dispatchProfileData = (data:any) => {
+    return {type: SET_PROFILE_DATA, payload: data}
+}
+export const dispatchProfileLoading = (status:boolean) => {
+    return {type: SET_PROFILE_LOADING, payload: status}
 }

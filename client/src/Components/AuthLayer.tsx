@@ -10,6 +10,8 @@ import { connect } from 'react-redux';
 import { CheckUserAuth } from '../Redux/Actions/UserActions';
 import PrivateRoute from './PrivateRoute';
 import Settings from './Settings';
+import Register from './Register';
+import Profile from './Profile';
 
 class AuthLayer extends Component<authLayerProps> {
 
@@ -35,6 +37,8 @@ class AuthLayer extends Component<authLayerProps> {
                     <Route exact path='/categories/:category' component={Category} />
                     <Route exact path='/' component={Home} />
                     <Route exact path='/login' component={Login} />
+                    <Route exact path='/register' component={Register} />
+                    <Route exact path='/users/:username' component={Profile} />
                     <PrivateRoute exact={true} path='/settings' component={Settings} LOGGEDIN={LOGGEDIN} />
                 </Switch>
             </div>

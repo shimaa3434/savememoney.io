@@ -8,7 +8,7 @@ const Modal:React.FC<modalPropsInt> = ({children, underlayclassName, modalclassN
     return (
         <div className='flex flex-col items-center justify-center fixed top-0 left-0 right-0 bottom-0 z-10 w-screen h-screen'>
             <div className={`${underlayclassName}`} onClick={() => {
-                if (toggleStatus && closeOnUnderlayClick) toggleModal(false);
+                if (toggleStatus && closeOnUnderlayClick) {toggleModal(false); document.body.style.overflowY='unset';}
             }}>
             </div>
 

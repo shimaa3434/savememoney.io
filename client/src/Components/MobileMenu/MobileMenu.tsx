@@ -47,6 +47,15 @@ const MobileMenu:React.FC<MobileMenuProps> = ({setShowMenu, showMenu, LOGGEDIN, 
                         LOG IN
                     </Link>
                     }
+                    {!LOGGEDIN &&
+
+                    <Link to='/register' className='py-4 w-full text-center no-underline text-white  border-b-2 border-white border-opacity-25 text-2xl' onClick={() => {
+                            setShowMenu(false);
+                            document.body.style.overflowY='unset';
+                        }}>
+                        SIGN UP
+                    </Link>
+                    }
                     {
                         LOGGEDIN && 
                             <Link to='/settings' className='py-4 w-full text-center no-underline text-white  border-b-2 border-white border-opacity-25 text-2xl' onClick={() => {

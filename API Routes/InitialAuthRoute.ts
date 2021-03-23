@@ -7,6 +7,7 @@ Router.post('/auth', (request:any, response:any) => {
     if (Cookies) {
         const AuthenticationToken = Cookies.split(/=/gi)[0] === 'JWT' && Cookies.split(/=/gi)[1];
         const TokenDecoded = JWT.verify(AuthenticationToken, 'f2b271e88196e68685f5a897da0ee715');
+        console.log(TokenDecoded);
         if (TokenDecoded && TokenDecoded !== 'invalid signature') {
             response.sendStatus(210);
         }

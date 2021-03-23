@@ -6,7 +6,7 @@ interface CreateUserBody {
     username: string,
     email: string,
     password: string,
-    isadmin: number,
+    isadmin?: number,
     namehead: string
 };
 
@@ -48,6 +48,7 @@ class User {
 
     create = (request:any, response:any) => {
         const requestBody:CreateUserBody = request.body;
+        console.log(requestBody);
         SQL.query(this.CheckUserExistenceQuery, [
 
             requestBody.email, requestBody.username
@@ -72,7 +73,7 @@ class User {
                         if (!err) {
                             const Token = JWT.sign({ username: requestBody.username, email: requestBody.email, isadmin: 0}, 'f2b271e88196e68685f5a897da0ee715', { expiresIn: '24h' });
                             response.cookie('JWT', Token, {maxAge: 86400000, httpOnly: true});
-                            response.status(200).send({message: 'The user has been created.'});
+                            response.status(210).send({message: 'The user has been created.'});
                         };
                     });
                 };
@@ -91,31 +92,18 @@ class User {
             requestBody.useroremail, requestBody.useroremail
 
         ], async (err:any, results:any) => {
-<<<<<<< HEAD
             if (err)  {response.send({message: 'There is an error logging in.', err: err})};
             if (!err) {
                 if (results.length === 0) {response.send({message: 'This is not a valid username/email and password combination.'})};
-=======
-            if (err)  {response.status(400).send({message: 'There is an error logging in.', err: err})};
-            if (!err) {
-                if (results.length === 0) {response.status(400).send({message: 'This is not a valid username/email and password combination.'})};
->>>>>>> 15fac69f271089dfcdc4134ba46818c242739ddf
                 if (results.length === 1) {
                     const ComparePassword = await BCrypt.compare(requestBody.password, results[0].hashedpassword);
 
                     if (ComparePassword) {
                         const Token = JWT.sign({email: results[0].email, username: results[0].username, isadmin: results[0].isadmin}, 'f2b271e88196e68685f5a897da0ee715', {expiresIn: '24h'});
                         response.cookie('JWT', Token, {maxAge: 86400000, httpOnly: true});
-<<<<<<< HEAD
-                        response.send({message: 'You are being logged in.'});
                         response.sendStatus(210);
                     } else {
                         response.send({message: 'This is not a valid username/email and password combination.'});
-=======
-                        response.status(200).send({message: 'You are being logged in.'});
-                    } else {
-                        response.status(400).send({message: 'This is not a valid username/email and password combination.'});
->>>>>>> 15fac69f271089dfcdc4134ba46818c242739ddf
                     };
                 };
             };
