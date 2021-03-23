@@ -1,7 +1,6 @@
-var SQL = require('../../DBConnection');
+var SQL = require('../DBConnection');
 var Express = require('express');
 var Router = Express.Router();
-var Posts = require('./PostsAction');
 
 // ESSENTIAL QUERIES
 
@@ -12,6 +11,9 @@ Router.get('/', (req:any, res:any) => {
         if (err)  console.log(err);
         if (!err) res.send(results);
     })
-})
+});
+
+
+
 
 module.exports = Router;

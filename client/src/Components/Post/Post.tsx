@@ -35,7 +35,7 @@ const Post:React.FC<PostPropsInt> = ({postid, title, category, image, url, urldo
     return (
         <div className='flex flex-col w-screen items-center my-4 py-4 border lg:w-1/4'>
             {
-            image === 'false' ? 
+            image === 'false' || image === '0' ? 
             <a className='flex flex-col items-center w-1/2 h-36 rounded' href={url}>
                 <img className='object-contain rounded h-full' src={HyperLinkChainIcon} alt={`NO IMAGE --- ${title} on domain ${urldomain}`}/>
             </a>

@@ -2,8 +2,11 @@ import MobileMenuIcon from '../../../Media/Images/MobileMenuIcon.svg';
 import MobileMenu from '../../MobileMenu/MobileMenu';
 import {Link} from 'react-router-dom';
 import {useState} from 'react';
+import { connect } from 'react-redux';
+import { LogoutUser } from '../../../Redux/Actions/UserActions';
 
-const Header = () => {
+
+const Header:React.FC<{LOGGEDIN:boolean, LogoutUser:Function}> = ({LogoutUser, LOGGEDIN}) => {
 
     const [showMenu, setShowMenu] = useState<boolean>(false);
 
@@ -28,10 +31,22 @@ const Header = () => {
                         <li>CATEGORIES</li>
                     </Link>
                 </ul>
-                {showMenu && <MobileMenu setShowMenu={setShowMenu} showMenu={showMenu} />}
+                {showMenu && <MobileMenu setShowMenu={setShowMenu} showMenu={showMenu} LOGGEDIN={LOGGEDIN} LogoutUser={LogoutUser} />}
             </div>
         </>
     );
 }
 
-export default Header;
+const mapStateToProps = (store:any) => {
+    const { UserState } = store;
+    const { LOGGEDIN } = UserState;
+    return {LOGGEDIN}
+}
+
+const mapDispatchToProps = (dispatch:Function) => {
+    return {
+        LogoutUser: () => {dispatch(LogoutUser())}
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

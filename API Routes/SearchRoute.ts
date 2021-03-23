@@ -1,7 +1,7 @@
 var Express = require('express');
 var Router = Express.Router();
-var SQL = require('../../DBConnection');
-var ParameterValidation = require('../Validation Middleware/Validation');
+var SQL = require('../DBConnection');
+var ParameterValidation = require('./Middleware/Validation');
 var {
     CategoryValidator,
     PriceRangeValidator,

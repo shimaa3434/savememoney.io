@@ -55,8 +55,8 @@
     "@types/react-select": "^4.0.13",
     "autoprefixer": "^9.8.6",
     "postcss": "^7.0.35",
-    "redux-devtools-extension": "^2.13.8",
+    "redux-devtools-extension": "^2.13.9",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3"
   },
-  "proxy": "http://localhost:6000"
+  "proxy": "http://localhost:6001"
 }

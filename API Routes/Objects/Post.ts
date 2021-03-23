@@ -40,7 +40,7 @@ class Post {
     VerifyUserQuery = 'SELECT email FROM users WHERE email = ? AND username = ? ;';
     DeletePostQuery = 'DELETE FROM posts WHERE title = ? AND username = ? ;';
     GetUserPostsQuery = 'SELECT * FROM posts WHERE user_name = ? ;';
-    InsertNewSourcePostsQuery = 'INSERT IGNORE INTO posts(postid, title, category, image, image, url, urldomain, tstamp, price) VALUES(?, ?, ?, ?, ?, ?, ?, ?);'; 
+    InsertNewSourcePostsQuery = 'INSERT IGNORE INTO posts(postid, title, category, image, url, urldomain, tstamp, price) VALUES(?, ?, ?, ?, ?, ?, ?, ?);'; 
 
     create = (request:any, response:any) => {
 

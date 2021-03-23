@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom';
 import React from 'react';
 import Modal from '../Modal/Modal';
 
-const MobileMenu:React.FC<MobileMenuProps> = ({setShowMenu, showMenu}) => {
+const MobileMenu:React.FC<MobileMenuProps> = ({setShowMenu, showMenu, LOGGEDIN, LogoutUser}) => {
     return (
 
 
@@ -28,6 +28,34 @@ const MobileMenu:React.FC<MobileMenuProps> = ({setShowMenu, showMenu}) => {
                     }}>
                         SEARCH
                     </Link>
+                    {LOGGEDIN ? 
+
+                    <Link to='/' className='py-4 w-full text-center no-underline text-white  border-b-2 border-white border-opacity-25 text-2xl' onClick={() => {
+                            LogoutUser();
+                            setShowMenu(false);
+                            document.body.style.overflowY='unset';
+                        }}>
+                        LOG OUT
+                    </Link>
+
+                    :
+
+                    <Link to='/login' className='py-4 w-full text-center no-underline text-white  border-b-2 border-white border-opacity-25 text-2xl' onClick={() => {
+                            setShowMenu(false);
+                            document.body.style.overflowY='unset';
+                        }}>
+                        LOG IN
+                    </Link>
+                    }
+                    {
+                        LOGGEDIN && 
+                            <Link to='/settings' className='py-4 w-full text-center no-underline text-white  border-b-2 border-white border-opacity-25 text-2xl' onClick={() => {
+                                setShowMenu(false);
+                                document.body.style.overflowY='unset';
+                            }}>
+                                SETTINGS
+                            </Link>
+                    }
                 </ul>
         </Modal>
     );

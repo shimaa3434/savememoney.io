@@ -6,7 +6,12 @@ import {
     GET_SEARCH,
     SET_SEARCH_INPUT,
     SET_SEARCH_CATEGORY,
-    SET_SEARCH_PRICERANGE
+    SET_SEARCH_PRICERANGE,
+    SET_LOGIN_PASSWORD,
+    SET_LOGIN_USEROREMAIL,
+    SET_USER_LOGGED_IN,
+    SET_LOGIN_MESSAGE,
+    SET_USER_ATTEMPTED_AUTH
 } from '../types';
 
 // GENERAL & REUSABLE
@@ -48,4 +53,31 @@ export const SearchCategory:Function = (category:string) => {
 }
 export const SearchPriceRange:Function = (range:Array<number>) => {
     return {type:SET_SEARCH_PRICERANGE, payload: range}
+}
+
+
+// FOR LOGIN COMPOENNET ACTIONS
+
+
+export const dispatchLoginPassword = (PASSWORD: string) => {
+    return {type: SET_LOGIN_PASSWORD, payload: PASSWORD}
+}
+
+export const dispatchLoginUserOrEmail = (USEROREMAIL: string) => {
+    return {type: SET_LOGIN_USEROREMAIL, payload: USEROREMAIL}
+}
+
+export const dispatchLoginMessage = (MESSAGE:{message: string, err?: any} | null) => {
+    return {type: SET_LOGIN_MESSAGE, payload: MESSAGE}
+}
+
+// FOR USER REDUCER AND LOGIN COMPONENTS.
+
+
+export const dispatchLoggedIn = (status: boolean) => {
+    return {type: SET_USER_LOGGED_IN, payload: status}
+}
+
+export const dispatchUserAttemptedAuth = () => {
+    return {type: SET_USER_ATTEMPTED_AUTH, payload: true};
 }

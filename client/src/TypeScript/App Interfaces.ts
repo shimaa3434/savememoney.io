@@ -1,6 +1,32 @@
 import { ReactNode } from 'react';
 import {searchParameter} from './App Types';
 
+// for login component props
+
+export interface loginProps {
+    setLoginUserOrEmail: Function,
+    setLoginPassword: Function,
+    LoginUser: Function,
+    USEROREMAIL: string,
+    PASSWORD: string,
+    MESSAGE: {message: string, err?: any} | null
+}
+
+//for reducer action interfeace
+
+
+export interface ActionInt {
+    type: string,
+    payload:any
+}
+
+// FOR USE IN LOGINREDUCER
+
+export interface loginReducer {
+    USEROREMAIL: string,
+    PASSWORD: string,
+    MESSAGE: {message: string, err?: any} | null
+}
 
 // FOR USE IN MODAL.TSX
 
@@ -35,7 +61,9 @@ export interface CategoryPropsInt {
 
 export interface MobileMenuProps {
     setShowMenu: Function,
-    showMenu: boolean
+    showMenu: boolean,
+    LOGGEDIN: boolean,
+    LogoutUser: Function
 };
 
 // FOR USE IN THE POSTS.TSX FOR PROPS
@@ -81,3 +109,20 @@ export interface RoutesInt {
     component: any,
     props?: any
 };
+
+// for authlayer
+
+
+export interface authLayerProps {
+    
+    CheckUserAuth: Function,
+    ATTEMPTEDAUTH: boolean,
+    LOGGEDIN: boolean
+}
+
+// FOR USER REDUCER
+
+export interface UserReducerInt {
+    LOGGEDIN: boolean,
+    ATTEMPTEDAUTH: boolean
+}
