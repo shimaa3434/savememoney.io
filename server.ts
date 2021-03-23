@@ -1,9 +1,9 @@
 
-const CategoryRoute = require('./API Routes/CategoryRoutes/CategoryRoute');
-const SearchRoute = require('./API Routes/SearchRoute/SearchRoute');
+const CategoryRoute = require('./API Routes/CategoryRoute');
+const SearchRoute = require('./API Routes/SearchRoute');
 import PostClass from './API Routes/Objects/Post'
 var Post = new PostClass();
-const PostsRoute = require('./API Routes/PostsRoute/PostsRoute');
+const PostsRoute = require('./API Routes/PostsRoute');
 const Cron = require('node-cron');
 var Express = require('express');
 const AWS = require('aws-sdk');

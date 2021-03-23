@@ -10,15 +10,18 @@ interface createBody {
     urldomain: string,
     tstamp: Date,
     price: number | string,
-    email: string
+    email: string,
+    username: string
 }
 
 interface deleteBody {
     email: string,
+    username: string,
     title: string
 }
 
 interface getuserpostsBody {
+    username: string,
     email: string
 }
 
@@ -34,9 +37,9 @@ class Post {
     }
 
     AddPostQuery = 'INSERT INTO posts(title, category, image, url, urldomain, tstamp, price, email) VALUES(?, ?, ?, ?, ?, ?, ?, ?);';
-    VerifyUserQuery = 'SELECT email FROM users WHERE email = ? ;';
-    DeletePostQuery = 'DELETE FROM posts WHERE title = ? AND email = ? ;';
-    GetUserPostsQuery = 'SELECT * FROM posts WHERE email = ? ;';
+    VerifyUserQuery = 'SELECT email FROM users WHERE email = ? AND username = ? ;';
+    DeletePostQuery = 'DELETE FROM posts WHERE title = ? AND username = ? ;';
+    GetUserPostsQuery = 'SELECT * FROM posts WHERE user_name = ? ;';
     InsertNewSourcePostsQuery = 'INSERT IGNORE INTO posts(postid, title, category, image, image, url, urldomain, tstamp, price) VALUES(?, ?, ?, ?, ?, ?, ?, ?);'; 
 
     create = (request:any, response:any) => {
@@ -45,7 +48,7 @@ class Post {
 
         SQL.query(this.VerifyUserQuery, [
             
-            requestBody.email
+            requestBody.email, requestBody.username
 
         ], (err:any, results:any) => {
             if (err) response.send({message: 'There has been an error.'})
@@ -70,7 +73,7 @@ class Post {
 
         SQL.query(this.DeletePostQuery, [
 
-            requestBody.email, requestBody.title
+            requestBody.title, requestBody.username
 
         ], (err:any, results:any) => {
             if (err) response.send({message: 'There has been an error.'})
@@ -84,7 +87,7 @@ class Post {
 
         SQL.query(this.GetUserPostsQuery, [
 
-            requestBody.email
+            requestBody.username
 
         ], (err:any, results:any) => {
             if (err) response.send({message: 'There has been an error.'});
