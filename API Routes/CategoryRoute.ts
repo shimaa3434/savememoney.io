@@ -1,7 +1,7 @@
-var SQL = require('../../DBConnection');
+var SQL = require('../DBConnection');
 var Express = require('express');
 var Router = Express.Router();
-var ParameterValidation = require('../Validation Middleware/Validation');
+var ParameterValidation = require('./Middleware/Validation');
 var {CategoryValidator} = ParameterValidation;
 // GET ROUTE FOR CATEGORY PARAMETER
 Router.get('/:category', (req:any, res:any) => {

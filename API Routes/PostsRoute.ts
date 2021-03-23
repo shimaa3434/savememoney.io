@@ -1,7 +1,6 @@
-var SQL = require('../../DBConnection');
+var SQL = require('../DBConnection');
 var Express = require('express');
 var Router = Express.Router();
-var Posts = require('./PostsAction');
 
 // ESSENTIAL QUERIES
 

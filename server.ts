@@ -4,6 +4,7 @@ const SearchRoute = require('./API Routes/SearchRoute');
 import PostClass from './API Routes/Objects/Post'
 var Post = new PostClass();
 const PostsRoute = require('./API Routes/PostsRoute');
+const UsersRoute = require('./API Routes/UserRoute');
 const Cron = require('node-cron');
 var Express = require('express');
 const AWS = require('aws-sdk');
@@ -15,6 +16,7 @@ App.use(Express.urlencoded({extended: true}));
 App.use('/api/posts', PostsRoute);
 App.use('/api/categories', CategoryRoute);
 App.use('/api/search', SearchRoute);
+App.use('/api/users', UsersRoute);
 
 Cron.schedule('*/59 * * * *', () => {
     Post.getNewPosts();
