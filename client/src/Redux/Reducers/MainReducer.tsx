@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux';
 import CategoryReducer from './CategoryReducer';
+import CreatePostReducer from './CreatePostReducer';
 import LoginReducer from './LoginReducer';
 import postsReducer from './PostsReducer'
 import ProfileReducer from './ProfileReducer';
@@ -14,7 +15,8 @@ const mainReducer = combineReducers({
     LoginState: LoginReducer,
     UserState: UserReducer,
     RegisterState: RegisterReducer,
-    ProfileState: ProfileReducer
+    ProfileState: ProfileReducer,
+    CreatePostState: CreatePostReducer
 })
 
 export default mainReducer;

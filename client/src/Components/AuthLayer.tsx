@@ -13,6 +13,7 @@ import Settings from './Settings';
 import Register from './Register';
 import Profile from './Profile';
 import Categories from './Categories';
+import CreatePost from './CreatePost';
 
 class AuthLayer extends Component<authLayerProps> {
 
@@ -38,10 +39,12 @@ class AuthLayer extends Component<authLayerProps> {
                     <Route exact path='/categories/:category' component={Category} />
                     <Route exact path='/categories' component={Categories} />
                     <Route exact path='/' component={Home} />
-                    <Route exact path='/login' component={Login} />
-                    <Route exact path='/register' component={Register} />
+
                     <Route exact path='/users/:username' component={Profile} />
                     <PrivateRoute exact={true} path='/settings' component={Settings} condition={LOGGEDIN && LOGGEDIN} />
+                    <PrivateRoute exact={true} path='/register' component={Login} condition={LOGGEDIN && !LOGGEDIN} />
+                    <PrivateRoute exact={true} path='/login' component={Register} condition={LOGGEDIN && !LOGGEDIN} />
+                    <PrivateRoute exact={true} path='/createpost' component={CreatePost} condition={LOGGEDIN && LOGGEDIN} />
                 </Switch>
             </div>
             }

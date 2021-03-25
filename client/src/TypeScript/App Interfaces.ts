@@ -1,6 +1,29 @@
 import { ReactNode } from 'react';
 import {searchParameter} from './App Types';
 
+
+// for createpost compoenent
+
+export interface createPostReducer {
+    CATEGORY: string,
+    URL: string,
+    PRICE: string,
+    LOADING: boolean,
+    MESSAGE: {message: string, err: any} | null
+}
+
+export interface createpostProps {
+    CATEGORY: string,
+    URL: string,
+    PRICE: string,
+    CreateAPost: Function,
+    setURL: Function,
+    setCategory: Function,
+    setPrice: Function,
+    LOADING: boolean,
+    MESSAGE: {message: string, err: any} | null
+}
+
 // for login component props
 
 export interface loginProps {

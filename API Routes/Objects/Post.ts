@@ -1,6 +1,7 @@
 const Axios = require("axios");
-
+const Cheerio = require('cheerio');
 var SQL = require('../../DBConnection');
+var Request = require('request');
 
 interface createBody {
     title: string,
@@ -189,8 +190,77 @@ class Post {
         // Example of the split. ["https:", "", "www.newegg.com", "amd-ryzen-7-3700x", "p", "N82E16819113567?Item=N82E16819113567"]
         // The domain will always be the third result.
         if (WWWTest) {return UncleanDomain.split(/www\./gi)[1]}
-        if (!WWWTest) return {UncleanDomain[0]}
+        if (!WWWTest) {return UncleanDomain[0]}
 
+    }
+
+    getProductTitleAndImage = (url:string) => {
+        return Request(url, (err, response, html) => {
+            if (err) console.log(err);
+            if (!err) {
+                const $Cheerio = Cheerio.load(html);
+                const NeweggTest = /newegg\.com/g.test(url);
+                const MonopriceTest = /monoprice\.com/g.test(url);
+                const CyberpowerPCTest = /cyberpowerpc\.com/g.test(url);
+                const DellTest = /dell\.com/g.test(url);
+                const LenovoTest = /lenovo\.com/gi.test(url);
+                const TargetTest = /target\.com/gi.test(url);
+                const EbayTest = /ebay\.com/gi.test(url)
+                const MicrocenterTest = /microcenter\.com/gi.test(url)
+                const JBLTest = /jbl\.com/gi.test(url)
+                const ZotacStoreTest = /zotacstore\.com/gi.test(url)
+                const WalmartTest = /walmart\.com/gi.test(url);
+                
+                if (NeweggTest) {
+                    return {
+                        image: $Cheerio('.product-view-img-original').attr('src'),
+                        title: $Cheerio('.product-title').text()
+                    }
+                    
+                } else if (MonopriceTest) {
+                    return {
+                        image: $Cheerio('.img-responsive').attr('src'),
+                        title: $Cheerio('.product-name').text()
+                    }
+                } else if (CyberpowerPCTest) {
+                    const BaseURL = 'https://www.cyberpowerpc.com/'
+                    return {
+                        image: `${BaseURL}${$Cheerio('#showbigimg').attr('src')}`,
+                        title: $Cheerio('.conf-sys-name').text()
+                    }
+                } else if (DellTest) {
+                    return {
+                        image: `${'https:'}${$Cheerio('#mgal-img-1').children().first().attr('src')}`,
+                        title: $Cheerio('.pg-title').children().first().children().first().text()
+                    }
+                } else if (LenovoTest) {
+                    return {
+                        title: $Cheerio('.desktopHeader').text(),
+                        image: $Cheerio('.hero-pc-img').children().first().attr('src')
+                    }
+                } else if (TargetTest) {
+                    return {
+                        title: $Cheerio('[itemprop=name]').children().first().text(),
+                        image: $Cheerio('.slideDeckPicture').children().first().children().first().children().first().children().first().attr('src')
+                    }
+                } else if (EbayTest) {
+                    return {
+                        title: $Cheerio('#itemTitle').text().split(/Details about  /gi)[1],
+                        image: $Cheerio('[itemprop=image]').attr('src')
+                    }
+                } else if (MicrocenterTest) {
+                    return {
+                        title: $Cheerio('#details').children('h1').children('span').children('span').text(),
+                        image: $Cheerio('.productImageZoom').attr('src')
+                    }
+                } else if (JBLTest) {
+                    return {
+                        title: $Cheerio('[itemprop=name]').text(),
+                        image: $Cheerio('[itemprop=image]').attr('src')
+                    }
+                }
+            }
+        })
     }
 
     
