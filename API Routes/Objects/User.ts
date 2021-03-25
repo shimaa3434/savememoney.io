@@ -92,6 +92,7 @@ class User {
             requestBody.useroremail, requestBody.useroremail
 
         ], async (err:any, results:any) => {
+
             if (err)  {response.send({message: 'There is an error logging in.', err: err})};
             if (!err) {
                 if (results.length === 0) {response.send({message: 'This is not a valid username/email and password combination.'})};
@@ -101,9 +102,11 @@ class User {
                     if (ComparePassword) {
                         const Token = JWT.sign({email: results[0].email, username: results[0].username, isadmin: results[0].isadmin}, 'f2b271e88196e68685f5a897da0ee715', {expiresIn: '24h'});
                         response.cookie('JWT', Token, {maxAge: 86400000, httpOnly: true});
+
                         response.sendStatus(210);
                     } else {
                         response.send({message: 'This is not a valid username/email and password combination.'});
+
                     };
                 };
             };

@@ -3,7 +3,7 @@ import {getCategory} from '../../Redux/Actions/CategoryActions'
 import {categoryParameter} from '../../TypeScript/App Types'
 import {Component} from 'react'
 import {connect} from 'react-redux';
-import Post from '../Post/Post';
+import Post from '../Post/PostCard';
 
 class Category extends Component<CategoryPropsInt> {
 

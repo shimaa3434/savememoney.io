@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import { PostPropsInt } from '../TypeScript/App Interfaces'
-import Post from './Post/Post';
+import Post from './Post/PostCard';
 import {connect} from 'react-redux'
 import { GetProfile } from '../Redux/Actions/ProfileActions';
 
