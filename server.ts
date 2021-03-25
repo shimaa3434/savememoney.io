@@ -5,7 +5,9 @@ import PostClass from './API Routes/Objects/Post'
 var Post = new PostClass();
 const PostsRoute = require('./API Routes/PostsRoute');
 const UsersRoute = require('./API Routes/UserRoute');
+
 const InitialAuthRoute = require('./API Routes/InitialAuthRoute');
+
 const Cron = require('node-cron');
 const cors = require('cors');
 var Express = require('express');
@@ -20,6 +22,7 @@ App.use('/api/posts', PostsRoute);
 App.use('/api/categories', CategoryRoute);
 App.use('/api/search', SearchRoute);
 App.use('/api/users', UsersRoute);
+
 App.use('/api', InitialAuthRoute);
 
 Cron.schedule('*/59 * * * *', () => {

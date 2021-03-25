@@ -7,7 +7,6 @@ interface createBody {
     category: string,
     image: string | null,
     url: string,
-    urldomain: string,
     tstamp: Date,
     price: number | string,
     email: string,
@@ -34,9 +33,10 @@ class Post {
         this.cleanThumbnails = this.cleanThumbnails.bind(this);
         this.cleanCategory = this.cleanCategory.bind(this);
         this.findPrice = this.findPrice.bind(this);
+        this.getURLDomain = this.getURLDomain.bind(this);
     }
 
-    AddPostQuery = 'INSERT INTO posts(title, category, image, url, urldomain, tstamp, price, email) VALUES(?, ?, ?, ?, ?, ?, ?, ?);';
+    AddPostQuery = 'INSERT INTO posts(title, category, image, url, urldomain, tstamp, price) VALUES(?, ?, ?, ?, ?, ?, ?);';
     VerifyUserQuery = 'SELECT email FROM users WHERE email = ? AND username = ? ;';
     DeletePostQuery = 'DELETE FROM posts WHERE title = ? AND username = ? ;';
     GetUserPostsQuery = 'SELECT * FROM posts WHERE user_name = ? ;';
@@ -54,15 +54,21 @@ class Post {
             if (err) response.send({message: 'There has been an error.'})
             if (!err) {
                 if (results.length === 0) response.send({message: 'You are not a valid user.'});
-                if (results.length === 1) SQL.query(this.AddPostQuery, [
 
-                    requestBody.title, requestBody.category, requestBody.image, requestBody.url,
-                    requestBody.urldomain, requestBody.tstamp, requestBody.price, requestBody.email
+                if (results.length === 1) {
 
-                ], (err:any, results:any) => {
-                    if (err) response.send({message: 'There has been an error.'})
-                    if (!err) response.send({message: 'Your post has been posted!'})
-                });
+
+
+                    SQL.query(this.AddPostQuery, [
+                        
+                        requestBody.title, requestBody.category, requestBody.image, requestBody.url,
+                        this.getURLDomain(requestBody.url), Date.now(), requestBody.price
+                        
+                    ], (err:any, results:any) => {
+                        if (err) response.send({message: 'There has been an error.'});
+                        if (!err) response.send({message: 'Your post has been posted!'});
+                    });
+                }
             }
         })
     }
@@ -117,7 +123,7 @@ class Post {
                 ], (err:any, results:any) => {
                     if (err) console.log(err);
                     if (!err) console.log(`Post #${count++} data entered into the Database.`);
-                })
+                });
 
             });
         });
@@ -177,8 +183,17 @@ class Post {
             return 'CHECK TITLE'
     }
 
+    getURLDomain = (url:string) => {
+        const UncleanDomain = url.split(/\//gi)[2];
+        const WWWTest = (/www\./g).test(UncleanDomain);
+        // Example of the split. ["https:", "", "www.newegg.com", "amd-ryzen-7-3700x", "p", "N82E16819113567?Item=N82E16819113567"]
+        // The domain will always be the third result.
+        if (WWWTest) {return UncleanDomain.split(/www\./gi)[1]}
+        if (!WWWTest) return {UncleanDomain[0]}
+
+    }
+
     
 };
-
 
 export default Post;

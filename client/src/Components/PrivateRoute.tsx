@@ -1,9 +1,9 @@
 import React from 'react'
 import { Route, Redirect } from 'react-router-dom';
 
-const PrivateRoute:React.FC<{component:React.FC, path: any, exact: boolean, LOGGEDIN: boolean}> = ({component, path, exact, LOGGEDIN}) => {
+const PrivateRoute:React.FC<{component:React.FC, path: any, exact: boolean, condition:boolean, match?:any}> = ({component, path, exact, condition, match:any}) => {
     
-    return LOGGEDIN ? (<Route path={path} exact={exact} component={component} />)
+    return condition ? (<Route path={path} exact={exact} component={component} />)
     :
     (<Redirect to='/login' />)
 }

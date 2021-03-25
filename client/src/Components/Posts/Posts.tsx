@@ -2,7 +2,7 @@ import {PostPropsInt, PostsPropsInt} from '../../TypeScript/App Interfaces' // P
 import {getPosts} from '../../Redux/Actions/PostsActions'
 import React, {Component, useEffect} from 'react'
 import {connect} from 'react-redux'
-import Post from '../Post/Post'
+import Post from '../Post/PostCard'
 
 class Posts extends Component<PostsPropsInt> {
 
@@ -20,7 +20,7 @@ class Posts extends Component<PostsPropsInt> {
         return (
                 <div className=''>
                 <div className='flex flex-row w-screen'>
-                    <h1>Newest deals</h1>
+
                 </div>
                 <div className='flex flex-col md:flex-row md:flex-wrap justify-center'>
 

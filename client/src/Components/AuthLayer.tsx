@@ -12,6 +12,7 @@ import PrivateRoute from './PrivateRoute';
 import Settings from './Settings';
 import Register from './Register';
 import Profile from './Profile';
+import Categories from './Categories';
 
 class AuthLayer extends Component<authLayerProps> {
 
@@ -35,11 +36,12 @@ class AuthLayer extends Component<authLayerProps> {
                 <Switch>
                     <Route exact path='/search' component={Search} />
                     <Route exact path='/categories/:category' component={Category} />
+                    <Route exact path='/categories' component={Categories} />
                     <Route exact path='/' component={Home} />
                     <Route exact path='/login' component={Login} />
                     <Route exact path='/register' component={Register} />
                     <Route exact path='/users/:username' component={Profile} />
-                    <PrivateRoute exact={true} path='/settings' component={Settings} LOGGEDIN={LOGGEDIN} />
+                    <PrivateRoute exact={true} path='/settings' component={Settings} condition={LOGGEDIN && LOGGEDIN} />
                 </Switch>
             </div>
             }

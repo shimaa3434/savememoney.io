@@ -3,7 +3,7 @@ import {PostPropsInt, SearchPropsInt} from '../../TypeScript/App Interfaces'
 import { Component } from 'react';
 import SearchForm from './SearchForm';
 import {connect} from 'react-redux';
-import Post from '../Post/Post';
+import Post from '../Post/PostCard';
 
 class Search extends Component<SearchPropsInt> {
 

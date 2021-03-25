@@ -1,7 +1,9 @@
 var SQL = require('../DBConnection');
 var Express = require('express');
 var Router = Express.Router();
-
+import PostClass from './Objects/Post';
+const Post = new PostClass();
+var JWTMiddleware = require('./Middleware/Authentication');
 // ESSENTIAL QUERIES
 
 const getAllQuery = 'SELECT * FROM posts ORDER BY tstamp DESC';
@@ -13,6 +15,9 @@ Router.get('/', (req:any, res:any) => {
     })
 });
 
+Router.post('/create', JWTMiddleware, (request:any, response:any) => {
+    Post.create(request, response)
+})
 
 
 
