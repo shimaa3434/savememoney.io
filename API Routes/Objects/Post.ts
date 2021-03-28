@@ -2,6 +2,7 @@ const Axios = require("axios");
 const Cheerio = require('cheerio');
 var SQL = require('../../DBConnection');
 var Request = require('request');
+const Puppeteer = require('puppeteer')
 
 interface createBody {
     title: string,
@@ -194,73 +195,167 @@ class Post {
 
     }
 
-    getProductTitleAndImage = (url:string) => {
-        return Request(url, (err, response, html) => {
-            if (err) console.log(err);
-            if (!err) {
-                const $Cheerio = Cheerio.load(html);
-                const NeweggTest = /newegg\.com/g.test(url);
-                const MonopriceTest = /monoprice\.com/g.test(url);
-                const CyberpowerPCTest = /cyberpowerpc\.com/g.test(url);
-                const DellTest = /dell\.com/g.test(url);
-                const LenovoTest = /lenovo\.com/gi.test(url);
-                const TargetTest = /target\.com/gi.test(url);
-                const EbayTest = /ebay\.com/gi.test(url)
-                const MicrocenterTest = /microcenter\.com/gi.test(url)
-                const JBLTest = /jbl\.com/gi.test(url)
-                const ZotacStoreTest = /zotacstore\.com/gi.test(url)
-                const WalmartTest = /walmart\.com/gi.test(url);
+    getProductTitleAndImage = async (url:string) => {
+
+        const StaplesTest = /officedepot\.com/gi.test(url)
+        const ZotacStoreTest = /zotacstore\.com/gi.test(url);
+        const WalmartTest = /walmart\.com/gi.test(url);
+        const AmazonTest = /amazon\.com/gi.test(url);
+        const BHphotovideoTest = /bhphotovideo\.com/gi.test(url);
+        const BestbuyTest = /bestbuy\.com/gi.test(url);
+        const OfficedepotTest = /officedepot\.com/gi.test(url)
+
+
+        if (OfficedepotTest || BestbuyTest || BHphotovideoTest || StaplesTest || ZotacStoreTest || WalmartTest || AmazonTest) {
+
+            const Browser = await Puppeteer.launch({headless: false});
+            const Page = Browser.newPage();
+            await Page.goto(url)
+            if (AmazonTest) {
+                const HTML = await Page.evaluate(() => {
+                    const title = document.querySelector('#productTitle').innerHTML.trim();
+                    const image = document.querySelector('#imgTagWrapperId').children[0].getAttribute('src');
+                    return { title, image };
+                }).then((objectdata:{title:string, image:string}) => {
+                    Browser.close();
+                    return objectdata;
+                })
+                return HTML;
+
+            } else if (WalmartTest) {
+                const HTML = await Page.evaluate(() => {
+                    const title = document.querySelector('.hf-Bot').children[1].innerHTML;
+                    const image = 'https:' + document.querySelector('.hover-zoom-hero-image').getAttribute('src');
+                    return { title, image };
+                }).then((objectdata:{title:string, image:string}) => {
+                    Browser.close();
+                    return objectdata;
+                })
+                return HTML;
                 
-                if (NeweggTest) {
-                    return {
-                        image: $Cheerio('.product-view-img-original').attr('src'),
-                        title: $Cheerio('.product-title').text()
-                    }
+                
+            } else if (StaplesTest) {
+                const HTML = await Page.evaluate(() => {
+                    const title = document.querySelector('#product_title').innerHTML;
+                    const image = document.querySelector('.carousel__slider_content').children[0].children[0].getAttribute('srcset').replace(/ [0-9]x/g, '')
+                    return { title, image }
+                }).then((objectdata:{title:string, image:string}) => {
+                    Browser.close();
+                    return objectdata;
+                })
+                return HTML;
+                
+            } else if (BHphotovideoTest) {
+                const HTML = await Page.evaluate(() => {
+                    const title = document.querySelector('[data-selenium=productTitle]').innerHTML
+                    const image = document.querySelector('[data-selenium=inlineMediaMainImage]').getAttribute('src');
+                    return { title, image };
+                }).then((objectdata:{title:string, image:string}) => {
+                    Browser.close();
+                    return objectdata;
+                })
+                return HTML;
+                
+            } else if (BestbuyTest) {
+                const HTML = await Page.evaluate(() => {
+                    const title = document.querySelector('[itemprop=name]').children[0].innerHTML;
+                    const image = document.querySelector('.primary-image').getAttribute('src');
+                    return { title, image };
+                }).then((objectdata:{title:string, image:string}) => {
+                    Browser.close();
+                    return objectdata;
+                })
+                return HTML;
+            } else if (OfficedepotTest) {
+                const HTML = await Page.evaluate(() => {
+                    const title = document.querySelector<HTMLElement>('.fn').innerText.trim();
+                    const image = document.querySelector('[itemprop=image]').getAttribute('src');
+                    return { title, image };
+                }).then((objectdata:{title:string, image:string}) => {
+                    Browser.close();
+                    return objectdata;
+                })
+                return HTML;
+                
+            }
+
+        } else {
+            return await Request(url, (err, response, html) => {
+                if (err) console.log(err);
+                if (!err) {
+                    const $Cheerio = Cheerio.load(html);
+                    const NeweggTest = /newegg\.com/g.test(url);
+                    const MonopriceTest = /monoprice\.com/g.test(url);
+                    const CyberpowerPCTest = /cyberpowerpc\.com/g.test(url);
+                    const DellTest = /dell\.com/g.test(url);
+                    const LenovoTest = /lenovo\.com/gi.test(url);
+                    const TargetTest = /target\.com/gi.test(url);
+                    const EbayTest = /ebay\.com/gi.test(url)
+                    const MicrocenterTest = /microcenter\.com/gi.test(url)
+                    const JBLTest = /jbl\.com/gi.test(url)
+                    const WootTest = /woot\.com/gi.test(url)
                     
-                } else if (MonopriceTest) {
-                    return {
-                        image: $Cheerio('.img-responsive').attr('src'),
-                        title: $Cheerio('.product-name').text()
-                    }
-                } else if (CyberpowerPCTest) {
-                    const BaseURL = 'https://www.cyberpowerpc.com/'
-                    return {
-                        image: `${BaseURL}${$Cheerio('#showbigimg').attr('src')}`,
-                        title: $Cheerio('.conf-sys-name').text()
-                    }
-                } else if (DellTest) {
-                    return {
-                        image: `${'https:'}${$Cheerio('#mgal-img-1').children().first().attr('src')}`,
-                        title: $Cheerio('.pg-title').children().first().children().first().text()
-                    }
-                } else if (LenovoTest) {
-                    return {
-                        title: $Cheerio('.desktopHeader').text(),
-                        image: $Cheerio('.hero-pc-img').children().first().attr('src')
-                    }
-                } else if (TargetTest) {
-                    return {
-                        title: $Cheerio('[itemprop=name]').children().first().text(),
-                        image: $Cheerio('.slideDeckPicture').children().first().children().first().children().first().children().first().attr('src')
-                    }
-                } else if (EbayTest) {
-                    return {
-                        title: $Cheerio('#itemTitle').text().split(/Details about  /gi)[1],
-                        image: $Cheerio('[itemprop=image]').attr('src')
-                    }
-                } else if (MicrocenterTest) {
-                    return {
-                        title: $Cheerio('#details').children('h1').children('span').children('span').text(),
-                        image: $Cheerio('.productImageZoom').attr('src')
-                    }
-                } else if (JBLTest) {
-                    return {
-                        title: $Cheerio('[itemprop=name]').text(),
-                        image: $Cheerio('[itemprop=image]').attr('src')
+                    if (NeweggTest) {
+                        return {
+                            image: $Cheerio('.product-view-img-original').attr('src'),
+                            title: $Cheerio('.product-title').text()
+                        }
+                        
+                    } else if (MonopriceTest) {
+                        return {
+                            image: $Cheerio('.img-responsive').attr('src'),
+                            title: $Cheerio('.product-name').text()
+                        }
+                    } else if (CyberpowerPCTest) {
+                        const BaseURL = 'https://www.cyberpowerpc.com/'
+                        return {
+                            image: `${BaseURL}${$Cheerio('#showbigimg').attr('src')}`,
+                            title: $Cheerio('.conf-sys-name').text()
+                        }
+                    } else if (DellTest) {
+                        return {
+                            image: `${'https:'}${$Cheerio('#mgal-img-1').children().first().attr('src')}`,
+                            title: $Cheerio('.pg-title').children().first().children().first().text()
+                        }
+                    } else if (LenovoTest) {
+                        return {
+                            title: $Cheerio('.desktopHeader').text(),
+                            image: $Cheerio('.hero-pc-img').children().first().attr('src')
+                        }
+                    } else if (TargetTest) {
+                        return {
+                            title: $Cheerio('[itemprop=name]').children().first().text(),
+                            image: $Cheerio('.slideDeckPicture').children().first().children().first().children().first().children().first().attr('src')
+                        }
+                    } else if (EbayTest) {
+                        return {
+                            title: $Cheerio('#itemTitle').text().split(/Details about  /gi)[1],
+                            image: $Cheerio('[itemprop=image]').attr('src')
+                        }
+                    } else if (MicrocenterTest) {
+                        return {
+                            title: $Cheerio('#details').children('h1').children('span').children('span').text(),
+                            image: $Cheerio('.productImageZoom').attr('src')
+                        }
+                    } else if (JBLTest) {
+                        return {
+                            title: $Cheerio('[itemprop=name]').text(),
+                            image: $Cheerio('[itemprop=image]').attr('src')
+                        }
+                    } else if (WootTest) {
+                        return {
+                            title: $Cheerio('#attribute-selector').children('header').children('h1').text(),
+                            image: $Cheerio('#gallery').children().first().children('img').attr('src')
+                        }
+                    } else if (OfficedepotTest) {
+                        return {
+                            title: $Cheerio('.section').children('h1').text().trim(),
+                            image: false // They lazy load their images.
+                        }
                     }
                 }
-            }
-        })
+            })
+        }
     }
 
 };
