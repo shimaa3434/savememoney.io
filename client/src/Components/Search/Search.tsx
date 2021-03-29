@@ -1,9 +1,9 @@
 import {GetSearch, setSearchInput, setSearchCategory, setSearchPriceRange} from '../../Redux/Actions/SearchActions'
-import {PostPropsInt, SearchPropsInt} from '../../TypeScript/App Interfaces'
+import {postcollectionProps, PostPropsInt, SearchPropsInt} from '../../TypeScript/App Interfaces'
 import { Component } from 'react';
 import SearchForm from './SearchForm';
 import {connect} from 'react-redux';
-import Post from '../Post/PostCard';
+import Post from '../PostCard/PostCard';
 
 class Search extends Component<SearchPropsInt> {
 
@@ -29,11 +29,10 @@ class Search extends Component<SearchPropsInt> {
             <div className='flex flex-col w-screen items-center'>
                 <SearchForm />
                 <div className='w-screen bg-white flex flex-col md:flex-row md:flex-wrap justify-center'>
-                    {DATA && DATA.map((post:PostPropsInt, i:number) => {
-                        const {title, category, image, url, urldomain, tstamp, price} = post;
-                        return <Post title={title} category={category} image={image}
-                        url={url} urldomain={urldomain} tstamp={tstamp} price={price}
-                        />
+                    {DATA && DATA.map(({title, category, image, url, urldomain, tstamp, price, post_id, user_name, upvotes, downvotes, id}:PostPropsInt&postcollectionProps, i:number) => {
+                    return <Post title={title} category={category} image={image} url={url} tstamp={tstamp} price={price} urldomain={urldomain}
+                    post_id={post_id} user_name={user_name} upvotes={upvotes} downvotes={downvotes} id={id}
+                    />
                     })}
                 </div>
             </div>

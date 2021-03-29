@@ -13,7 +13,7 @@ const cors = require('cors');
 var Express = require('express');
 const AWS = require('aws-sdk');
 const App = Express();
-const Port = 6001;
+const Port = 6002;
 
 App.use(Express.json());
 App.use(Express.urlencoded({extended: true}));

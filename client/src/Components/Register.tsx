@@ -11,7 +11,7 @@ const Register:React.FC<{USERNAME: string, PASSWORD:string, NAME:string, EMAIL:s
                 <input className='w-4/5 h-10 my-4 border-2 rounded pl-4 py-6 border-blue-800 md:w-1/3' value={USERNAME} placeholder='Username' onChange={(event:any) => {setUsername(event.target.value)}} />
                 <input className='w-4/5 h-10 my-4 border-2 rounded pl-4 py-6 border-blue-800 md:w-1/3' value={EMAIL} placeholder='Email' onChange={(event:any) => {setEmail(event.target.value)}} />
                 <input className='w-4/5 h-10 my-4 border-2 rounded pl-4 py-6 border-blue-800 md:w-1/3' value={PASSWORD} placeholder='Password' type='password' onChange={(event:any) => {setPassword(event.target.value)}} />
-                <button className='ring-4 ring-blue-200 text-white text-xl font-bold bg-blue-800 px-4 py-4 w-3/5 rounded-full md:w-1/5' type='submit' onClick={(event:any) => {if (PASSWORD !== '' && USERNAME !== '' && NAME !== '' && EMAIL !== '') RegisterUser(NAME, USERNAME,PASSWORD, EMAIL);}}>LOGIN</button>
+                <button className='ring-4 ring-blue-200 text-white text-xl font-bold bg-blue-800 px-4 py-4 w-3/5 rounded-full md:w-1/5' type='submit' onClick={(event:any) => {if (PASSWORD !== '' && USERNAME !== '' && NAME !== '' && EMAIL !== '') RegisterUser(NAME, USERNAME,PASSWORD, EMAIL);}}>SIGN UP</button>
                 {MESSAGE && <span>{MESSAGE.message}</span>}
             </form>
     )

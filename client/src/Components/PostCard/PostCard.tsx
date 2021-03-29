@@ -1,9 +1,29 @@
 import HyperLinkChainIcon from '../../Media/Images/noimagelink.svg'
-import {PostPropsInt} from '../../TypeScript/App Interfaces'
+import {postcollectionProps, PostPropsInt} from '../../TypeScript/App Interfaces'
 import {Link} from 'react-router-dom';
-import React from 'react'
+import React, {useEffect, useState} from 'react'
+import axios from 'axios';
 
-const Post:React.FC<PostPropsInt> = ({postid, title, category, image, url, urldomain, tstamp, price}) => {
+const Post:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, category, image, url, urldomain, tstamp, price, id,    upvotes, downvotes, post_id, user_name     }) => {
+
+    const [savedstatus, setSavedStatus] = useState<boolean>(false);
+
+    // ADD POSTS STATUS PER 
+
+    const savePost = async (id:number, post_user_name:string, ) => {
+        console.log(id)
+        await axios.post('/api/posts/save', { post_id: id, post_user_name })
+        .then(({ data: { redirecturl, err, status } }) => {
+            if (status === 210) setSavedStatus(true);
+        })
+    }
+
+    const unsavePost = async (post_id:number, post_user_name:string, ) => {
+        await axios.post('/api/posts/unsave', { post_id: id, post_user_name })
+        .then(({ data: { redirecturl, err, status } }) => {
+            if (status === 210) setSavedStatus(false);
+        })
+    }
     
     const setCategoryColor = (category:string) => {
         if (category === 'CPU') return 'bg-blue-400 text-white px-2 py-1 rounded'
@@ -52,6 +72,15 @@ const Post:React.FC<PostPropsInt> = ({postid, title, category, image, url, urldo
             <span className={`${setCategoryColor(category)} my-4 text-center`}>{category}</span>
             }
             <a href={url} className='text-sm w-3/4 text-center'>{title}</a>
+            <button className='bg-purple-500 ring-4 px-4 my-2 text-white' onClick={() => {
+                savedstatus ? unsavePost(id, user_name) : savePost(id, user_name)
+            }}>
+                {savedstatus ?
+                    'unsave'
+                    :
+                    'save'
+                }
+            </button>
         </div>
     )
 }

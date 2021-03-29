@@ -31,4 +31,10 @@ Router.get('/profile/:username', (request:any, response:any) => {
     User.profile(request, response);
 })
 
+
+
+Router.get('/savedposts', JWTAuthMiddleware, (request:any, response:any) => {
+    User.getsavedposts(request, response);
+})
+
 module.exports = Router;

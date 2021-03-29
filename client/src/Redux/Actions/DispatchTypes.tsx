@@ -22,7 +22,12 @@ import {
     SET_PROFILE_BIO,
     SET_PROFILE_NAMEHEAD,
     SET_PROFILE_DATA,
-    SET_PROFILE_LOADING
+    SET_PROFILE_LOADING,
+    SET_CREATEPOST_LOADING,
+    SET_CREATEPOST_URL,
+    SET_CREATEPOST_CATEGORY,
+    SET_CREATEPOST_PRICE,
+    SET_CREATEPOST_MESSAGE
 } from '../types';
 
 // GENERAL & REUSABLE
@@ -138,4 +143,24 @@ export const dispatchProfileData = (data:any) => {
 }
 export const dispatchProfileLoading = (status:boolean) => {
     return {type: SET_PROFILE_LOADING, payload: status}
+}
+
+
+// for createpost reducer
+
+
+export const dispatchCreatePostLoading = (status:boolean) => {
+    return {type: SET_CREATEPOST_LOADING, payload: status}
+}
+export const dispatchCreatePostURL = (URL:string) => {
+    return {type: SET_CREATEPOST_URL, payload: URL}
+}
+export const dispatchCreatePostCategory = (category:string) => {
+    return {type: SET_CREATEPOST_CATEGORY, payload: category}
+}
+export const dispatchCreatePostPrice = (price:string) => {
+    return {type: SET_CREATEPOST_PRICE, payload: price}
+}
+export const dispatchCreatePostMessage = (message:{message: string, err?: any, redirecturl: null | string}) => {
+    return {type: SET_CREATEPOST_MESSAGE, payload: message}
 }

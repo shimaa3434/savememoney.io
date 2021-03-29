@@ -2,6 +2,22 @@ import { ReactNode } from 'react';
 import {searchParameter} from './App Types';
 
 
+// saved posts
+
+// CHANGE THE | NULL PIPES. SET THE SQL QUERY FOR CREATE POSTS ON BACKEND DEFAULT UPVOTES AND DOWNVOTES TO 0, SO NUMERICAL. MAYBE COMMENTS
+
+export interface postcollectionProps {
+    post_id: number,
+    user_name: string,
+    category: string,
+    image: string,
+    upvotes: number | null,
+    downvotes: number | null,
+    tstamp: number,
+    id: number
+}
+
+
 // for createpost compoenent
 
 export interface createPostReducer {
@@ -9,7 +25,7 @@ export interface createPostReducer {
     URL: string,
     PRICE: string,
     LOADING: boolean,
-    MESSAGE: {message: string, err: any} | null
+    MESSAGE: {message: string, err?: any, redirecturl: string} | null
 }
 
 export interface createpostProps {
@@ -66,10 +82,10 @@ export interface modalPropsInt {
 // FOR USE IN CATEGORY.TSX, POSTS.TSX, POST.TSX FOR DATA VARIABLE RESPONSE SHAPE.
 
 export interface PostPropsInt {
-    postid?: string, title: string,
+    postid?: string, title?: string,
     category: string, image: string,
-    url: string, urldomain: string,
-    tstamp: number, price: string
+    url?: string, urldomain?: string,
+    tstamp: number, price?: string, id:number
 };
 
 // FOR USE IN CATEGORY.TSX FOR CONNECTED REDUX PROPS AND ROUTE PROPS
@@ -92,13 +108,13 @@ export interface MobileMenuProps {
 // FOR USE IN THE POSTS.TSX FOR PROPS
 
 export interface PostsPropsInt {
-    LOADING: boolean, POSTS: null | Array<PostPropsInt>, getPosts: Function
+    LOADING: boolean, POSTS: null | Array<PostPropsInt&postcollectionProps>, getPosts: Function
 };
 
 // FOR USE IN THE SEARCH.TSX FOR PROPS
 
 export interface SearchPropsInt {
-    DATA?: null | Array<PostPropsInt>
+    DATA?: null | Array<PostPropsInt& postcollectionProps>
     INPUT: searchParameter,
     CATEGORY: searchParameter,
     PRICERANGE: searchParameter | Array<string>,

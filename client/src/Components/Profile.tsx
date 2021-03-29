@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
-import { PostPropsInt } from '../TypeScript/App Interfaces'
-import Post from './Post/PostCard';
+import { postcollectionProps, PostPropsInt } from '../TypeScript/App Interfaces'
+import Post from './PostCard/PostCard';
 import {connect} from 'react-redux'
 import { GetProfile } from '../Redux/Actions/ProfileActions';
 
@@ -21,9 +21,10 @@ const Profile:React.FC<{match:any, DATA:any, LOADING:boolean, username:string, b
                     <span className='my-2 font-bold'>{namehead && namehead}</span>
                     <span className='my-2 text-left'>{bio && `Bio: ${bio}`}</span>
                 </div>
-                {DATA && DATA.map((post:PostPropsInt) => {
-                    const { title, category, image, url, tstamp, price, urldomain } = post;
-                    return <Post title={title} category={category} image={image} url={url} tstamp={tstamp} price={price} urldomain={urldomain} />
+                {DATA && DATA.map(({title, category, image, url, urldomain, tstamp, price, post_id, user_name, upvotes, downvotes, id}:PostPropsInt&postcollectionProps, i:number) => {
+                    return <Post title={title} category={category} image={image} url={url} tstamp={tstamp} price={price} urldomain={urldomain}
+                    post_id={post_id} user_name={user_name} upvotes={upvotes} downvotes={downvotes} id={id}
+                    />
                 })}
             </div>
         </div>

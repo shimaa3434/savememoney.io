@@ -1,8 +1,9 @@
+import { postcollectionProps, PostsPropsInt } from '../../TypeScript/App Interfaces';
 import {SET_LOADING, SET_POSTS} from '../types';
 
 interface State {
     LOADING: boolean,
-    POSTS: null | Object
+    POSTS: null | postcollectionProps&PostsPropsInt[]
 }
 
 const initialState:State = {

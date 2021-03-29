@@ -1,13 +1,28 @@
 import {GetSearch, setSearchInput, setSearchCategory, setSearchPriceRange} from '../../Redux/Actions/SearchActions';
-import {priceSelectOptions, categorySelectOptions} from './searchSelectOptions'
+import {priceSelectOptions, categorySelectOptions, GroupSelectOptions} from './searchSelectOptions'
 import {SearchPropsInt} from '../../TypeScript/App Interfaces';
 import {searchParameter} from '../../TypeScript/App Types';
 import {TextField} from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import {connect} from 'react-redux';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import React from 'react';
 import LOADINGSPINNER from '../../Media/Images/loading.svg';
+
+const groupStyles = {
+    color: 'white',
+    fontSize: '1.25em',
+    borderBottom: '1px solid grey',
+    borderTop: '1px solid grey',
+}
+
+const GroupHeading = (props:any) => {
+    return (
+        <div style={groupStyles}>
+            <components.GroupHeading {...props} />
+        </div>
+    )
+}
 
 const SearchForm:React.FC<SearchPropsInt> = ({BGCOLOR, INPUT, CATEGORY, PRICERANGE, LOADING, GetSearch, setSearchInput, setSearchCategory, setSearchPriceRange}) => {
 
@@ -31,7 +46,7 @@ const SearchForm:React.FC<SearchPropsInt> = ({BGCOLOR, INPUT, CATEGORY, PRICERAN
                     <TextField value={INPUT} onChange={(event:any) => {setSearchInput(event.target.value)}} className='w-4/5 lg:w-1/2 bg-white' label='Search for any item...' />
                 </div>
                 <div className='flex flex-row justify-center my-6'>
-                    <Select options={categorySelectOptions} placeholder='Category' className='mx-2 w-2/5 md:w-1/3 lg:w-1/6' isClearable={true} 
+                    <Select options={GroupSelectOptions} components={{ GroupHeading }} placeholder='Category' className='mx-2 w-2/5 md:w-1/3 lg:w-1/6' isClearable={true} 
                     onChange={(event:any) => {
                         if (event) {
                             setSearchCategory(event.value);

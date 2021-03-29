@@ -37,18 +37,18 @@ class User {
         this.changepassword = this.changepassword.bind(this);
         this.changename = this.changename.bind(this);
         this.profile = this.profile.bind(this);
+        this.getsavedposts = this.getsavedposts.bind(this)
     };
 
     CheckUserExistenceQuery = 'SELECT * from users WHERE email = ? OR username = ? ;';
     CreateNewUserQuery = 'INSERT INTO users(username, email, hashedpassword, namehead, isadmin) VALUES(?, ?, ?, ?, ?);';
     ChangeUserPasswordQuery = 'UPDATE users SET hashedpassword = ? WHERE username = ? AND email = ? ;';
     ChangeNameHeadQuery = 'UPDATE users SET namehead = ? WHERE username = ? AND email = ? ;';
-    UserProfileQuery = 'SELECT users.username, users.bio, users.namehead, posts.title, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain from users INNER JOIN posts ON users.id = posts.userid WHERE users.username = ? ;';
-
+    UserProfileQuery = 'SELECT users.username, users.bio, users.namehead, posts.title, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain from users INNER JOIN posts ON users.username = posts.user_name WHERE users.username = ? ;';
+    GetSavedPostsQuery = 'SELECT posts.id, posts.user_name, posts.image, posts.upvotes, posts.downvotes, posts.category, posts.tstamp FROM savedposts INNER JOIN posts ON savedposts.post_id = posts.id AND savedposts.post_user_name = posts.user_name WHERE savetousername = ? ;';
 
     create = (request:any, response:any) => {
         const requestBody:CreateUserBody = request.body;
-        console.log(requestBody);
         SQL.query(this.CheckUserExistenceQuery, [
 
             requestBody.email, requestBody.username
@@ -208,6 +208,28 @@ class User {
                     });
                 }
             }
+        })
+    }
+
+    getsavedposts = (request, response) => {
+        const { username, email } = request.body
+        SQL.query(this.CheckUserExistenceQuery, [
+
+            email, username
+
+        ], (err, results) => {
+            if (err) response.send({ message: 'There has been an error.', err: err, status: 400 });
+            if (!err) SQL.query(this.GetSavedPostsQuery, [
+
+                username
+
+            ], (err, results) => {
+                if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
+                if (!err) {
+                    if (results.length === 0) response.send({ message: 'You have no saved posts.', err: null, status: 400 })
+                    if (results.length > 0) response.send(results);
+                } 
+            })
         })
     }
 };

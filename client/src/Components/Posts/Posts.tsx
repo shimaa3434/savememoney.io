@@ -1,8 +1,8 @@
-import {PostPropsInt, PostsPropsInt} from '../../TypeScript/App Interfaces' // Post vs PostsPropsInt.
+import {postcollectionProps, PostPropsInt, PostsPropsInt} from '../../TypeScript/App Interfaces' // Post vs PostsPropsInt.
 import {getPosts} from '../../Redux/Actions/PostsActions'
 import React, {Component, useEffect} from 'react'
 import {connect} from 'react-redux'
-import Post from '../Post/PostCard'
+import Post from '../PostCard/PostCard'
 
 class Posts extends Component<PostsPropsInt> {
 
@@ -24,11 +24,13 @@ class Posts extends Component<PostsPropsInt> {
                 </div>
                 <div className='flex flex-col md:flex-row md:flex-wrap justify-center'>
 
-                {POSTS && POSTS.map((post:PostPropsInt, i:number) => {
-                    const {title, category, image, url, urldomain, tstamp, price} = post;
+                {POSTS && POSTS.map(({title, category, image, url, urldomain, tstamp, price, id, post_id, user_name, upvotes, downvotes}:PostPropsInt&postcollectionProps, i:number) => {
+
                     return <Post key={i} title={title} category={category}
                     image={image} url={url} urldomain={urldomain}
-                    tstamp={tstamp} price={price} />
+                    tstamp={tstamp} price={price}
+                    user_name={user_name} upvotes={upvotes} downvotes={downvotes} id={id} post_id={post_id}
+                    />
                 })}
                 </div>
             </div>

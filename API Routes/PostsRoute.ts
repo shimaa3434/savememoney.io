@@ -15,10 +15,23 @@ Router.get('/', (req:any, res:any) => {
     })
 });
 
+
 Router.post('/create', JWTMiddleware, (request:any, response:any) => {
     Post.create(request, response)
 })
 
+Router.post('/delete', JWTMiddleware, (request:any, response:any) => {
+    Post.delete(request, response)
+})
+
+
+Router.post('/save', JWTMiddleware, (request, response) => {
+    Post.savepost(request, response)
+})
+
+Router.post('/unsave', JWTMiddleware, (request, response) => {
+    Post.unsavepost(request, response)
+})
 
 
 module.exports = Router;
