@@ -417,7 +417,6 @@ class Post {
     savepost = (request, response) => {
 
         const { email, post_id, post_user_name, username } = request.body
-        console.log(request.body)
 
         SQL.query(this.CheckUserExistenceQuery, [
 
