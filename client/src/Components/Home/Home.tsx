@@ -1,5 +1,5 @@
 
-import Timeline from '../Posts/Timeline';
+import Timeline from '../Timeline/Timeline';
 import React from 'react'
 import Login from '../Login';
 import { connect } from 'react-redux';

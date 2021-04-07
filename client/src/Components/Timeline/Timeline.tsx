@@ -16,7 +16,7 @@ class Timeline extends Component<PostsPropsInt> {
     };
 
     state = {
-        CurrentSlice: 18
+        CurrentSlice: 10
     }
 
     dataLength = (posts:any):number => {
@@ -25,22 +25,28 @@ class Timeline extends Component<PostsPropsInt> {
 
 
     render() {
-        const { props: { POSTS   }, state: { CurrentSlice } } = this;
+        const { props: { DATA }, state: { CurrentSlice } } = this;
+
         return (
             
                 <div className='flex flex-row justify-center w-screen'>
+                    { DATA && console.log(DATA)}
                     {
-                        POSTS &&
+                        DATA &&
                             <InfiniteScroll className='flex flex-col items-center w-screen lg:w-2/5 my-10'
-                                dataLength={POSTS.length}
+                                dataLength={DATA.timelineposts.length}
                                 next={() => {
-                                    if (POSTS.length > CurrentSlice) this.setState({ CurrentSlice: CurrentSlice + 18 })
+                                    if (DATA.timelineposts.length > CurrentSlice) this.setState({ CurrentSlice: CurrentSlice + 10 })
                                 }}
                                 scrollThreshold={0.80}
-                                hasMore={() => { if (POSTS.length > CurrentSlice) return true }}
+                                hasMore={() => {
+                                    if (DATA.timelineposts.length > CurrentSlice) { return true }
+                                    else { return false }
+                                }}
+                                endMessage={<div>The end!</div>}
                                 loader={<div> Loading... </div>}
                             >
-                                {POSTS && POSTS.map(({title, category, image, url, urldomain, tstamp, price, id, post_id, user_name, upvotes, downvotes}:PostPropsInt&postcollectionProps, i:number) => {
+                                {DATA.timelineposts.map(({title, category, image, url, urldomain, tstamp, price, id, post_id, user_name, upvotes, downvotes}:PostPropsInt&postcollectionProps, i:number) => {
                                     if (i < CurrentSlice) {
 
                                         return <PostCard key={i} title={title} category={category}
@@ -60,11 +66,10 @@ class Timeline extends Component<PostsPropsInt> {
 const mapStateToProps = (store:any) => {
 
     const { PostsState } = store;
-    const { POSTS, LOADING } = PostsState;
+    const { DATA, LOADING } = PostsState;
 
     return {
-        POSTS: POSTS,
-        LOADING: LOADING
+        DATA, LOADING
     }
 }
 

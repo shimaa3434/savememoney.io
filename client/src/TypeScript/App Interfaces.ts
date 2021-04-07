@@ -21,11 +21,16 @@ export interface profileReducer {
             downvotes: number,
             namehead: string
         }>,
+        foruser: string,
         userdata: {
             namehead: string,
             bio: string,
             username: string
         },
+        followdata: {
+            followers: Array<{ followedbyuser: string }>,
+            following: Array<{ followinguser: string }>
+        }
         status: number
     }
 }
@@ -159,7 +164,12 @@ export interface MobileMenuProps {
 // FOR USE IN THE POSTS.TSX FOR PROPS
 
 export interface PostsPropsInt {
-    LOADING: boolean, POSTS: null | Array<PostPropsInt&postcollectionProps>, getPosts: Function
+    LOADING: boolean,
+    DATA: null | {
+        timelineposts: Array<PostPropsInt&postcollectionProps>,
+        status: number
+    }
+    getPosts: Function,
 };
 
 // FOR USE IN THE SEARCH.TSX FOR PROPS

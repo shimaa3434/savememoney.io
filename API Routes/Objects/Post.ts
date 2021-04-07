@@ -50,7 +50,7 @@ class Post {
 
     state:State = { title: null, image: null };
 
-    AddPostQuery = 'INSERT INTO posts(title, category, image, url, urldomain, tstamp, price, user_name) VALUES(?, ?, ?, ?, ?, ?, ?, ?);';
+    AddPostQuery = 'INSERT INTO posts(title, category, image, url, urldomain, tstamp, price, user_name, descript, upvotes, downvotes) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
     CheckUserExistenceQuery = 'SELECT email, username FROM users WHERE email = ? OR username = ? ;';
     DeletePostQuery = 'DELETE FROM posts WHERE id = ? AND user_name = ? ;';
     GetUserPostsQuery = 'SELECT * FROM posts WHERE user_name = ? ;';
@@ -61,11 +61,11 @@ class Post {
 
     create = (request:any, response:any) => {
 
-        const requestBody:createBody = request.body;
+        const { body: { email, username, url, category, price, descript } } = request.body;
 
         SQL.query(this.CheckUserExistenceQuery, [
             
-            requestBody.email, requestBody.username
+            email, username
 
         ], async (err:any, results:any) => {
             if (err) response.send({message: 'There has been an error.'})
@@ -75,24 +75,25 @@ class Post {
                 if (results.length === 1) {
                     const PostedTime = Date.now();
 
-                    await this.scrapeProduct(requestBody.url).then((resp) => {
+                    await this.scrapeProduct(url).then((resp) => {
                         
                         SQL.query(this.AddPostQuery, [
                             // title, the other one is for the image. this is efficient though. Ihave to develop a sort of state like react.
-                            this.state.title, requestBody.category, this.state.image, requestBody.url,
-                            this.getURLDomain(requestBody.url), PostedTime, requestBody.price, requestBody.username
+                            this.state.title, category, this.state.image, url,
+                            this.getURLDomain(url), PostedTime, price, username,
+                            descript, 0, 0
                             
                         ], (err:any, results:any) => {
                             if (err) response.send({message: 'There has been an error.', err:null });
                             if (!err) {
                                 SQL.query(this.GetNewPostIDQuery, [
 
-                                    requestBody.username, PostedTime
+                                    username, PostedTime
 
                                 ], (err, results:{id:number}) => {
                                     if (err) response.send({message: 'There has been an error.', err: err, status: 400})
                                     if (!err) {
-                                        response.send({message: 'Post has been created.', status: 210, redirecturl:`http://localhost:3000/users/${requestBody.username}/${results[0].id}`});
+                                        response.send({message: 'Post has been created.', status: 210, redirecturl:`http://localhost:3000/users/${username}/${results[0].id}`});
                                     } 
                                 })
                             }

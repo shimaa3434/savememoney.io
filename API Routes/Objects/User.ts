@@ -42,6 +42,7 @@ class User {
         this.follow = this.follow.bind(this);
         this.unfollow = this.unfollow.bind(this);
         this.followdata = this.followdata.bind(this);
+        this.getusertimeline = this.getusertimeline.bind(this);
     };
 
     CheckUserExistenceQuery = 'SELECT * from users WHERE email = ? OR username = ? ;';
@@ -54,8 +55,11 @@ class User {
     UnfollowUserQuery = 'DELETE FROM userfollows WHERE followinguser = ? AND followedbyuser = ? ;';
     GetUserFollowersQuery = 'SELECT followedbyuser FROM userfollows WHERE followinguser = ?'
     GetUserFollowingQuery = 'SELECT followinguser FROM userfollows WHERE followedbyuser = ?'
-    GetAllUserPostsQuery = 'SELECT posts.title, posts.id, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes, users.namehead FROM posts INNER JOIN users ON posts.user_name = users.username WHERE users.username = ? AND EXISTS (SELECT * FROM users WHERE users.username = ?) ORDER BY posts.tstamp DESC';
-    GetUserProfileDataQuery = 'SELECT namehead, username, bio FROM users WHERE username = ?'
+    GetAllUserPostsQuery = 'SELECT posts.title, posts.id, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes, users.namehead FROM posts INNER JOIN users ON posts.user_name = users.username WHERE users.username = ? AND EXISTS (SELECT * FROM users WHERE users.username = ?) ORDER BY posts.tstamp DESC ;';
+    GetUserProfileDataQuery = 'SELECT namehead, username, bio FROM users WHERE username = ?';
+
+
+    GetUserFeedQuery = 'SELECT posts.title, posts.id, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes, users.namehead FROM posts INNER JOIN users ON users.username = posts.user_name INNER JOIN userfollows ON userfollows.followinguser = posts.user_name WHERE userfollows.followedbyuser = ? AND EXISTS (SELECT * FROM users WHERE username = ?)  ORDER BY posts.tstamp DESC ;';
 
     create = (request:any, response:any) => {
         const requestBody:CreateUserBody = request.body;
@@ -202,7 +206,7 @@ class User {
 
     profile = (request:any, response:any) => {
         const {params: { usernameparam } } = request
-        console.log(usernameparam)
+
         SQL.query(this.GetAllUserPostsQuery, [
 
             usernameparam, usernameparam
@@ -210,7 +214,7 @@ class User {
         ], (err:any, posts) => {
             if (err) {response.send({message: 'There has been an error loading this profile.', err, status: 400})};
             if (!err) {
-                if (posts.length === 0) {response.send({message: 'This username does not exist.', status: 400})};
+                if (posts.length === 0) {response.send({message: 'This user has no posts.', status: 400})};
                 if(posts.length > 0 ) {
 
                     SQL.query(this.GetUserProfileDataQuery, [
@@ -224,16 +228,32 @@ class User {
                             const { namehead, bio, username } = userdata[0];
                             if (userdata.length === 1) {
 
-                                response.send({
-                                    message: 'Here is the user data.',
-                                    posts,
-                                    userdata: {
-                                        namehead,
-                                        bio,
-                                        username
-                                    },
-                                    status: 210
+                                SQL.query(this.GetUserFollowersQuery, [
+
+                                    usernameparam
+
+                                ], (err, followers) => {
+                                    if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
+                                    if (!err) SQL.query(this.GetUserFollowingQuery, [
+
+                                        usernameparam
+
+                                    ], (err, following) => {
+                                        if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
+                                        if (!err) response.send({
+                                            message: 'Here is the user data.',
+                                            foruser: usernameparam,
+                                            posts,
+                                            userdata: { namehead, bio, username },
+                                            followdata: {
+                                                followers,
+                                                following
+                                            },
+                                            status: 210
+                                        })
+                                    })
                                 })
+
                             }
 
                         }
@@ -327,6 +347,20 @@ class User {
                 if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
                 if (!err) response.send({ foruser: usernameparam, followers, following, status: 210 })
             })
+        })
+    };
+
+    getusertimeline = (request, response) => {
+        
+        const { body: { username } } = request;
+
+        SQL.query(this.GetUserFeedQuery, [
+
+            username, username
+
+        ], (err, timelineposts) => {
+            if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
+            if (!err) response.send({ timelineposts, status: 210 })
         })
     }
 };

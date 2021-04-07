@@ -27,17 +27,16 @@ Router.put('/changename', JWTAuthMiddleware, (request:any, response:any) => {
     User.changename(request, response)
 });
 
-Router.get('/profile/:usernameparam', (request:any, response:any) => {
+Router.get('/profile/:usernameparam', JWTAuthMiddleware, (request:any, response:any) => {
     User.profile(request, response);
 })
-
 
 
 Router.get('/savedposts', JWTAuthMiddleware, (request:any, response:any) => {
     User.getsavedposts(request, response);
 })
 
-Router.get('/postlookup/:username/:post_id', (request:any, response:any) => {
+Router.get('/postlookup/:username/:post_id', JWTAuthMiddleware, (request:any, response:any) => {
     User.getuserpost(request, response)
 })
 
@@ -49,8 +48,14 @@ Router.post('/unfollow', JWTAuthMiddleware, (request:any, response:any) => {
     User.unfollow(request, response);
 })
 
+Router.get('/timeline', JWTAuthMiddleware, (request:any, response) => {
+    User.getusertimeline(request, response)
+})
+
+/* 
 Router.get('/followdata/:usernameparam', (request:any, response:any) => {
     User.followdata(request, response)
 })
+*/
 
 module.exports = Router;

@@ -1,5 +1,5 @@
 import { ActionInt, profileReducer} from '../../TypeScript/App Interfaces'
-import { SET_PROFILE_BIO, SET_PROFILE_DATA, SET_PROFILE_NAMEHEAD, SET_PROFILE_USERNAME, SET_PROFILE_LOADING } from '../types';
+import { SET_PROFILE_DATA, SET_PROFILE_LOADING } from '../types';
 
 const InitialState:profileReducer  = {
     LOADING: false,

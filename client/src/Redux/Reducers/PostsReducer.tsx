@@ -1,14 +1,17 @@
-import { postcollectionProps, PostsPropsInt } from '../../TypeScript/App Interfaces';
+import { postcollectionProps, PostPropsInt, PostsPropsInt } from '../../TypeScript/App Interfaces';
 import {SET_LOADING, SET_POSTS} from '../types';
 
 interface State {
     LOADING: boolean,
-    POSTS: null | postcollectionProps&PostsPropsInt[]
+    DATA: null | {
+        timelineposts: Array<PostPropsInt&postcollectionProps>,
+        status: number
+    }
 }
 
 const initialState:State = {
     LOADING: false,
-    POSTS: null
+    DATA: null
 }
 
 const postsReducer = (state = initialState, action:any) => {
@@ -24,7 +27,7 @@ const postsReducer = (state = initialState, action:any) => {
         case SET_POSTS:
             return {
                 ...state,
-                POSTS: action.payload
+                DATA: action.payload
             }
     }
 }

@@ -4,23 +4,76 @@ import Post from './PostCard/PostCard';
 import {connect} from 'react-redux'
 import { GetProfile } from '../Redux/Actions/ProfileActions';
 import ProfilePostCardVariant from './ProfilePostCardVariant';
+import Modal from 'react-modal'
+import { Link } from 'react-router-dom';
+
 
 const Profile:React.FC<{match:any, DATA:any, LOADING:boolean, username:string, bio:string, namehead:string, GetProfile:Function}>
 = ({match, LOADING, username, bio, namehead, DATA, GetProfile}) => {
 
     const [ view, setView ] = useState<number>(0);
+    const [ profiletimeline, setProfileTimeline ] = useState<number>(18);
+    const [ profileoverview, setProfileOverview ] = useState<number>(18);
+    const [ showFollowers, setShowFollowers ] = useState<boolean>(false);
+    const [ showFollowing, setShowFollowing ] = useState<boolean>(false);
     useEffect(() => {
         GetProfile(match.params.username);
     }, [match.params.username])
 
     return (
         <div className='flex flex-row justify-center w-screen'>
-            <div className='border-b-2 border-gray-500 w-1/2 flex flex-col items-center'>
+            { DATA && DATA.status !== 400 ?
+            <div className='border-b-2 border-gray-500 w-screen flex flex-col items-center lg:w-1/2'>
                 <div className='flex flex-col w-full items-center'>
-
-                    <span className='text-2xl my-4'>{DATA && `@${DATA.userdata.username}`}</span>
-                    <span className='my-2 font-bold'>{DATA && DATA.userdata.namehead}</span>
-                    <span className='my-2 text-left'>{DATA && `Bio: ${DATA.userdata.bio}`}</span>
+                    <span className='text-2xl my-4'>{`@${DATA.userdata.username}`}</span>
+                    <span className='my-2 font-bold'>{DATA.userdata.namehead}</span>
+                    <span className='my-2 text-left'>{`Bio: ${DATA.userdata.bio}`}</span>
+                    <div>
+                        <span onClick={() => { setShowFollowers(true) }}>
+                            { DATA.followdata.followers.length } Followers
+                        </span>
+                        { showFollowers &&
+                            <Modal isOpen={showFollowers} onRequestClose={() => { setShowFollowers(false) }}
+                                shouldCloseOnOverlayClick={true} overlayClassName={'flex flex-row justify-center fixed items-center h-screen w-screen z-10 bg-modalunderlay top-0 left-0 right-0 bottom-0'}
+                                className={'w-4/5 h-2/5 rounded-lg bg-white outline-none flex flex-col items-center lg:w-1/5 lg:h-2/4 py-2'}
+                            >   
+                                <h1 className='text-gray-400 w-full text-center border-b-2 border-lightgrey my-0 px-0 py-2'>
+                                    FOLLOWERS
+                                </h1>
+                                <ul className='list-style-none flex flex-col items-center m-0 p-0 w-full'>
+                                    {
+                                        DATA.followdata.followers.map(({ followedbyuser }:{followedbyuser:string}, i:number) => {
+                                            return <Link to={`/users/${followedbyuser}`} onClick={() => { setShowFollowers(false) }}>
+                                                        { followedbyuser }
+                                                   </Link>
+                                        })
+                                    }
+                                </ul>
+                            </Modal>
+                        }
+                        <span onClick={() => { setShowFollowing(true) }}>
+                            { DATA.followdata.following.length } Following
+                        </span>
+                        { showFollowing &&
+                            <Modal isOpen={showFollowing} onRequestClose={() => { setShowFollowing(false) }}
+                                shouldCloseOnOverlayClick={true} overlayClassName={'flex flex-row justify-center fixed items-center h-screen w-screen z-10 bg-modalunderlay top-0 left-0 right-0 bottom-0'}
+                                className={'w-4/5 h-2/5 rounded-lg bg-white outline-none flex flex-col items-center lg:w-1/5 lg:h-2/4 py-2'}
+                            >   
+                                <h1 className='text-gray-400 w-full text-center border-b-2 border-lightgrey my-0 px-0 py-2'>
+                                    FOLLOWERS
+                                </h1>
+                                <ul className='list-style-none flex flex-col items-center m-0 p-0 w-full'>
+                                    {
+                                        DATA.followdata.following.map(({ followinguser }:{followinguser:string}, i:number) => {
+                                            return <Link to={`/users/${followinguser}`} onClick={() => { setShowFollowing(false) }}>
+                                                        { followinguser }
+                                                   </Link>
+                                        })
+                                    }
+                                </ul>
+                            </Modal>
+                        }
+                    </div>
                 </div>
                 <ul className='list-style-none w-full flex flex-row'>
                     <li className='w-1/2 text-center py-4 border-b-2 border-t-2 border-lightgrey' onClick={() => { setView(0) }}>
@@ -59,6 +112,9 @@ const Profile:React.FC<{match:any, DATA:any, LOADING:boolean, username:string, b
                     </div>
                 }
             </div>
+            :
+            <div>Not found.</div>
+            }
         </div>
     )
 }

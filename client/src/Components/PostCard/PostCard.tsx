@@ -15,7 +15,6 @@ const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, c
     // ADD POSTS STATUS PER 
 
     const savePost = async (id:number, post_user_name:string, ) => {
-        console.log(id)
         await axios.post('/api/posts/save', { post_id: id, post_user_name })
         .then(({ data: { redirecturl, err, status } }) => {
             if (status === 210) setSavedStatus(true);

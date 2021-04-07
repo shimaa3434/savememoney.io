@@ -25,7 +25,7 @@ const UserPost:React.FC<userPostProps> = ({ match: { params: { user_name, post_i
 
     useEffect(() => {
 
-        if (!post) fetchUserPost(user_name, post_id);
+        fetchUserPost(user_name, post_id);
 
     }, [ user_name, post_id ])
 
