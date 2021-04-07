@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom';
 import {useState} from 'react';
 import { connect } from 'react-redux';
 import { LogoutUser } from '../../../Redux/Actions/UserActions';
+import { GroupSelectOptions } from '../../Search/SearchSelectOptions';
 
 
 const Header:React.FC<{LOGGEDIN:boolean, LogoutUser:Function}> = ({LogoutUser, LOGGEDIN}) => {
@@ -11,10 +12,10 @@ const Header:React.FC<{LOGGEDIN:boolean, LogoutUser:Function}> = ({LogoutUser, L
     const [showMenu, setShowMenu] = useState<boolean>(false);
 
     return (
-        <>
-            <div className='w-screen h-20 flex flex-row justify-between items-center px-2 bg-white border-black border-b-4 md:justify-around'>
+        <div className=''>
+            <div className='w-screen h-20 flex flex-row justify-between items-center px-2 bg-lighterblue md:justify-around'>
                 <Link to='/' className='no-underline'>
-                    <h1 className='text-black text-3xl font-bold'>savememoney!</h1>
+                    <h1 className='text-white text-3xl font-bold'>savememoney!</h1>
                 </Link>
                 <img className='md:hidden' src={MobileMenuIcon} alt='mobile navigation menu icon' onClick={() => {
                     setShowMenu(true);
@@ -48,8 +49,17 @@ const Header:React.FC<{LOGGEDIN:boolean, LogoutUser:Function}> = ({LogoutUser, L
                     }
                 </ul>
                 {showMenu && <MobileMenu setShowMenu={setShowMenu} showMenu={showMenu} LOGGEDIN={LOGGEDIN} LogoutUser={LogoutUser} />}
+                </div>
+                <ul className='w-screen overflow-x-scroll py-2 list-style-none flex flex-row  border-b-2 border-t-2 border-lighterblue '>
+                    {
+                        GroupSelectOptions.map(({ label }) => {
+                            return <Link to={`/categories/${label}`} className='mx-2 text-black'>
+                                        { label }
+                                    </Link>
+                        })
+                    }
+                </ul>
             </div>
-        </>
     );
 }
 

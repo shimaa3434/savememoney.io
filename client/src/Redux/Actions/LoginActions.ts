@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { dispatchLoggedIn, dispatchLoginMessage, dispatchLoginPassword, dispatchLoginUserOrEmail } from './DispatchTypes';
+import { dispatchLoggedIn, dispatchLoggedInUsername, dispatchLoginMessage, dispatchLoginPassword, dispatchLoginUserOrEmail } from './DispatchTypes';
 
 
 export const LoginUser = (useroremail:string, password:string) => {
@@ -7,13 +7,13 @@ export const LoginUser = (useroremail:string, password:string) => {
         await Axios.post('/api/users/login', {
             useroremail,
             password
-        }).then((resp:any) => {
-            if (resp.status === 210) {
+        }).then(({ data: { status, username, message } }) => {
+            if (status === 210) {
                 dispatch(dispatchLoggedIn(true));
-                dispatch(dispatchLoginMessage(resp.data))
+                dispatch(dispatchLoggedInUsername(username))
                 window.location.assign('http://localhost:3000/');
             } else {
-                dispatch(dispatchLoginMessage(resp.data))
+                dispatch(dispatchLoginMessage(message))
             }
         }).catch((err) => {console.log(err)})
     }

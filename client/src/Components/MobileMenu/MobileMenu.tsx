@@ -65,6 +65,15 @@ const MobileMenu:React.FC<MobileMenuProps> = ({setShowMenu, showMenu, LOGGEDIN, 
                                 SETTINGS
                             </Link>
                     }
+                    {
+                        LOGGEDIN && 
+                            <Link to='/createpost' className='py-4 w-full text-center no-underline text-black  border-b-2 border-white border-opacity-25 text-2xl' onClick={() => {
+                                setShowMenu(false);
+                                document.body.style.overflowY='unset';
+                            }}>
+                                CREATE POST
+                            </Link>
+                    }
                 </ul>
         </Modal>
     );

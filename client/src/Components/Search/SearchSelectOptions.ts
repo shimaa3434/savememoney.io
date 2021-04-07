@@ -88,7 +88,7 @@ export const GroupSelectOptions:Array<Group> = [
         ]
     },
     {
-        label: 'Movies, Music & Games',
+        label: 'Entertainment',
         options: [
             { value: 'movies', label: 'Movies' },
             { value: 'tvshows', label: 'TV Shows' },
@@ -101,7 +101,7 @@ export const GroupSelectOptions:Array<Group> = [
     {
         label: 'Furniture',
         options: [
-            { value: 'furniture', label: 'Furniture' },
+            { value: 'Furniture', label: 'Furniture' },
             { value: 'tvshows', label: 'TV Shows' },
             { value: 'bluray', label: 'Bluray' },
             { value: 'digitalmusic', label: 'Digital Music' },

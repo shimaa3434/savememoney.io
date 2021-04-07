@@ -1,5 +1,5 @@
 import Axios from "axios"
-import { dispatchCreatePostCategory, dispatchCreatePostLoading, dispatchCreatePostPrice, dispatchCreatePostURL, dispatchCreatePostMessage } from "./DispatchTypes"
+import { dispatchCreatePostLoading, dispatchCreatePostMessage } from "./DispatchTypes"
 
 
 export const CreateAPost = ( URL:string, CATEGORY:string, PRICE:string) => {
@@ -19,21 +19,5 @@ export const CreateAPost = ( URL:string, CATEGORY:string, PRICE:string) => {
             dispatch(dispatchCreatePostLoading(false));
             console.log(err)
         })
-    }
-}
-
-export const setCategory = (CATEGORY:string) => {
-    return (dispatch:Function) => {
-        dispatch(dispatchCreatePostCategory(CATEGORY))
-    }
-}
-export const setURL = (URL:string) => {
-    return (dispatch:Function) => {
-        dispatch(dispatchCreatePostURL(URL))
-    }
-}
-export const setPrice = (PRICE:string) => {
-    return (dispatch:Function) => {
-        dispatch(dispatchCreatePostPrice(PRICE))
     }
 }

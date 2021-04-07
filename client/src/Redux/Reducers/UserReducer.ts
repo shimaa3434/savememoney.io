@@ -1,10 +1,11 @@
 import { UserReducerInt } from "../../TypeScript/App Interfaces";
-import { SET_USER_ATTEMPTED_AUTH, SET_USER_LOGGED_IN } from "../types";
+import { SET_USER_ATTEMPTED_AUTH, SET_USER_LOGGED_IN, SET_USER_LOGGED_IN_USERNAME } from "../types";
 
 
 const InitialState:UserReducerInt = {
     LOGGEDIN: false,
-    ATTEMPTEDAUTH: false
+    ATTEMPTEDAUTH: false,
+    LOGGEDINUSERNAME: null
 }
 
 
@@ -21,6 +22,11 @@ const UserReducer = (state = InitialState, action:any) => {
             return {
                 ...state,
                 ATTEMPTEDAUTH: action.payload
+            }
+        case SET_USER_LOGGED_IN_USERNAME:
+            return {
+                ...state,
+                LOGGEDINUSERNAME: action.payload
             }
     }
 }

@@ -1,5 +1,5 @@
 import {GetSearch, setSearchInput, setSearchCategory, setSearchPriceRange} from '../../Redux/Actions/SearchActions';
-import {priceSelectOptions, categorySelectOptions, GroupSelectOptions} from './searchSelectOptions'
+import {priceSelectOptions, categorySelectOptions, GroupSelectOptions} from './SearchSelectOptions'
 import {SearchPropsInt} from '../../TypeScript/App Interfaces';
 import {searchParameter} from '../../TypeScript/App Types';
 import {TextField} from '@material-ui/core';

@@ -2,6 +2,66 @@ import { ReactNode } from 'react';
 import {searchParameter} from './App Types';
 
 
+export interface profileReducer {
+    LOADING: boolean,
+    DATA: null | {
+        message: string,
+        posts: Array<{
+            title: string,
+            id: number,
+            category: string,
+            image: string,
+            url: string,
+            tstamp: number,
+            price: string,
+            urldomain: string,
+            user_name: string,
+            descript: string,
+            upvotes: number,
+            downvotes: number,
+            namehead: string
+        }>,
+        userdata: {
+            namehead: string,
+            bio: string,
+            username: string
+        },
+        status: number
+    }
+}
+
+export interface registerProps {
+    LOADING:boolean,
+    MESSAGE:{message:string, err?:any} | null,
+    RegisterUser:Function
+}
+
+export interface registerReducer {
+    LOADING:boolean,
+    MESSAGE:{message:string, err?:any} | null
+}
+
+export interface profilepostcardProps {
+    upvotes: number,
+    price: string,
+    downvotes: number,
+    category: string,
+    user_name: string,
+    id: number,
+    image: string,
+    title:string,
+    tstamp: number
+}
+
+// homeprops
+
+
+export interface homeProps {
+    LOGGEDIN: boolean
+}
+
+
+
 // saved posts
 
 // CHANGE THE | NULL PIPES. SET THE SQL QUERY FOR CREATE POSTS ON BACKEND DEFAULT UPVOTES AND DOWNVOTES TO 0, SO NUMERICAL. MAYBE COMMENTS
@@ -21,21 +81,12 @@ export interface postcollectionProps {
 // for createpost compoenent
 
 export interface createPostReducer {
-    CATEGORY: string,
-    URL: string,
-    PRICE: string,
     LOADING: boolean,
     MESSAGE: {message: string, err?: any, redirecturl: string} | null
 }
 
 export interface createpostProps {
-    CATEGORY: string,
-    URL: string,
-    PRICE: string,
     CreateAPost: Function,
-    setURL: Function,
-    setCategory: Function,
-    setPrice: Function,
     LOADING: boolean,
     MESSAGE: {message: string, err: any} | null
 }
@@ -163,5 +214,6 @@ export interface authLayerProps {
 
 export interface UserReducerInt {
     LOGGEDIN: boolean,
-    ATTEMPTEDAUTH: boolean
+    ATTEMPTEDAUTH: boolean,
+    LOGGEDINUSERNAME: string | null
 }

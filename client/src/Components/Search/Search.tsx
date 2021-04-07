@@ -3,7 +3,8 @@ import {postcollectionProps, PostPropsInt, SearchPropsInt} from '../../TypeScrip
 import { Component } from 'react';
 import SearchForm from './SearchForm';
 import {connect} from 'react-redux';
-import Post from '../PostCard/PostCard';
+
+import PostCard from '../PostCard/PostCard';
 
 class Search extends Component<SearchPropsInt> {
 
@@ -30,7 +31,7 @@ class Search extends Component<SearchPropsInt> {
                 <SearchForm />
                 <div className='w-screen bg-white flex flex-col md:flex-row md:flex-wrap justify-center'>
                     {DATA && DATA.map(({title, category, image, url, urldomain, tstamp, price, post_id, user_name, upvotes, downvotes, id}:PostPropsInt&postcollectionProps, i:number) => {
-                    return <Post title={title} category={category} image={image} url={url} tstamp={tstamp} price={price} urldomain={urldomain}
+                    return <PostCard title={title} category={category} image={image} url={url} tstamp={tstamp} price={price} urldomain={urldomain}
                     post_id={post_id} user_name={user_name} upvotes={upvotes} downvotes={downvotes} id={id}
                     />
                     })}

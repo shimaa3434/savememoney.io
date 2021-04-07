@@ -1,9 +1,16 @@
 import React from 'react'
 import { Route, Redirect } from 'react-router-dom';
+import Header from './Layout/Header/Header';
 
 const PrivateRoute:React.FC<{component:React.FC, path: any, exact: boolean, condition:boolean, match?:any}> = ({component, path, exact, condition, match:any}) => {
     
-    return condition ? (<Route path={path} exact={exact} component={component} />)
+    return condition ?
+    (
+        <div>
+            <Header />
+            <Route path={path} exact={exact} component={component} />
+        </div>
+    )
     :
     (<Redirect to='/login' />)
 }

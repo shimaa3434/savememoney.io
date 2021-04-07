@@ -3,8 +3,12 @@ import {postcollectionProps, PostPropsInt} from '../../TypeScript/App Interfaces
 import {Link} from 'react-router-dom';
 import React, {useEffect, useState} from 'react'
 import axios from 'axios';
+import PostSettingsIcon from '../../Media/Images/postsettings.svg'
+import Modal from 'react-modal'
+import UnsavedPostIcon from '../../Media/Images/unsavedposticon.svg'
+import SavedPostIcon from '../../Media/Images/savedposticon.svg'
 
-const Post:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, category, image, url, urldomain, tstamp, price, id,    upvotes, downvotes, post_id, user_name     }) => {
+const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, category, image, url, urldomain, tstamp, price, id,    upvotes, downvotes, post_id, user_name     }) => {
 
     const [savedstatus, setSavedStatus] = useState<boolean>(false);
 
@@ -24,6 +28,8 @@ const Post:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, categ
             if (status === 210) setSavedStatus(false);
         })
     }
+
+    const [ postOptionsModalStatus, setPostOptionsModalStatus ] = useState<boolean>(false)
     
     const setCategoryColor = (category:string) => {
         if (category === 'CPU') return 'bg-blue-400 text-white px-2 py-1 rounded'
@@ -53,36 +59,73 @@ const Post:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, categ
     }
 
     return (
-        <div className='flex flex-col w-screen items-center my-4 py-4 border lg:w-1/4'>
+        <div className='flex flex-col w-screen items-center mb-6 rounded lg:w-full lg:border-2 lg:border-lightgrey lg:mb-20'>
+            <div className='w-full h-16 flex flex-row justify-between items-center'>
+                <div className='flex flex-row justify-start items-center h-full w-3/4 lg:w-3/5'>
+                    {/* ADD USER PFP HERE */}
+                    <Link to={`/users/${user_name}`} className='font-bold mx-4'>
+                        {user_name}
+                    </Link>
+                    {category !== 'EXPIRED' ?
+                        <Link className='no-underline my-4 py-0' to={`/categories/${category.toLowerCase()}`}>
+                            <span className={`${setCategoryColor(category)} text-center`}>{category}</span>
+                        </Link>
+                        :
+                        <span className={`${setCategoryColor(category)} my-4 text-center`}>{category}</span>
+                    }
+                </div>
+                <div className='flex flex-row justify-center items-center h-full px-4'>
+                    <img className='h-1/2 cursor-pointer' src={PostSettingsIcon} alt='settings icon' onClick={() => { setPostOptionsModalStatus(true); document.body.style.overflowY = 'hidden'}} />
+                </div>
+            </div>
+            <div className='flex flex-col items-center justify-center w-full lg:h-vh50 lg:border-b-2 lg:border-t-2 lg:border-lightgrey '>
+
             {
-            image === 'false' || image === '0' ? 
-            <a className='flex flex-col items-center w-1/2 h-36 rounded' href={url}>
-                <img className='object-contain rounded h-full' src={HyperLinkChainIcon} alt={`NO IMAGE --- ${title} on domain ${urldomain}`}/>
-            </a>
+                image === 'false' || image === '0' ? 
+                <img className='object-contain lg:h-3/4 lg:w-3/4 h-4/5 w-4/5' src={HyperLinkChainIcon} alt={`NO IMAGE --- ${title} on domain ${urldomain}`}/>
             :
-            <a className='flex flex-col items-center w-1/2 h-36 rounded' href={url}>
-                <img className='object-contain rounded h-full' src={image} alt={`${title} on domain ${urldomain}`}/>
-            </a>
+                <img className='object-contain lg:h-3/4 lg:w-3/4 h-4/5 w-4/5' src={image} alt={`${title} on domain ${urldomain}`}/>
             }
-            {category !== 'EXPIRED' ?
-            <Link className='no-underline my-4 py-0' to={`/categories/${category.toLowerCase()}`}>
-                <span className={`${setCategoryColor(category)} text-center`}>{category}</span>
-            </Link>
-            :
-            <span className={`${setCategoryColor(category)} my-4 text-center`}>{category}</span>
+                <a href={url} className='text-sm w-full text-center mx-0 my-2 p-0 lg:w-3/4 '>{title}</a>
+                <span>{price}</span>
+            </div>
+            <div className='flex flex-col h-vh25'>
+                
+                <button className='bg-purple-500 ring-4 px-4 my-2 text-white' onClick={() => {
+                    savedstatus ? unsavePost(id, user_name) : savePost(id, user_name)
+                }}>
+                    {savedstatus ?
+                        'unsave'
+                        :
+                        'save'
+                    }
+                </button>
+            </div>
+
+            { postOptionsModalStatus &&
+                <Modal isOpen={postOptionsModalStatus} onRequestClose={()=> { setPostOptionsModalStatus(false); document.body.style.overflowY = 'unset' }}
+                    shouldCloseOnOverlayClick={true} overlayClassName={'flex flex-row justify-center fixed items-center h-screen w-screen z-10 bg-modalunderlay top-0 left-0 right-0 bottom-0'}
+                    className={'w-4/5 h-2/5 rounded-lg bg-white outline-none flex flex-col items-center lg:w-1/5 lg:h-2/4 py-2'}
+                >
+                    <ul className='list-style-none flex flex-col items-center m-0 p-0 w-full'>
+
+                        <li className='w-full py-2 text-center'>
+                            Report
+                        </li>
+                        <li className='w-full py-2 text-center' onClick={() => {
+                            savePost(id, user_name)// add unsave too later
+                            document.body.style.overflowY = 'unset';
+                        }}>
+                            Save post
+                        </li>
+                        <Link to={`/users/${user_name}/${id}`} className='w-full py-2 text-center'>
+                            Go to post
+                        </Link>
+                    </ul>
+                </Modal>
             }
-            <a href={url} className='text-sm w-3/4 text-center'>{title}</a>
-            <button className='bg-purple-500 ring-4 px-4 my-2 text-white' onClick={() => {
-                savedstatus ? unsavePost(id, user_name) : savePost(id, user_name)
-            }}>
-                {savedstatus ?
-                    'unsave'
-                    :
-                    'save'
-                }
-            </button>
         </div>
     )
 }
 
-export default Post;
+export default PostCard;

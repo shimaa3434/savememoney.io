@@ -15,6 +15,7 @@ import Profile from './Profile';
 import Categories from './Categories';
 import CreatePost from './CreatePost';
 import SavedPosts from './SavedPosts';
+import UserPost from './UserPost';
 
 class AuthLayer extends Component<authLayerProps> {
 
@@ -34,7 +35,7 @@ class AuthLayer extends Component<authLayerProps> {
             {ATTEMPTEDAUTH &&
 
                 <div className="bg-white">
-                <Header />
+                {/* <Header /> */}
                 <Switch>
                     <Route exact path='/search' component={Search} />
                     <Route exact path='/categories/:category' component={Category} />
@@ -45,6 +46,7 @@ class AuthLayer extends Component<authLayerProps> {
 
                     <Route exact path='/users/:username' component={Profile} />
                     <PrivateRoute exact={true} path='/settings' component={Settings} condition={LOGGEDIN && LOGGEDIN} />
+                    <Route exact path='/users/:user_name/:post_id' component={UserPost} />
                     <PrivateRoute exact={true} path='/register' component={Register} condition={!LOGGEDIN && !LOGGEDIN} />
                     <PrivateRoute exact={true} path='/savedposts' component={SavedPosts} condition={LOGGEDIN && LOGGEDIN} />
                     {/* <PrivateRoute exact={true} path='/login' component={Login} condition={LOGGEDIN && LOGGEDIN} /> */}
