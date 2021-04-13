@@ -46,6 +46,8 @@ class Post {
         this.scrapeProduct = this.scrapeProduct.bind(this);
         this.savepost = this.savepost.bind(this);
         this.unsavepost = this.unsavepost.bind(this);
+        this.upvote = this.upvote.bind(this);
+        this.downvote = this.downvote.bind(this);
     }
 
     state:State = { title: null, image: null };
@@ -58,10 +60,13 @@ class Post {
     GetNewPostIDQuery = 'SELECT id from POSTS WHERE user_name = ? AND tstamp = ? ;'
     AddSavePostQuery = 'INSERT INTO savedposts(post_id, post_user_name, savetousername) VALUES(?, ?, ?);'
     RemoveSavedPostQuery = 'DELETE FROM savedposts WHERE post_id = ? AND post_user_name = ? AND savetousername = ? ;';
+    
+    GetCurrentUpvotesQuery = 'SELECT upvotes FROM posts WHERE id = ? AND user_name = ? AND EXISTS (SELECT username from users WHERE username = ?)'
+    GetCurrentDownvotesQuery = 'SELECT downvotes FROM posts WHERE id = ? AND user_name = ? AND EXISTS (SELECT username from users WHERE username = ?)'
 
     create = (request:any, response:any) => {
 
-        const { body: { email, username, url, category, price, descript } } = request.body;
+        const { body: { email, username, url, category, price, descript } } = request;
 
         SQL.query(this.CheckUserExistenceQuery, [
             
@@ -438,9 +443,70 @@ class Post {
         })
     }
 
+    upvote = (request, response) => {
+        // username is the logged in user taken form the jwt token payload in the middleware, while user_name is the person who made the post.
+        const { body: { username, email, post_id, user_name } } = request;
+
+        SQL.query(this.GetCurrentUpvotesQuery, [
+
+            post_id, user_name, username
+
+        ], (err, results) => {
+            if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
+            if (!err) {
+                if (results.length === 0) response.send({ message: 'This is not a valid post id and username.' })
+                const upvotescount = results[0].upvotes;
+                SQL.query('UPDATE posts SET upvotes = ? WHERE id = ? AND user_name = ? AND EXISTS (SELECT username from users WHERE username = ?); INSERT INTO postvotes(post_id, upvotedbyuser) VALUES(?, ?);', [
+
+                    upvotescount + 1, post_id, user_name, username, post_id, username
+
+                ], (err, results) => {
+                    if (err) response.send({ message: 'There has been an error', err, status: 400 })
+                    if (!err) {
+                        response.send({
+                            message: 'The post has been upvoted.',
+                            status: 210,
+                            upvotes: upvotescount + 1
+                        })
+                    } 
+                })
+            }
+        })
+
+    }
     
+    downvote = (request, response) => {
+        
+        const { body: { username, email, post_id, user_name } } = request;
 
+        SQL.query(this.GetCurrentDownvotesQuery, [
 
+            post_id, user_name, username
+
+        ], (err, results) => {
+            if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
+            if (!err) {
+                if (results.length === 0) response.send({ message: 'This is not a valid post id and username.' })
+                const downvotescount = results[0].downvotes;
+                SQL.query('UPDATE posts SET downvotes = ? WHERE id = ? AND user_name = ? AND EXISTS (SELECT username from users WHERE username = ?); INSERT INTO postvotes(post_id, downvotedbyuser) VALUES(?, ?);', [
+
+                    downvotescount - 1, post_id, user_name, username, post_id, username
+
+                ], (err, results) => {
+                    if (err) response.send({ message: 'There has been an error', err, status: 400 })
+                    if (!err) {
+                        response.send({
+                            message: 'The post has been upvoted.',
+                            status: 210,
+                            downvotes: downvotescount + 1
+                        })
+                    } 
+                })
+            }
+        })
+    }
+
+    
 };
 
 export default Post;

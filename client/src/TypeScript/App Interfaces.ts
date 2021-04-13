@@ -79,7 +79,8 @@ export interface postcollectionProps {
     upvotes: number | null,
     downvotes: number | null,
     tstamp: number,
-    id: number
+    id: number,
+    pfp:string
 }
 
 
