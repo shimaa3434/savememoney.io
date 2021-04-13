@@ -21,9 +21,9 @@ class Category extends Component<CategoryPropsInt> {
         
         return (
             <div>
-                {DATA && DATA.map(({title, category, image, url, urldomain, tstamp, price, post_id, user_name, upvotes, downvotes, id}:PostPropsInt&postcollectionProps, i:number) => {
+                {DATA && DATA.map(({title, category, image, url, urldomain, tstamp, price, post_id, user_name, upvotes, downvotes, id, pfp}:PostPropsInt&postcollectionProps, i:number) => {
                     return <Post title={title} category={category} image={image}
-                    url={url} urldomain={urldomain} tstamp={tstamp} price={price}
+                    url={url} urldomain={urldomain} tstamp={tstamp} price={price} pfp={pfp}
                     post_id={post_id} user_name={user_name} upvotes={upvotes} downvotes={downvotes} id={id}
                     />
                 })}

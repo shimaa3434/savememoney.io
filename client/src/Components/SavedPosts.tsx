@@ -23,9 +23,13 @@ const SavedPosts = () => {
     return (
         <div>
             {posts.length > 0 &&
-                posts.map(({ upvotes, downvotes, user_name, image, post_id, tstamp, category, id}, i:number) => {
+                posts.map(({ upvotes, downvotes, user_name, image, post_id, tstamp, category, id, pfp}, i:number) => {
                     return  <Link to={`/users/${user_name}/${post_id}`}>
-                                <PostCard image={image} tstamp={tstamp} category={category} post_id={post_id} user_name={user_name} upvotes={upvotes} downvotes={downvotes} id={id} />
+                                <PostCard
+                                image={image} tstamp={tstamp} category={category} post_id={post_id}
+                                user_name={user_name} upvotes={upvotes} downvotes={downvotes}
+                                id={id} pfp={pfp}
+                                />
                             </Link>
                 })
             }

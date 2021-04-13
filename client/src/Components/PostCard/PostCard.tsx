@@ -7,8 +7,9 @@ import PostSettingsIcon from '../../Media/Images/postsettings.svg'
 import Modal from 'react-modal'
 import UnsavedPostIcon from '../../Media/Images/unsavedposticon.svg'
 import SavedPostIcon from '../../Media/Images/savedposticon.svg'
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 
-const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, category, image, url, urldomain, tstamp, price, id,    upvotes, downvotes, post_id, user_name     }) => {
+const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, category, image, url, urldomain, tstamp, price, id,    upvotes, downvotes, post_id, user_name, pfp     }) => {
 
     const [savedstatus, setSavedStatus] = useState<boolean>(false);
 
@@ -58,19 +59,21 @@ const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, c
     }
 
     return (
-        <div className='flex flex-col w-screen items-center mb-6 rounded lg:w-full lg:border-2 lg:border-lightgrey lg:mb-20'>
-            <div className='w-full h-16 flex flex-row justify-between items-center'>
-                <div className='flex flex-row justify-start items-center h-full w-3/4 lg:w-3/5'>
-                    {/* ADD USER PFP HERE */}
+        <div className='flex flex-col w-screen items-center my-10 rounded border-b-2 border-lightgrey lg:w-full lg:border-2 lg:border-lightgrey lg:mb-20'>
+            <div className='w-full h-16 flex flex-row justify-between items-center border-b-2 border-t-2 border-lightgrey'>
+                <div className='flex flex-row justify-start items-center h-full w-3/4 lg:w-3/5 '>
+                    <Link to={`/users/${user_name}`}>
+                        <img className='h-12 w-12 rounded-full ml-4' src={pfp} alt={`${user_name}'s profile picture image.`} />
+                    </Link>
                     <Link to={`/users/${user_name}`} className='font-bold mx-4'>
                         {user_name}
                     </Link>
                     {category !== 'EXPIRED' ?
                         <Link className='no-underline my-4 py-0' to={`/categories/${category.toLowerCase()}`}>
-                            <span className={`${setCategoryColor(category)} text-center`}>{category}</span>
+                            <span className={`${setCategoryColor(category)} text-center`}>{category || <SkeletonTheme> <Skeleton /> </SkeletonTheme>}</span>
                         </Link>
                         :
-                        <span className={`${setCategoryColor(category)} my-4 text-center`}>{category}</span>
+                        <span className={`${setCategoryColor(category)} my-4 text-center`}>{category || <SkeletonTheme><Skeleton /></SkeletonTheme> }</span>
                     }
                 </div>
                 <div className='flex flex-row justify-center items-center h-full px-4'>
@@ -85,8 +88,8 @@ const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, c
             :
                 <img className='object-contain lg:h-3/4 lg:w-3/4 h-4/5 w-4/5' src={image} alt={`${title} on domain ${urldomain}`}/>
             }
-                <a href={url} className='text-sm w-full text-center mx-0 my-2 p-0 lg:w-3/4 '>{title}</a>
-                <span>{price}</span>
+                <a href={url} className='text-sm w-full text-center mx-0 my-2 p-0 lg:w-3/4 '>{title || <SkeletonTheme><Skeleton /></SkeletonTheme>}</a>
+                <span>{price || <SkeletonTheme><Skeleton /></SkeletonTheme>}</span>
             </div>
             <div className='flex flex-col h-vh25'>
                 

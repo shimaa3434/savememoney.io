@@ -20,6 +20,7 @@ const CreatePost:React.FC<createpostProps> = ({ CreateAPost, MESSAGE, LOADING })
     <form className='w-screen flex flex-col items-center py-10' onSubmit={(event:any) => {event.preventDefault();}}>
         <input className='w-4/5 h-10 my-4 border-2 rounded pl-4 py-6 border-blue-800 md:w-1/3' value={url} placeholder='Enter the product link' onChange={({ target: { value } }) => { setURL(value) }} />
         <input className='w-4/5 h-10 my-4 border-2 rounded pl-4 py-6 border-blue-800 md:w-1/3' value={price} placeholder='Enter the sale price' onChange={({ target: { value } }) => { setPrice(value) }} />
+        <input type='file' />
         <Select options={GroupSelectOptions} isClearable={true} label='Category' className='my-6 w-4/5 md:w-1/3 lg:w-1/6' onChange={(event:any) => {
             if (event.value) {
                 setCategory(event.value)

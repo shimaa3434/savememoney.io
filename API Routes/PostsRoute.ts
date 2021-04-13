@@ -1,4 +1,5 @@
-var SQL = require('../DBConnection');
+declare var require:any;
+
 var Express = require('express');
 var Router = Express.Router();
 import PostClass from './Objects/Post';
@@ -20,6 +21,14 @@ Router.post('/save', JWTMiddleware, (request, response) => {
 
 Router.post('/unsave', JWTMiddleware, (request, response) => {
     Post.unsavepost(request, response)
+})
+
+Router.post('/upvote', JWTMiddleware, (request, response) => {
+    Post.upvote(request, response)
+})
+
+Router.post('/downvote', JWTMiddleware, (request, response) => {
+    Post.downvote(request, response)
 })
 
 

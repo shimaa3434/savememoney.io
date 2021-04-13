@@ -9,7 +9,7 @@ import Search from './Search/Search';
 import { connect } from 'react-redux';
 import { CheckUserAuth } from '../Redux/Actions/UserActions';
 import PrivateRoute from './PrivateRoute';
-import Settings from './Settings';
+import Settings from './Settings/Settings';
 import Register from './Register';
 import Profile from './Profile';
 import Categories from './Categories';

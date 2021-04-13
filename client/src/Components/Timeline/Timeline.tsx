@@ -30,7 +30,6 @@ class Timeline extends Component<PostsPropsInt> {
         return (
             
                 <div className='flex flex-row justify-center w-screen'>
-                    { DATA && console.log(DATA)}
                     {
                         DATA &&
                             <InfiniteScroll className='flex flex-col items-center w-screen lg:w-2/5 my-10'
@@ -41,17 +40,17 @@ class Timeline extends Component<PostsPropsInt> {
                                 scrollThreshold={0.80}
                                 hasMore={() => {
                                     if (DATA.timelineposts.length > CurrentSlice) { return true }
-                                    else { return false }
+                                    
                                 }}
                                 endMessage={<div>The end!</div>}
-                                loader={<div> Loading... </div>}
+                                loader={''}
                             >
-                                {DATA.timelineposts.map(({title, category, image, url, urldomain, tstamp, price, id, post_id, user_name, upvotes, downvotes}:PostPropsInt&postcollectionProps, i:number) => {
+                                {DATA.timelineposts.map(({title, category, image, url, urldomain, tstamp, price, id, post_id, user_name, upvotes, downvotes, pfp}:PostPropsInt&postcollectionProps, i:number) => {
                                     if (i < CurrentSlice) {
 
                                         return <PostCard key={i} title={title} category={category}
                                         image={image} url={url} urldomain={urldomain}
-                                        tstamp={tstamp} price={price}
+                                        tstamp={tstamp} price={price} pfp={pfp}
                                         user_name={user_name} upvotes={upvotes} downvotes={downvotes} id={id} post_id={post_id}
                                         />
                                     }

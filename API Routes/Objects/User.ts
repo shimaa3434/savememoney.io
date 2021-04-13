@@ -1,6 +1,7 @@
 var SQL = require('../../DBConnection');
 var BCrypt = require('bcrypt');
-var JWT = require('jsonwebtoken')
+var JWT = require('jsonwebtoken');
+import useBucket from '../../AWS/AWSDetails'
 
 interface CreateUserBody {
     username: string,
@@ -43,6 +44,8 @@ class User {
         this.unfollow = this.unfollow.bind(this);
         this.followdata = this.followdata.bind(this);
         this.getusertimeline = this.getusertimeline.bind(this);
+        this.uploadpfp = this.uploadpfp.bind(this);
+        this.getusersettingsdata = this.getusersettingsdata.bind(this)
     };
 
     CheckUserExistenceQuery = 'SELECT * from users WHERE email = ? OR username = ? ;';
@@ -56,10 +59,12 @@ class User {
     GetUserFollowersQuery = 'SELECT followedbyuser FROM userfollows WHERE followinguser = ?'
     GetUserFollowingQuery = 'SELECT followinguser FROM userfollows WHERE followedbyuser = ?'
     GetAllUserPostsQuery = 'SELECT posts.title, posts.id, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes, users.namehead FROM posts INNER JOIN users ON posts.user_name = users.username WHERE users.username = ? AND EXISTS (SELECT * FROM users WHERE users.username = ?) ORDER BY posts.tstamp DESC ;';
-    GetUserProfileDataQuery = 'SELECT namehead, username, bio FROM users WHERE username = ?';
+    GetUserProfileDataQuery = 'SELECT namehead, username, bio, pfp FROM users WHERE username = ?';
 
+    UploadUserPFPQuery = 'UPDATE users SET pfp = ? WHERE username = ? ;'
+    GetUserQuery = 'SELECT pfp, namehead, username, bio FROM users WHERE username = ?'
 
-    GetUserFeedQuery = 'SELECT posts.title, posts.id, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes, users.namehead FROM posts INNER JOIN users ON users.username = posts.user_name INNER JOIN userfollows ON userfollows.followinguser = posts.user_name WHERE userfollows.followedbyuser = ? AND EXISTS (SELECT * FROM users WHERE username = ?)  ORDER BY posts.tstamp DESC ;';
+    GetUserFeedQuery = 'SELECT posts.title, posts.id, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes, users.namehead, users.pfp FROM posts INNER JOIN users ON users.username = posts.user_name INNER JOIN userfollows ON userfollows.followinguser = posts.user_name WHERE userfollows.followedbyuser = ? AND EXISTS (SELECT * FROM users WHERE username = ?)  ORDER BY posts.tstamp DESC ;';
 
     create = (request:any, response:any) => {
         const requestBody:CreateUserBody = request.body;
@@ -99,8 +104,7 @@ class User {
         const requestBody:LoginUser = request.body;
         // const UsernameRegexTest = /[a-zA-Z0-9]*/gi.test(requestBody.useroremail);
         //const EmailRegexTest = /[a-zA-Z0-9]*@[a-zA-Z]*\.[a-zA-Z]*/gi.test(requestBody.useroremail);
-        
-
+    
         SQL.query(this.CheckUserExistenceQuery, [
 
             requestBody.useroremail, requestBody.useroremail
@@ -222,10 +226,10 @@ class User {
                         usernameparam
 
                     ], (err, userdata) => {
-                        if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
+                        if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
                         if (!err) {
                             if (userdata.length === 0) response.send({ message: 'This user does not exist.', status: 400})
-                            const { namehead, bio, username } = userdata[0];
+                            const { namehead, bio, username, pfp } = userdata[0];
                             if (userdata.length === 1) {
 
                                 SQL.query(this.GetUserFollowersQuery, [
@@ -233,18 +237,18 @@ class User {
                                     usernameparam
 
                                 ], (err, followers) => {
-                                    if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
+                                    if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
                                     if (!err) SQL.query(this.GetUserFollowingQuery, [
 
                                         usernameparam
 
                                     ], (err, following) => {
-                                        if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
+                                        if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
                                         if (!err) response.send({
                                             message: 'Here is the user data.',
                                             foruser: usernameparam,
                                             posts,
-                                            userdata: { namehead, bio, username },
+                                            userdata: userdata[0],
                                             followdata: {
                                                 followers,
                                                 following
@@ -253,14 +257,42 @@ class User {
                                         })
                                     })
                                 })
-
                             }
-
                         }
                     })
                 }
             }
         })
+    }
+
+    uploadpfp = (request, response) => {
+        const { body: { username, email }, file: { originalname, buffer } } = request;
+        const fileType = originalname.split(/\./gi)[1];
+        const Bucket = 'savememoneypfp';
+        const S3 = useBucket(Bucket);
+        S3.upload({ Bucket, Key: `${username}pfp.${fileType}`, Body: buffer},
+        (err, uploaddata) => {
+            if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 });
+            if (!err) {
+                const { Location } = uploaddata;
+                SQL.query(this.UploadUserPFPQuery, [
+                    Location, username
+                ], (err, results) => {
+                    if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
+                    if (!err) response.send({ message: 'Success: Status Code 210', status: 210, redirecturl: `/settings` })
+                })
+            }
+        })
+    }
+
+    getusersettingsdata = (request, response) => {
+        response.send({ body: request.body })
+/*         SQL.query(this.getusersettingsdata, [
+            request.body.username
+        ], (err, results) => {
+            if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
+            if (!err) response.send({...results[0]})
+        }) */
     }
 
     getsavedposts = (request, response) => {
@@ -270,13 +302,13 @@ class User {
             email, username
 
         ], (err, results) => {
-            if (err) response.send({ message: 'There has been an error.', err: err, status: 400 });
+            if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 });
             if (!err) SQL.query(this.GetSavedPostsQuery, [
 
                 username
 
             ], (err, results) => {
-                if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
+                if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
                 if (!err) {
                     if (results.length === 0) response.send({ message: 'You have no saved posts.', err: null, status: 400 })
                     if (results.length > 0) response.send(results);
@@ -293,12 +325,12 @@ class User {
             username, Number(post_id)
 
         ], (err, results) => {
-            if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
+            if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
             if (!err) {
                 if (results.length === 0 ) response.send({message: 'This is not a valid post.'})
                 if (results.length === 1) {
 
-                    response.send({...results[0]});
+                    response.send(...results[0]);
                 }
             }
             
@@ -338,13 +370,13 @@ class User {
             usernameparam
 
         ], (err, followers) => {
-            if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
+            if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
             if (!err) SQL.query(this.GetUserFollowingQuery, [
 
                 usernameparam
 
             ], (err, following) => {
-                if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
+                if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
                 if (!err) response.send({ foruser: usernameparam, followers, following, status: 210 })
             })
         })
@@ -359,7 +391,7 @@ class User {
             username, username
 
         ], (err, timelineposts) => {
-            if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
+            if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
             if (!err) response.send({ timelineposts, status: 210 })
         })
     }

@@ -102,9 +102,12 @@ const Profile:React.FC<{match:any, DATA:any, LOADING:boolean, username:string, b
                         <div className='flex flex-col items-center w-screen lg:w-2/5 my-10'>
                             {
                                 DATA && DATA.posts.length > 0 &&
-                                    DATA.posts.map(({title, category, image, url, urldomain, tstamp, price, post_id, user_name, upvotes, downvotes, id}:PostPropsInt&postcollectionProps, i:number) => {
-                                    return <Post title={title} category={category} image={image} url={url} tstamp={tstamp} price={price} urldomain={urldomain}
-                                    post_id={post_id} user_name={user_name} upvotes={upvotes} downvotes={downvotes} id={id}
+                                    DATA.posts.map(({title, category, image, url, urldomain, tstamp, price, post_id, user_name, upvotes, downvotes, id, pfp}:PostPropsInt&postcollectionProps, i:number) => {
+                                    return <Post
+                                    title={title} category={category} image={image} url={url}
+                                    tstamp={tstamp} price={price} urldomain={urldomain}
+                                    post_id={post_id} user_name={user_name} upvotes={upvotes}
+                                    downvotes={downvotes} id={id} pfp={pfp}
                                     />
                                 })
                             }
