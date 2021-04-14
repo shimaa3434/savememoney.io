@@ -6,6 +6,7 @@ import { GetProfile } from '../Redux/Actions/ProfileActions';
 import ProfilePostCardVariant from './ProfilePostCardVariant';
 import Modal from 'react-modal'
 import { Link } from 'react-router-dom';
+import PostCard from './PostCard/PostCard';
 
 
 const Profile:React.FC<{match:any, DATA:any, LOADING:boolean, username:string, bio:string, namehead:string, GetProfile:Function}>
@@ -103,7 +104,8 @@ const Profile:React.FC<{match:any, DATA:any, LOADING:boolean, username:string, b
                             {
                                 DATA && DATA.posts.length > 0 &&
                                     DATA.posts.map(({title, category, image, url, urldomain, tstamp, price, post_id, user_name, upvotes, downvotes, id, pfp}:PostPropsInt&postcollectionProps, i:number) => {
-                                    return <Post
+                                            console.log(pfp)
+                                    return <PostCard
                                     title={title} category={category} image={image} url={url}
                                     tstamp={tstamp} price={price} urldomain={urldomain}
                                     post_id={post_id} user_name={user_name} upvotes={upvotes}

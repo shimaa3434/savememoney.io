@@ -44,7 +44,8 @@ class User {
         this.unfollow = this.unfollow.bind(this);
         this.followdata = this.followdata.bind(this);
         this.getusertimeline = this.getusertimeline.bind(this);
-        this.uploadpfp = this.uploadpfp.bind(this);
+        this.uploadinitialpfp = this.uploadinitialpfp.bind(this);
+        this.uploadnewpfp = this.uploadnewpfp.bind(this);
         this.getusersettingsdata = this.getusersettingsdata.bind(this)
     };
 
@@ -58,11 +59,12 @@ class User {
     UnfollowUserQuery = 'DELETE FROM userfollows WHERE followinguser = ? AND followedbyuser = ? ;';
     GetUserFollowersQuery = 'SELECT followedbyuser FROM userfollows WHERE followinguser = ?'
     GetUserFollowingQuery = 'SELECT followinguser FROM userfollows WHERE followedbyuser = ?'
-    GetAllUserPostsQuery = 'SELECT posts.title, posts.id, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes, users.namehead FROM posts INNER JOIN users ON posts.user_name = users.username WHERE users.username = ? AND EXISTS (SELECT * FROM users WHERE users.username = ?) ORDER BY posts.tstamp DESC ;';
+    GetAllUserPostsQuery = 'SELECT posts.title, posts.id, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes, users.namehead, users.pfp FROM posts INNER JOIN users ON posts.user_name = users.username WHERE users.username = ? AND EXISTS (SELECT * FROM users WHERE users.username = ?) ORDER BY posts.tstamp DESC ;';
     GetUserProfileDataQuery = 'SELECT namehead, username, bio, pfp FROM users WHERE username = ?';
 
     UploadUserPFPQuery = 'UPDATE users SET pfp = ? WHERE username = ? ;'
-    GetUserQuery = 'SELECT pfp, namehead, username, bio FROM users WHERE username = ?'
+    GetUserSettingsQuery = 'SELECT pfp, namehead, username, bio, email FROM users WHERE username = ?'
+    GetCurrentPFPQuery = 'SELECT pfp FROM users WHERE username = ?'
 
     GetUserFeedQuery = 'SELECT posts.title, posts.id, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes, users.namehead, users.pfp FROM posts INNER JOIN users ON users.username = posts.user_name INNER JOIN userfollows ON userfollows.followinguser = posts.user_name WHERE userfollows.followedbyuser = ? AND EXISTS (SELECT * FROM users WHERE username = ?)  ORDER BY posts.tstamp DESC ;';
 
@@ -265,7 +267,7 @@ class User {
         })
     }
 
-    uploadpfp = (request, response) => {
+    uploadinitialpfp = (request, response) => {
         const { body: { username, email }, file: { originalname, buffer } } = request;
         const fileType = originalname.split(/\./gi)[1];
         const Bucket = 'savememoneypfp';
@@ -285,14 +287,45 @@ class User {
         })
     }
 
+    uploadnewpfp = (request, response) => {
+        const { file: { originalname, buffer }, body: { username, email } } = request;
+        const fileType = originalname.split(/\./gi)[1];
+        const Bucket = 'savememoneypfp';
+        const S3 = useBucket(Bucket);
+        SQL.query(this.GetCurrentPFPQuery, [
+            username
+        ], (err, results) => {
+            const currentPFPFileSplit = results[0].pfp.split(/\//gi)
+            const currentPFPFile = currentPFPFileSplit[ currentPFPFileSplit.length - 1 ]
+            S3.deleteObject({ Bucket, Key: currentPFPFile},
+            (err, data) => {
+                if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
+                if (!err) {
+                    S3.upload({ Bucket, Key: `${username}pfp.${fileType}`, Body: buffer },
+                    (err, uploaddata) => {
+                        if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
+                        if (!err) {
+                            const { Location } = uploaddata;
+                            SQL.query(this.UploadUserPFPQuery, [
+                                Location, username
+                            ], (err, results) => {
+                                if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
+                                if (!err) response.send({ message: 'Success: Status Code 210', status: 210, redirecturl: `/settings`, pfp: Location })
+                            })
+                        }
+                    })
+                }
+            })
+        })
+    }
+
     getusersettingsdata = (request, response) => {
-        response.send({ body: request.body })
-/*         SQL.query(this.getusersettingsdata, [
+         SQL.query(this.GetUserSettingsQuery, [
             request.body.username
         ], (err, results) => {
             if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
             if (!err) response.send({...results[0]})
-        }) */
+        }) 
     }
 
     getsavedposts = (request, response) => {

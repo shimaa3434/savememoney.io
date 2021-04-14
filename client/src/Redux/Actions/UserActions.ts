@@ -1,5 +1,4 @@
 import Axios from 'axios';
-import { response } from 'express';
 import { dispatchLoggedIn, dispatchLoggedInUsername, dispatchUserAttemptedAuth } from './DispatchTypes';
 
 export const CheckUserAuth = () => {

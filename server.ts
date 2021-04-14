@@ -13,10 +13,12 @@ const cors = require('cors');
 var Express = require('express');
 const AWS = require('aws-sdk');
 const App = Express();
-const Port = 6002;
+const Port = 6666;
+
 
 App.use(Express.json());
 App.use(Express.urlencoded({extended: true}));
+/* App.use(BodyParser()) */;
 App.use(cors());
 App.use('/api/posts', PostsRoute);
 App.use('/api/categories', CategoryRoute);
