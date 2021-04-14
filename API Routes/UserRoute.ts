@@ -52,12 +52,17 @@ Router.get('/timeline', JWTAuthMiddleware, (request:any, response) => {
     User.getusertimeline(request, response)
 })
 
+<<<<<<< HEAD
 Router.post('/uploadinitialpfp', [UploadMiddleware, JWTAuthMiddleware], (request, response) => {
     User.uploadinitialpfp(request, response);
 })
 
 Router.post('/uploadnewpfp', [UploadMiddleware, JWTAuthMiddleware], (request, response) => {
     User.uploadnewpfp(request, response)
+=======
+Router.post('/uploadpfp', [UploadMiddleware, JWTAuthMiddleware], (request, response) => {
+    User.uploadpfp(request, response);
+>>>>>>> 129d9cba2feb368568a009ba7a154c4fa413dd30
 })
 
 Router.post('/settings', JWTAuthMiddleware, (request, response) => {

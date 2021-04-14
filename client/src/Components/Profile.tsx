@@ -104,7 +104,6 @@ const Profile:React.FC<{match:any, DATA:any, LOADING:boolean, username:string, b
                             {
                                 DATA && DATA.posts.length > 0 &&
                                     DATA.posts.map(({title, category, image, url, urldomain, tstamp, price, post_id, user_name, upvotes, downvotes, id, pfp}:PostPropsInt&postcollectionProps, i:number) => {
-                                            console.log(pfp)
                                     return <PostCard
                                     title={title} category={category} image={image} url={url}
                                     tstamp={tstamp} price={price} urldomain={urldomain}

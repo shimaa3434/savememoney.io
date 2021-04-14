@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import axios from 'axios';
 import React, { useState } from 'react'
 import Modal from 'react-modal';
@@ -5,10 +6,18 @@ import { useSelector } from 'react-redux';
 
 const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email:string, pfp:string, data:any }> = ({ username, namehead, bio, email, pfp, data }) => {
     console.log(data)
+=======
+import React, { useState } from 'react'
+import { useSelector } from 'react-redux';
+
+const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email:string, pfp:string }> = ({ username, namehead, bio, email, pfp }) => {
+
+>>>>>>> 129d9cba2feb368568a009ba7a154c4fa413dd30
     const [ usernameInput, setUsernameInput ] = useState<string>(username);
     const [ nameInput, setNameInput ] = useState<string>(namehead);
     const [ bioInput, setBioInput ] = useState<string>(bio);
     const [ emailInput, setEmailInput ] = useState<string>(email);
+<<<<<<< HEAD
     const [ PFPModalStatus, setPFPModalStatus ] = useState<boolean>(false);
 
     const handleUploadPFP = async (file:any) => {
@@ -59,10 +68,29 @@ const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email
                         <input className='border-2 border-blue-600 py-2 px-2 rounded-lg outline-none w-full' value={ emailInput } placeholder='Email' id='email' onChange={({ target: { value } }) => { setEmailInput(value) }} />
                     </div>
                     <button disabled={EnableSubmitButtonOnChange} className={`py-2 px-6 rounded text-white ${EnableSubmitButtonOnChange ? 'bg-blue-300' : 'bg-blue-600'}`}>
+=======
+    const DisableSubmitButtonOnChange = usernameInput === username && nameInput === namehead && bioInput === bio && emailInput === email ? false : true
+
+    return (
+        <div className='w-3/5 flex flex-row justify-start'>
+            <div className=''>
+                {/* <img src={} alt='' /> */}
+                <form className='flex flex-col'>
+                    <label htmlFor='namehead'>Name</label>
+                    <input value={ nameInput } placeholder='Name' id='namehead' onChange={({ target: { value } }) => { setNameInput(value) }} />
+                    <label htmlFor='username'>Username</label>
+                    <input value={ usernameInput } placeholder='Username' id='username' onChange={({ target: { value } }) => { setUsernameInput(value) }} />
+                    <label htmlFor='bio'>Bio</label>
+                    <input value={ bioInput } placeholder='Bio' id='bio' onChange={({ target: { value } }) => { setBioInput(value) }} />
+                    <label htmlFor='email'>Email</label>
+                    <input value={ emailInput } placeholder='Email' id='email' onChange={({ target: { value } }) => { setEmailInput(value) }} />
+                    <button disabled={DisableSubmitButtonOnChange} className='py-2 px-4 rounded bg-blue-600 text-white'>
+>>>>>>> 129d9cba2feb368568a009ba7a154c4fa413dd30
                         Submit
                     </button>
                 </form>
             </div>
+<<<<<<< HEAD
             {
                 PFPModalStatus &&
                     <Modal isOpen={PFPModalStatus} onRequestClose={() => { setPFPModalStatus(false) }} shouldCloseOnOverlayClick={true} overlayClassName={'flex flex-row justify-center fixed items-center h-screen w-screen z-10 bg-modalunderlay top-0 left-0 right-0 bottom-0'}
@@ -77,6 +105,8 @@ const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email
                         </ul>
                     </Modal>
             }
+=======
+>>>>>>> 129d9cba2feb368568a009ba7a154c4fa413dd30
         </div>
     )
 }
