@@ -47,10 +47,12 @@ class User {
         this.uploadinitialpfp = this.uploadinitialpfp.bind(this);
         this.uploadnewpfp = this.uploadnewpfp.bind(this);
         this.getusersettingsdata = this.getusersettingsdata.bind(this)
+        this.removecurrentpfp = this.removecurrentpfp.bind(this)
+        this.editprofileinfo = this.editprofileinfo.bind(this)
     };
 
     CheckUserExistenceQuery = 'SELECT * from users WHERE email = ? OR username = ? ;';
-    CreateNewUserQuery = 'INSERT INTO users(username, email, hashedpassword, namehead, isadmin) VALUES(?, ?, ?, ?, ?);';
+    CreateNewUserQuery = 'INSERT INTO users(username, email, hashedpassword, namehead, isadmin, pfp) VALUES(?, ?, ?, ?, ?, ?);';
     ChangeUserPasswordQuery = 'UPDATE users SET hashedpassword = ? WHERE username = ? AND email = ? ;';
     ChangeNameHeadQuery = 'UPDATE users SET namehead = ? WHERE username = ? AND email = ? ;';
     GetSavedPostsQuery = 'SELECT posts.id, posts.user_name, posts.image, posts.upvotes, posts.downvotes, posts.category, posts.tstamp FROM savedposts INNER JOIN posts ON savedposts.post_id = posts.id AND savedposts.post_user_name = posts.user_name WHERE savetousername = ? ;';
@@ -65,6 +67,7 @@ class User {
     UploadUserPFPQuery = 'UPDATE users SET pfp = ? WHERE username = ? ;'
     GetUserSettingsQuery = 'SELECT pfp, namehead, username, bio, email FROM users WHERE username = ?'
     GetCurrentPFPQuery = 'SELECT pfp FROM users WHERE username = ?'
+    RemoveCurrentPFPQuery = 'UPDATE users SET pfp = ? WHERE username = ?'
 
     GetUserFeedQuery = 'SELECT posts.title, posts.id, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes, users.namehead, users.pfp FROM posts INNER JOIN users ON users.username = posts.user_name INNER JOIN userfollows ON userfollows.followinguser = posts.user_name WHERE userfollows.followedbyuser = ? AND EXISTS (SELECT * FROM users WHERE username = ?)  ORDER BY posts.tstamp DESC ;';
 
@@ -87,7 +90,7 @@ class User {
                     SQL.query(this.CreateNewUserQuery, [
                         
                         requestBody.username, requestBody.email, HashedPassword,
-                        requestBody.namehead, 0
+                        requestBody.namehead, 0, 'https://savememoneypfp.s3.us-east-2.amazonaws.com/user-512.png'
                         
                     ], (err:any, results:any) => {
                         if (err) {response.status(400).send({message: 'There has been an error.', err: err})};
@@ -297,25 +300,103 @@ class User {
         ], (err, results) => {
             const currentPFPFileSplit = results[0].pfp.split(/\//gi)
             const currentPFPFile = currentPFPFileSplit[ currentPFPFileSplit.length - 1 ]
-            S3.deleteObject({ Bucket, Key: currentPFPFile},
-            (err, data) => {
-                if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
-                if (!err) {
-                    S3.upload({ Bucket, Key: `${username}pfp.${fileType}`, Body: buffer },
-                    (err, uploaddata) => {
+            if (currentPFPFile !== 'user-512.png') {
+
+                S3.deleteObject({ Bucket, Key: currentPFPFile},
+                    (err, data) => {
                         if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
                         if (!err) {
-                            const { Location } = uploaddata;
-                            SQL.query(this.UploadUserPFPQuery, [
-                                Location, username
-                            ], (err, results) => {
+                            S3.upload({ Bucket, Key: `${username}pfp.${fileType}`, Body: buffer },
+                            (err, uploaddata) => {
                                 if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
-                                if (!err) response.send({ message: 'Success: Status Code 210', status: 210, redirecturl: `/settings`, pfp: Location })
+                                if (!err) {
+                                    const { Location } = uploaddata;
+                                    SQL.query(this.UploadUserPFPQuery, [
+                                        Location, username
+                                    ], (err, results) => {
+                                        if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
+                                        if (!err) response.send({ message: 'Success: Status Code 210', status: 210, redirecturl: `/settings`, newpfp: Location })
+                                    })
+                                }
                             })
                         }
                     })
+            } else {
+                S3.upload({ Bucket, Key: `${username}pfp.${fileType}`, Body: buffer },
+                (err, uploaddata) => {
+                    if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 });
+                    if (!err) {
+                        const { Location } = uploaddata;
+                        SQL.query(this.UploadUserPFPQuery, [
+                            Location, username
+                        ], (err, results) => {
+                            if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 });
+                            if (!err) response.send({ message: 'Success: Status Code 210', status: 210, redirecturl: `/settings`, newpfp: Location })
+                        })
+                    }
+                })
+            }
+        })
+    }
+
+    removecurrentpfp = (request, response) => {
+        const { body: { username, email } } = request;
+        const DefaultPFPURL = 'https://savememoneypfp.s3.us-east-2.amazonaws.com/user-512.png'
+        SQL.query(this.RemoveCurrentPFPQuery, [
+            DefaultPFPURL, username
+        ], (err, results) => {
+            if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 });
+            if (!err) response.send({ message: 'Success: Status Code 210', status: 210, newpfp: DefaultPFPURL })
+        })
+    }
+
+    EditProfileInfoQuery = 'UPDATE users SET username = ?, namehead = ?, bio = ?, email = ? WHERE username = ?'
+    IfUsernameChangedChangePostUserQuery = 'UPDATE posts set user_name = ? WHERE user_name = ?'
+    IfUsernameChangedChangePostVotesUpvotedByUserQuery = 'UPDATE postvotes SET upvotedbyuser = ? WHERE upvotedbyuser = ?'
+    IfUsernameChangedChangePostVotesDownvotedByUserQuery = 'UPDATE postvotes SET downvotedbyuser = ? WHERE downvotedbyuser = ?'
+    IfUsernameChangedChangeSavedPostsPostUserQuery = 'UPDATE savedposts SET post_user_name = ? WHERE post_user_name = ?'
+    IfUsernameChangedChangeSavedPostsSaveToUserQuery = 'UPDATE savedposts SET savetousername = ? WHERE savetousername = ?'
+    IfUsernameChangedChangeUserFollowsFollowingUserQuery = 'UPDATE userfollows SET followinguser = ? WHERE followinguser = ?'
+    IfUsernameChangedChangeUserFollowsFollowedByUserQuery = 'UPDATE userfollows SET followedbyuser = ? WHERE followedbyuser = ?'
+
+    editprofileinfo = (request, response) => {
+        const { body: { username, email, usernameinput, nameinput, bioinput, emailinput } } = request;
+        SQL.query(this.EditProfileInfoQuery, [
+            usernameinput, nameinput, bioinput, emailinput, username
+        ], (err , results) => {
+            if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
+            if (!err) {
+                if (username !== usernameinput) {
+
+                    const UpdateUsernameDatabaseWideQueries = [
+                        this.IfUsernameChangedChangePostUserQuery,
+                        this.IfUsernameChangedChangePostVotesUpvotedByUserQuery,
+                        this.IfUsernameChangedChangePostVotesDownvotedByUserQuery,
+                        this.IfUsernameChangedChangeSavedPostsPostUserQuery,
+                        this.IfUsernameChangedChangeSavedPostsSaveToUserQuery,
+                        this.IfUsernameChangedChangeUserFollowsFollowingUserQuery,
+                        this.IfUsernameChangedChangeUserFollowsFollowedByUserQuery
+                    ]
+
+                    UpdateUsernameDatabaseWideQueries.map((query:string, i:number) => {
+                        SQL.query(query, [
+                            usernameinput, username
+                        ], (err, results) => {
+                            if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
+                            if (!err) {
+                                if (i === UpdateUsernameDatabaseWideQueries.length - 1) {
+                                    response.clearCookie('JWT')
+                                    const NewJWTToken = JWT.sign({ username: usernameinput, email: emailinput }, 'f2b271e88196e68685f5a897da0ee715', { expiresIn: '24h' })
+                                    response.cookie('JWT', NewJWTToken, { httpOnly: true, maxAge: 86400000 })
+                                    response.send({ message: 'Success: Status Code 210', status: 210, aye: 'namechanged site wide g' })
+                                }
+                            }
+                        })
+                    })
+                } else {
+                    ///
                 }
-            })
+            }
         })
     }
 

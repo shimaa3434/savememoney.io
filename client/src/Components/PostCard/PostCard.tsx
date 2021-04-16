@@ -63,7 +63,7 @@ const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, c
             <div className='w-full h-16 flex flex-row justify-between items-center border-b-2 border-t-2 border-lightgrey'>
                 <div className='flex flex-row justify-start items-center h-full w-3/4 lg:w-3/5 '>
                     <Link to={`/users/${user_name}`}>
-                        <img className='h-12 w-12 rounded-full ml-4' src={pfp} alt={`${user_name}'s profile picture image.`} />
+                        <img className='h-12 w-12 rounded-full ml-4 object-cover' src={pfp} alt={`${user_name}'s profile picture image.`} />
                     </Link>
                     <Link to={`/users/${user_name}`} className='font-bold mx-4'>
                         {user_name}
