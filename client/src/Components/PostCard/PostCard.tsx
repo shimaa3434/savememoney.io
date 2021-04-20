@@ -12,7 +12,9 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, category, image, url, urldomain, tstamp, price, id,    upvotes, downvotes, post_id, user_name, pfp     }) => {
 
     const [savedstatus, setSavedStatus] = useState<boolean>(false);
-
+    const [ currentUpvotes, setCurrentUpvotes ] = useState<number>(upvotes);
+    const [ currentDownvotes, setCurrentDownvotes ] = useState<number>(downvotes);
+    
     // ADD POSTS STATUS PER 
 
     const savePost = async (id:number, post_user_name:string, ) => {
@@ -22,10 +24,23 @@ const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, c
         })
     }
 
-    const unsavePost = async (post_id:number, post_user_name:string, ) => {
-        await axios.post('/api/posts/unsave', { post_id: id, post_user_name })
+    const unsavePost = async (id:number, post_user_name:string, ) => {
+        await axios.post('/api/posts/unsave', { id, post_user_name })
         .then(({ data: { redirecturl, err, status } }) => {
             if (status === 210) setSavedStatus(false);
+        })
+    }
+
+    const upvotePost = async (id:number, post_user_name:string) => {
+        await axios.post('/api/posts/upvote', { id, post_user_name })
+        .then(({ data: { upvotes } }) => {
+            setCurrentUpvotes(upvotes)
+        })
+    }
+    const downvotePost = async (id:number, post_user_name:string) => {
+        await axios.post('/api/posts/upvote', { id, post_user_name })
+        .then(({ data: { downvotes } }) => {
+            setCurrentDownvotes(downvotes)
         })
     }
 
@@ -92,7 +107,11 @@ const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, c
                 <span>{price || <SkeletonTheme><Skeleton /></SkeletonTheme>}</span>
             </div>
             <div className='flex flex-col h-vh25'>
-                
+                <span>{currentUpvotes} | {currentDownvotes}</span>
+                <div>
+                    <button onClick={() => { upvotePost(id, user_name) }}>Upvote</button>
+                    <button onClick={() => { downvotePost(id, user_name) }}>Downvote</button>
+                </div>
                 <button className='bg-purple-500 ring-4 px-4 my-2 text-white' onClick={() => {
                     savedstatus ? unsavePost(id, user_name) : savePost(id, user_name)
                 }}>
@@ -123,6 +142,12 @@ const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, c
                         <Link to={`/users/${user_name}/${id}`} className='w-full py-2 text-center'>
                             Go to post
                         </Link>
+                        <li className='w-full py-2 text-center' onClick={() => { upvotePost(id, user_name); setPostOptionsModalStatus(false) }}>
+                            Upvote Post
+                        </li>
+                        <li className='w-full py-2 text-center' onClick={() => { downvotePost(id, user_name); setPostOptionsModalStatus(false) }}>
+                            Downvote Post
+                        </li>
                     </ul>
                 </Modal>
             }

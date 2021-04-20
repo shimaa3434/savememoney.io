@@ -28,7 +28,7 @@ App.use('/api/users', UsersRoute);
 App.use('/api', InitialAuthRoute);
 
 Cron.schedule('*/59 * * * *', () => {
-    Post.getNewPosts();
+    
 })
 
 App.listen(Port, () => {console.log(`Listening on port ${Port}.`)});

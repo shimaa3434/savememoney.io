@@ -15,7 +15,7 @@ export const RegisterUser = (name:string, username:string, email:string, passwor
             const StatusCode = resp.status;
             dispatch(dispatchRegisterMessage(resp.data));
             dispatch(dispatchRegisterLoading(false))
-            if (StatusCode === 210) window.location.assign('http://localhost:3000')
+            if (StatusCode === 210) window.location.assign(window.location.origin)
         })
         .catch((err:any) => {
             dispatch(dispatchRegisterLoading(false));

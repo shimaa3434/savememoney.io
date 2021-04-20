@@ -12,6 +12,7 @@ const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email
     const [ emailInput, setEmailInput ] = useState<string>(email);
     const [ PFPModalStatus, setPFPModalStatus ] = useState<boolean>(false);
     const [ pfploading, setPFPLoading ] = useState<boolean>(false);
+    let x:string = pfp;
 
     const handleUploadPFP = async (file:any) => {
         setPFPModalStatus(false)
@@ -19,10 +20,11 @@ const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email
         FD.append('pfp', file, file.name);
         setPFPLoading(true)
         await axios.post('/api/users/uploadnewpfp', FD)
-        .then(({ data: { newpfp } }) => {
+        .then(({ data: { newpfp, status, redirecturl } }) => {
             setPFPLoading(false);
-            console.log(newpfp)
             setCurrentPFP(newpfp);
+            let x = newpfp
+            if (status === 210 && redirecturl) window.location.assign(window.location.origin + redirecturl)
         }
         )
         .catch(err => console.log(err))
@@ -31,16 +33,15 @@ const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email
     const handleRemovePFP = async () => {
         setPFPLoading(true)
         await axios.get('/api/users/removecurrentpfp')
-        .then(({ data: { newpfp } }) => {
+        .then(({ data: { newpfp, status, redirecturl } }) => {
             setPFPLoading(false);
-
-            setCurrentPFP(newpfp)
+            setCurrentPFP(newpfp);
         })
     }
 
     useEffect(() => {
-        setCurrentPFP(currentpfp)
-    }, [ currentpfp ])
+        setCurrentPFP(x)
+    }, [ x ])
 
     const handleDataChange = async (usernameinput:string, nameinput:string, bioinput:string, emailinput:string) => {
         await axios.post('/api/users/editprofileinfo', { usernameinput, nameinput, bioinput, emailinput })
@@ -63,7 +64,7 @@ const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email
                 <div className='flex flex-row items-center my-4'>
                     <div className='h-14 w-14 rounded-full mx-4'>
                         {
-                            pfploading ?
+                            pfploading && pfp !== currentpfp ?
                             <img className='h-14 w-14 rounded-full object-cover' src={'https://savememoneypfp.s3.us-east-2.amazonaws.com/loader.svg'} alt='' />
                             :
                             <img src={currentpfp} className='h-14 w-14 rounded-full object-cover cursor-pointer' alt='' onClick={ () => { setPFPModalStatus(true) } } />
@@ -108,7 +109,7 @@ const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email
             </div>
             {
                 PFPModalStatus &&
-                    <Modal isOpen={PFPModalStatus} onRequestClose={() => { setPFPModalStatus(false) }} shouldCloseOnOverlayClick={true} overlayClassName={'flex flex-row justify-center fixed items-center h-screen w-screen z-10 bg-modalunderlay top-0 left-0 right-0 bottom-0'}
+                    <Modal isOpen={PFPModalStatus} ariaHideApp={false} onRequestClose={() => { setPFPModalStatus(false) }} shouldCloseOnOverlayClick={true} overlayClassName={'flex flex-row justify-center fixed items-center h-screen w-screen z-10 bg-modalunderlay top-0 left-0 right-0 bottom-0'}
                     className={'w-4/5 h-2/5 rounded-lg bg-white outline-none flex flex-col items-center lg:w-1/5 lg:h-1/4 py-2 px-0'}>
                         <div className='font-bold text-2xl py-4 border-b-2 border-lightgrey w-full text-center'>
                             PROFILE PHOTO
@@ -116,7 +117,8 @@ const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email
                         <ul className='list-style-none flex flex-col items-center m-0 p-0 w-full'>
                         <li className='z-40 fixed w-4/6 border-b-2 bg-white border-lightgrey h-14 flex text-center flex-row justify-center items-center cursor-pointer p-0 lg:w-1/5'>
                             <input type='file' className='border-2 border-black z-30 w-4/5 h-14 opacity-0 fixed cursor-pointer p-0 lg:w-1/5' onChange={({ target: { files } }) => {
-                                if (files) handleUploadPFP( files[0] )
+                                if (files) handleUploadPFP( files[files.length - 1] )
+                    
                             }}/>
                             Upload Profile Photo
                         </li>

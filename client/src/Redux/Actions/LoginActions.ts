@@ -11,7 +11,7 @@ export const LoginUser = (useroremail:string, password:string) => {
             if (status === 210) {
                 dispatch(dispatchLoggedIn(true));
                 dispatch(dispatchLoggedInUsername(username))
-                window.location.assign('http://localhost:3000/');
+                window.location.assign(window.location.origin);
             } else {
                 dispatch(dispatchLoginMessage(message))
             }

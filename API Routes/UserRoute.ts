@@ -1,7 +1,7 @@
 var Router = require('express').Router();
 import UserClass from './Objects/User';
 var JWTAuthMiddleware = require('./Middleware/Authentication');
-var UploadMiddleware = require('./Middleware/Upload');
+var PFPUploadMiddleware = require('./Middleware/PFPUpload');
 var User = new UserClass();
 
 
@@ -52,11 +52,11 @@ Router.get('/timeline', JWTAuthMiddleware, (request:any, response) => {
     User.getusertimeline(request, response)
 })
 
-Router.post('/uploadinitialpfp', [UploadMiddleware, JWTAuthMiddleware], (request, response) => {
+Router.post('/uploadinitialpfp', [PFPUploadMiddleware, JWTAuthMiddleware], (request, response) => {
     User.uploadinitialpfp(request, response);
 })
 
-Router.post('/uploadnewpfp', [UploadMiddleware, JWTAuthMiddleware], (request, response) => {
+Router.post('/uploadnewpfp', [PFPUploadMiddleware, JWTAuthMiddleware], (request, response) => {
     User.uploadnewpfp(request, response)
 })
 
