@@ -9,6 +9,9 @@ module.exports = {
         vh25: '25vh',
         '9/10': '90%'
       },
+      borderWidth: {
+        '1': '1px'
+      },
       width: {
         tenth: '10%'
       },
@@ -23,6 +26,7 @@ module.exports = {
         darkblue: '#19456b',
         lighterblue: '#11698e',
         modalunderlay: 'rgba(0,0,0,0.6)',
+        clearmodalunderlay: 'rgba(0,0,0,0.0)',
         darksand: '#b68973',
         wine: '#835858',
         diarrheagreen: '#799351',

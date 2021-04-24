@@ -28,7 +28,8 @@ import {
     SET_CREATEPOST_CATEGORY,
     SET_CREATEPOST_PRICE,
     SET_CREATEPOST_MESSAGE,
-    SET_USER_LOGGED_IN_USERNAME
+    SET_USER_LOGGED_IN_USERNAME,
+    SET_USER_LOGGED_IN_PFP
 } from '../types';
 
 // GENERAL & REUSABLE
@@ -99,6 +100,10 @@ export const dispatchLoggedInUsername = (username: string | null) => {
     return {type: SET_USER_LOGGED_IN_USERNAME, payload: username}
 }
 
+export const dispatchLoggedInPFP = (pfp: string) => {
+    return {type: SET_USER_LOGGED_IN_PFP, payload: pfp}
+}
+
 export const dispatchUserAttemptedAuth = () => {
     return {type: SET_USER_ATTEMPTED_AUTH, payload: true};
 }
@@ -131,6 +136,9 @@ export const dispatchProfileData = (data:any) => {
 }
 export const dispatchProfileLoading = (status:boolean) => {
     return {type: SET_PROFILE_LOADING, payload: status}
+}
+export const dispatchProfileRedirect = (status:boolean) => {
+    return { type: 'SET_PROFILE_REDIRECT', payload: true }
 }
 
 

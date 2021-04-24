@@ -9,15 +9,16 @@ import UnsavedPostIcon from '../../Media/Images/unsavedposticon.svg'
 import SavedPostIcon from '../../Media/Images/savedposticon.svg'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 
-const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, category, image, url, urldomain, tstamp, price, id,    upvotes, downvotes, post_id, user_name, pfp     }) => {
+const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, category, image, url, urldomain, tstamp, price, id, descript,    upvotes, downvotes, post_id, user_name, pfp     }) => {
 
     const [savedstatus, setSavedStatus] = useState<boolean>(false);
     const [ currentUpvotes, setCurrentUpvotes ] = useState<number>(upvotes);
+    /* const [ downvoteStatus, setDownvoteStatus ] = useState<boolean>(); */
+    const [ upvoteStatus, setUpvoteStatus ] = useState<boolean>();
     const [ currentDownvotes, setCurrentDownvotes ] = useState<number>(downvotes);
-    
     // ADD POSTS STATUS PER 
 
-    const savePost = async (id:number, post_user_name:string, ) => {
+    /* const savePost = async (id:number, post_user_name:string, ) => {
         await axios.post('/api/posts/save', { post_id: id, post_user_name })
         .then(({ data: { redirecturl, err, status } }) => {
             if (status === 210) setSavedStatus(true);
@@ -25,24 +26,24 @@ const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, c
     }
 
     const unsavePost = async (id:number, post_user_name:string, ) => {
-        await axios.post('/api/posts/unsave', { id, post_user_name })
+        await axios.post('/api/posts/unsave', { post_id: id, post_user_name })
         .then(({ data: { redirecturl, err, status } }) => {
             if (status === 210) setSavedStatus(false);
         })
-    }
+    } */
 
     const upvotePost = async (id:number, post_user_name:string) => {
-        await axios.post('/api/posts/upvote', { id, post_user_name })
-        .then(({ data: { upvotes } }) => {
-            setCurrentUpvotes(upvotes)
+        await axios.post('/api/posts/upvote', { post_id: id, post_user_name })
+        .then(({ data: { upvotes, downvotes } }) => {
+            setCurrentUpvotes(upvotes);
         })
     }
-    const downvotePost = async (id:number, post_user_name:string) => {
-        await axios.post('/api/posts/upvote', { id, post_user_name })
-        .then(({ data: { downvotes } }) => {
-            setCurrentDownvotes(downvotes)
+    /* const downvotePost = async (id:number, post_user_name:string) => {
+        await axios.post('/api/posts/downvote', { post_id: id, post_user_name })
+        .then(({ data: { downvotes, upvotes } }) => {
+            setCurrentDownvotes(downvotes);
         })
-    }
+    } */
 
     const [ postOptionsModalStatus, setPostOptionsModalStatus ] = useState<boolean>(false)
     
@@ -74,80 +75,72 @@ const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, c
     }
 
     return (
-        <div className='flex flex-col w-screen items-center my-10 rounded border-b-2 border-lightgrey lg:w-full lg:border-2 lg:border-lightgrey lg:mb-20'>
-            <div className='w-full h-16 flex flex-row justify-between items-center border-b-2 border-t-2 border-lightgrey'>
+        <div className='flex flex-col w-screen items-center my-2 rounded border-b-1 border-lightgrey lg:w-full lg:border-2 lg:border-lightgrey lg:mb-2'>
+            <div className='w-full h-16 flex flex-row justify-between items-center border-b-1 border-t-1 border-lightgrey'>
                 <div className='flex flex-row justify-start items-center h-full w-3/4 lg:w-3/5 '>
                     <Link to={`/users/${user_name}`}>
-                        <img className='h-12 w-12 rounded-full ml-4 object-cover' src={pfp} alt={`${user_name}'s profile picture image.`} />
+                        <img className='h-12 w-12 rounded-full ml-4 object-cover border-2 border-blue-600' src={pfp} alt={`${user_name}'s profile picture image.`} />
                     </Link>
                     <Link to={`/users/${user_name}`} className='font-bold mx-4'>
                         {user_name}
                     </Link>
+                    {/* <Link className='no-underline my-4 py-0' to={`/categories/${category.toLowerCase()}`}> </Link> */}
                     {category !== 'EXPIRED' ?
-                        <Link className='no-underline my-4 py-0' to={`/categories/${category.toLowerCase()}`}>
-                            <span className={`${setCategoryColor(category)} text-center`}>{category || <SkeletonTheme> <Skeleton /> </SkeletonTheme>}</span>
-                        </Link>
+                        <span className={`${setCategoryColor(category)} text-center`}>{category || <SkeletonTheme> <Skeleton /> </SkeletonTheme>}</span>
                         :
                         <span className={`${setCategoryColor(category)} my-4 text-center`}>{category || <SkeletonTheme><Skeleton /></SkeletonTheme> }</span>
                     }
                 </div>
                 <div className='flex flex-row justify-center items-center h-full px-4'>
-                    <img className='h-1/2 cursor-pointer' src={PostSettingsIcon} alt='settings icon' onClick={() => { setPostOptionsModalStatus(true); document.body.style.overflowY = 'hidden'}} />
+                    <img className='h-1/2 cursor-pointer' src={'https://savememoneysitewideimages.s3.us-east-2.amazonaws.com/postsettings.svg'} alt='settings icon' onClick={() => { setPostOptionsModalStatus(true); document.body.style.overflowY = 'hidden'}} />
                 </div>
             </div>
-            <div className='flex flex-col items-center justify-center w-full lg:h-vh50 lg:border-b-2 lg:border-t-2 lg:border-lightgrey '>
-
-            {
-                image === 'false' || image === '0' ? 
-                <img className='object-contain lg:h-3/4 lg:w-3/4 h-4/5 w-4/5' src={HyperLinkChainIcon} alt={`NO IMAGE --- ${title} on domain ${urldomain}`}/>
-            :
-                <img className='object-contain lg:h-3/4 lg:w-3/4 h-4/5 w-4/5' src={image} alt={`${title} on domain ${urldomain}`}/>
-            }
+            <div className='flex flex-col items-center justify-center w-full lg:h-vh50 lg:border-b-1 lg:border-t-1 lg:border-lightgrey '>
+                <img className='object-contain lg:h-3/4 lg:w-3/4 h-4/5 w-4/5 my-4' src={image} alt={`${title} on domain ${urldomain}`}/>
                 <a href={url} className='text-sm w-full text-center mx-0 my-2 p-0 lg:w-3/4 '>{title || <SkeletonTheme><Skeleton /></SkeletonTheme>}</a>
-                <span>{price || <SkeletonTheme><Skeleton /></SkeletonTheme>}</span>
+                <span>{`$${price}` || <SkeletonTheme><Skeleton /></SkeletonTheme>}</span>
             </div>
-            <div className='flex flex-col h-vh25'>
-                <span>{currentUpvotes} | {currentDownvotes}</span>
-                <div>
-                    <button onClick={() => { upvotePost(id, user_name) }}>Upvote</button>
-                    <button onClick={() => { downvotePost(id, user_name) }}>Downvote</button>
+            <div className='flex flex-col h-vh25 w-full'>
+                <div className='flex flex-row items-center w-full justify-between border-b-1 border-t-1 border-lightgrey px-2 py-4'>
+                    <div className='flex flex-row items-center'>
+                        {/* <img src={saved ? 'https://savememoneysitewideimages.s3.us-east-2.amazonaws.com/savedpost.svg' : 'https://savememoneysitewideimages.s3.us-east-2.amazonaws.com/unsavedpost.svg'}  className='h-8 w-8 mx-2 cursor-pointer'
+                        onClick={() => {
+                            if ( saved ) setSaved(false)
+                            if ( !saved ) setSaved(true)
+                        }}
+                        /> */}
+                        <img onClick={() => { upvotePost(id, user_name) }} src='https://savememoneysitewideimages.s3.us-east-2.amazonaws.com/upvote.svg' className='h-8 w-8 mx-2 cursor-pointer' />
+                        {/* <img onClick={() => { downvotePost(id, user_name) }} src='https://savememoneysitewideimages.s3.us-east-2.amazonaws.com/downvote.svg' className='h-8 w-8 mx-2 cursor-pointer' /> */}
+                        <span className='mx-2'>{currentUpvotes} </span> {/* | {currentDownvotes} */}
+                    </div>
+                    <div className='flex flex-row items-center'>
+                        <a className='bg-yellow-600 text-white mx-2 px-4 py-2 rounded' href={ url } target='_blank'>
+                            CHECK IT OUT
+                        </a>
+                    </div>
                 </div>
-                <button className='bg-purple-500 ring-4 px-4 my-2 text-white' onClick={() => {
-                    savedstatus ? unsavePost(id, user_name) : savePost(id, user_name)
-                }}>
-                    {savedstatus ?
-                        'unsave'
-                        :
-                        'save'
-                    }
-                </button>
+                <div className='w-full px-2 py-2 block'>
+                    <aside className='font-bold float-left mr-2'>{user_name}</aside>
+                    <span className='w-full'> { descript } </span>
+                </div>
             </div>
 
             { postOptionsModalStatus &&
                 <Modal isOpen={postOptionsModalStatus} onRequestClose={()=> { setPostOptionsModalStatus(false); document.body.style.overflowY = 'unset' }}
                     shouldCloseOnOverlayClick={true} overlayClassName={'flex flex-row justify-center fixed items-center h-screen w-screen z-10 bg-modalunderlay top-0 left-0 right-0 bottom-0'}
-                    className={'w-4/5 h-2/5 rounded-lg bg-white outline-none flex flex-col items-center lg:w-1/5 lg:h-2/4 py-2'}
+                    className={'w-4/5 h-1/6 rounded-lg bg-white outline-none flex flex-col items-center lg:w-1/5 lg:h-2/4 py-2'}
                 >
                     <ul className='list-style-none flex flex-col items-center m-0 p-0 w-full'>
 
-                        <li className='w-full py-2 text-center'>
-                            Report
-                        </li>
-                        <li className='w-full py-2 text-center' onClick={() => {
-                            savePost(id, user_name)// add unsave too later
-                            document.body.style.overflowY = 'unset';
-                        }}>
-                            Save post
-                        </li>
-                        <Link to={`/users/${user_name}/${id}`} className='w-full py-2 text-center'>
+                        <Link to={`/users/${user_name}/${id}`} className='w-full py-2 text-center' onClick={() => { document.body.style.overflowY = 'hidden' }}>
                             Go to post
                         </Link>
-                        <li className='w-full py-2 text-center' onClick={() => { upvotePost(id, user_name); setPostOptionsModalStatus(false) }}>
+                        <li className='w-full py-2 text-center' onClick={() => { upvotePost(id, user_name); setPostOptionsModalStatus(false); document.body.style.overflowY = 'hidden' }}>
                             Upvote Post
                         </li>
-                        <li className='w-full py-2 text-center' onClick={() => { downvotePost(id, user_name); setPostOptionsModalStatus(false) }}>
+                        {/* <li className='w-full py-2 text-center' onClick={() => { downvotePost(id, user_name); setPostOptionsModalStatus(false) }}>
                             Downvote Post
-                        </li>
+                        </li> */}
                     </ul>
                 </Modal>
             }

@@ -32,8 +32,8 @@ Router.get('/profile/:usernameparam', JWTAuthMiddleware, (request:any, response:
 })
 
 
-Router.get('/savedposts', JWTAuthMiddleware, (request:any, response:any) => {
-    User.getsavedposts(request, response);
+Router.get('/upvotedposts', JWTAuthMiddleware, (request:any, response:any) => {
+    User.getupvotedposts(request, response);
 })
 
 Router.get('/postlookup/:username/:post_id', JWTAuthMiddleware, (request:any, response:any) => {

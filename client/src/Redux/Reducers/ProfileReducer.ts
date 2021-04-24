@@ -3,7 +3,8 @@ import { SET_PROFILE_DATA, SET_PROFILE_LOADING } from '../types';
 
 const InitialState:profileReducer  = {
     LOADING: false,
-    DATA: null
+    DATA:null,
+    REDIRECT: false
 }
 
 const ProfileReducer = (state = InitialState, action:ActionInt) => {
@@ -19,6 +20,11 @@ const ProfileReducer = (state = InitialState, action:ActionInt) => {
             return {
                 ...state,
                 LOADING: action.payload
+            }
+        case 'SET_PROFILE_REDIRECT':
+            return {
+                ...state,
+                REDIRECT: action.payload
             }
     }
 }

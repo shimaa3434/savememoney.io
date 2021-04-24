@@ -16,7 +16,7 @@ class User {
         this.changepassword = this.changepassword.bind(this);
         this.changename = this.changename.bind(this);
         this.profile = this.profile.bind(this);
-        this.getsavedposts = this.getsavedposts.bind(this);
+        this.getupvotedposts = this.getupvotedposts.bind(this);
         this.getuserpost = this.getuserpost.bind(this);
         this.follow = this.follow.bind(this);
         this.unfollow = this.unfollow.bind(this);
@@ -33,12 +33,11 @@ class User {
     CreateNewUserQuery = 'INSERT INTO users(username, email, hashedpassword, namehead, isadmin, pfp) VALUES(?, ?, ?, ?, ?, ?);';
     ChangeUserPasswordQuery = 'UPDATE users SET hashedpassword = ? WHERE username = ? AND email = ? ;';
     ChangeNameHeadQuery = 'UPDATE users SET namehead = ? WHERE username = ? AND email = ? ;';
-    GetSavedPostsQuery = 'SELECT posts.id, posts.user_name, posts.image, posts.upvotes, posts.downvotes, posts.category, posts.tstamp FROM savedposts INNER JOIN posts ON savedposts.post_id = posts.id AND savedposts.post_user_name = posts.user_name WHERE savetousername = ? ;';
+    GetUpvotedPostsQuery = 'SELECT posts.id, posts.title, posts.category, posts.image, posts.url, posts.urldomain, posts.tstamp, posts.price, posts.user_name, posts.descript, posts.upvotes, postvotes.upvotedbyuser, users.pfp FROM posts INNER JOIN postvotes ON postvotes.post_id = posts.id INNER JOIN users ON postvotes.upvotedbyuser = users.username WHERE postvotes.upvotedbyuser = ? ORDER BY posts.tstamp DESC;';
     GetUserPostQuery = 'SELECT users.pfp, posts.id, posts.title, posts.category, posts.image, posts.url, posts.urldomain, posts.tstamp, posts.price, posts.user_name, posts.upvotes, posts.downvotes, posts.descript from posts INNER JOIN users ON posts.user_name = users.username WHERE posts.user_name = ? AND posts.id = ? ;'
-    FollowUserQuery = 'INSERT INTO userfollows(followinguser, followedbyuser) SELECT * FROM (SELECT ?, ?) as tmp WHERE NOT EXISTS (SELECT * FROM userfollows WHERE followinguser = ? AND followedbyuser = ?) LIMIT 1;'
-    UnfollowUserQuery = 'DELETE FROM userfollows WHERE followinguser = ? AND followedbyuser = ? ;';
-    GetUserFollowersQuery = 'SELECT followedbyuser FROM userfollows WHERE followinguser = ?'
-    GetUserFollowingQuery = 'SELECT followinguser FROM userfollows WHERE followedbyuser = ?'
+    FollowSelfQuery = 'INSERT INTO userfollows(followinguser, followedbyuser) VALUES(?,?)'
+    GetUserFollowersQuery = 'SELECT users.namehead, users.pfp, userfollows.followedbyuser, userfollows.followinguser FROM userfollows INNER JOIN users ON userfollows.followedbyuser = users.username WHERE userfollows.followinguser = ? AND userfollows.followinguser <> userfollows.followedbyuser'
+    GetUserFollowingQuery = 'SELECT users.namehead, users.pfp, userfollows.followinguser FROM userfollows INNER JOIN users ON userfollows.followinguser = users.username WHERE userfollows.followedbyuser = ? AND userfollows.followinguser <> userfollows.followedbyuser'
     GetAllUserPostsQuery = 'SELECT posts.title, posts.id, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes, users.namehead, users.pfp FROM posts INNER JOIN users ON posts.user_name = users.username WHERE users.username = ? AND EXISTS (SELECT * FROM users WHERE users.username = ?) ORDER BY posts.tstamp DESC ;';
     GetUserProfileDataQuery = 'SELECT namehead, username, bio, pfp FROM users WHERE username = ?';
     UploadUserPFPQuery = 'UPDATE users SET pfp = ? WHERE username = ? ;'
@@ -46,7 +45,7 @@ class User {
     GetCurrentPFPQuery = 'SELECT pfp FROM users WHERE username = ?'
     RemoveCurrentPFPQuery = 'UPDATE users SET pfp = ? WHERE username = ?'
     GetNewUserIDQuery = 'SELECT id FROM users WHERE username = ?'
-    GetUserFeedQuery = 'SELECT posts.title, posts.id, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes, users.namehead, users.pfp FROM posts INNER JOIN users ON users.username = posts.user_name INNER JOIN userfollows ON userfollows.followinguser = posts.user_name WHERE userfollows.followedbyuser = ? AND EXISTS (SELECT * FROM users WHERE username = ?)  ORDER BY posts.tstamp DESC ;';
+    GetUserFeedQuery = 'SELECT posts.title, posts.id, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes, users.namehead, users.pfp FROM posts INNER JOIN users ON users.username = posts.user_name INNER JOIN userfollows ON userfollows.followinguser = posts.user_name WHERE userfollows.followedbyuser = ? ORDER BY posts.tstamp DESC ;';
     
     create = (request:any, response:any) => {
         const requestBody:CreateUserBody = request.body;
@@ -72,15 +71,23 @@ class User {
                     ], (err:any, results:any) => {
                         if (err) {response.status(400).send({message: 'There has been an error.', err: err})};
                         if (!err) {
-                            SQL.query(this.GetNewUserIDQuery, [
-                                requestBody.username
-                            ], (err, NewUserID) => {
+                            SQL.query(this.FollowSelfQuery, [
+                                requestBody.username, requestBody.username
+                            ], (err, results) => {
                                 if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
                                 if (!err) {
-                                    const { id } = NewUserID[0];
-                                    const Token = JWT.sign({ username: requestBody.username, email: requestBody.email, id, isadmin: 0}, 'f2b271e88196e68685f5a897da0ee715', { expiresIn: '24h' });
-                                    response.cookie('JWT', Token, {maxAge: 86400000, httpOnly: true});
-                                    response.status(210).send({message: 'The user has been created.'});
+
+                                    SQL.query(this.GetNewUserIDQuery, [
+                                        requestBody.username
+                                    ], (err, NewUserID) => {
+                                        if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
+                                        if (!err) {
+                                            const { id } = NewUserID[0];
+                                            const Token = JWT.sign({ username: requestBody.username, email: requestBody.email, id, isadmin: 0, pfp: 'https://savememoneypfp.s3.us-east-2.amazonaws.com/user-512.png'}, 'f2b271e88196e68685f5a897da0ee715', { expiresIn: '24h' });
+                                            response.cookie('JWT', Token, {maxAge: 86400000, httpOnly: true});
+                                            response.status(210).send({message: 'The user has been created.'});
+                                        }
+                                    })
                                 }
                             })
                         };
@@ -108,8 +115,8 @@ class User {
                     const ComparePassword = await BCrypt.compare(requestBody.password, results[0].hashedpassword);
 
                     if (ComparePassword) {
-                        const { email, username, isadmin, id } = results[0];
-                        const Token = JWT.sign({ email, username, isadmin, id }, 'f2b271e88196e68685f5a897da0ee715', {expiresIn: '24h'});
+                        const { email, username, isadmin, id, pfp } = results[0];
+                        const Token = JWT.sign({ email, username, isadmin, id, pfp }, 'f2b271e88196e68685f5a897da0ee715', {expiresIn: '24h'});
                         response.cookie('JWT', Token, {maxAge: 86400000, httpOnly: true});
 
                         response.send({
@@ -200,8 +207,9 @@ class User {
     };
 
     profile = (request:any, response:any) => {
-        const {params: { usernameparam } } = request
-
+        const { params: { usernameparam }, body: { username } } = request
+        const LOGGEDINUSERNAME = username;
+        
         SQL.query(this.GetAllUserPostsQuery, [
 
             usernameparam, usernameparam
@@ -209,9 +217,6 @@ class User {
         ], (err:any, posts) => {
             if (err) {response.send({message: 'There has been an error loading this profile.', err, status: 400})};
             if (!err) {
-                if (posts.length === 0) {response.send({message: 'This user has no posts.', status: 400})};
-                if(posts.length > 0 ) {
-
                     SQL.query(this.GetUserProfileDataQuery, [
 
                         usernameparam
@@ -219,7 +224,7 @@ class User {
                     ], (err, userdata) => {
                         if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
                         if (!err) {
-                            if (userdata.length === 0) response.send({ message: 'This user does not exist.', status: 400})
+                            if (!userdata[0]) { response.send({ status:400 }); return; }
                             const { namehead, bio, username, pfp } = userdata[0];
                             if (userdata.length === 1) {
 
@@ -235,23 +240,70 @@ class User {
 
                                     ], (err, following) => {
                                         if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
-                                        if (!err) response.send({
-                                            message: 'Here is the user data.',
-                                            foruser: usernameparam,
-                                            posts,
-                                            userdata: userdata[0],
-                                            followdata: {
-                                                followers,
-                                                following
-                                            },
-                                            status: 210
-                                        })
+                                        if (!err) {
+                                            SQL.query(this.GetUpvotedPostsQuery, [
+                                                LOGGEDINUSERNAME
+                                            ], (err, savedpostsresults) => {
+                                                if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
+                                                if ( !err ) {
+                                                    const FilterForIfLoggedInUserIsAFollower = followers.filter((follower, idx) => {
+                                                        if (follower.followinguser !== LOGGEDINUSERNAME) return follower.followedbyuser === LOGGEDINUSERNAME
+                                                    });
+                                                    const isLoggedInUserAFollowerStatus = FilterForIfLoggedInUserIsAFollower.length !== 0 ? true : false
+                                                    /* console.log({ followers, FilterForIfLoggedInUserIsAFollower, isLoggedInUserAFollowerStatus }) */
+                                                    if (savedpostsresults.length > 0) {
+
+                                                        const PostsWithIfSavedStatus = posts.map((post, i) => {
+                                                            if (savedpostsresults[i].post_id === posts[i].id) {
+                                                                return { ...post, savedbyloggedinuser: true }
+                                                            } else if (savedpostsresults[i].post_id !== posts[i].id) {
+                                                                return { ...post, savedbyloggedinuser: false }
+                                                            }
+                                                            /* const withSavedStatus = savedpostsresults.map(savedpost => {
+                                                                console.log(savedpost.post_id, post.id)
+                                                                if (savedpost.post_id === post.id) { return { ...post, savedbyloggedinuser: true } }
+                                                                else { return { ...post, savedbyloggedinuser: false } }
+                                                            })
+
+                                                            console.log(withSavedStatus)
+                                                            return withSavedStatus */
+                                                        })
+                                                        response.send({
+                                                            message: 'Here is the user data.',
+                                                            foruser: usernameparam,
+                                                            posts: PostsWithIfSavedStatus,
+                                                            userdata: userdata[0],
+                                                            followdata: {
+                                                                followers,
+                                                                following,
+                                                                loggedinuserisfollower: isLoggedInUserAFollowerStatus
+                                                            },
+                                                            status: 210
+                                                        })
+                                                    } else {
+                                                        const NoSavedPostsWithSavedStatus = posts.map(post => { return { ...post, savedbyloggedinuser: false } })
+                                                        response.send({
+                                                            message: 'Here is the user data.',
+                                                            foruser: usernameparam,
+                                                            posts:NoSavedPostsWithSavedStatus,
+                                                            userdata: userdata[0],
+                                                            followdata: {
+                                                                followers,
+                                                                following,
+                                                                loggedinuserisfollower: isLoggedInUserAFollowerStatus
+                                                            },
+                                                            status: 210
+                                                        })
+                                                    }
+                                                }
+                                            })
+                                        }
                                     })
                                 })
                             }
                         }
                     })
-                }
+                
             }
         })
     }
@@ -277,7 +329,7 @@ class User {
     }
 
     uploadnewpfp = (request, response) => {
-        const { file: { originalname, buffer }, body: { username, email } } = request;
+        const { file: { originalname, buffer }, body: { username, email, id } } = request;
         const fileTypeSplit = originalname.split(/\./gi);
         const fileType = fileTypeSplit[fileTypeSplit.length - 1]
         const Bucket = 'savememoneypfp';
@@ -288,7 +340,7 @@ class User {
             const currentPFPFileSplit = results[0].pfp.split(/\//gi)
             const currentPFPFile = currentPFPFileSplit[ currentPFPFileSplit.length - 1 ]
             if (currentPFPFile !== 'user-512.png') {
-                console.log(`${username}pfp.${fileType}`, currentPFPFile)
+/*                 console.log(`${username}pfp.${fileType}`, currentPFPFile) */
                 S3.deleteObject({ Bucket, Key: currentPFPFile},
                     (err, data) => {
                         if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
@@ -302,7 +354,12 @@ class User {
                                         Location, username
                                     ], (err, results) => {
                                         if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
-                                        if (!err) response.send({ message: 'Success: Status Code 210', status: 210, redirecturl: `/settings`, newpfp: Location })
+                                        if (!err) {
+                                            response.clearCookie('JWT');
+                                            const NewTokenWithNewPFP = JWT.sign({ username, email, pfp: Location, id }, 'f2b271e88196e68685f5a897da0ee715' )
+                                            response.cookie('JWT', NewTokenWithNewPFP, { httpOnly: true, maxAge: 86400000})                                 
+                                            response.send({ message: 'Success: Status Code 210', status: 210, redirecturl: `/settings`, newpfp: Location })
+                                        }
                                     })
                                 }
                             })
@@ -354,7 +411,8 @@ class User {
         ], (err , results) => {
             if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
             if (!err) {
-                if (username !== usernameinput) {
+                console.log(username, usernameinput, email, emailinput)
+                if (username !== usernameinput || email !== emailinput) {
 
                     const UpdateUsernameDatabaseWideQueries = [
                         this.IfUsernameChangedChangePostUserQuery,
@@ -374,15 +432,13 @@ class User {
                             if (!err) {
                                 if (i === UpdateUsernameDatabaseWideQueries.length - 1) {
                                     response.clearCookie('JWT')
-                                    const NewJWTToken = JWT.sign({ username: usernameinput, email: emailinput }, 'f2b271e88196e68685f5a897da0ee715', { expiresIn: '24h' })
-                                    response.cookie('JWT', NewJWTToken, { httpOnly: true, maxAge: 86400000 })
-                                    response.send({ message: 'Success: Status Code 210', status: 210, aye: 'namechanged site wide g' })
+                                    response.send({ message: 'Success: Status Code 210', status: 210, redirecturl: '/login' })
                                 }
                             }
                         })
                     })
                 } else {
-                    ///
+                    response.send({ message: 'Success: Status Code 210', status: 210 })
                 }
             }
         })
@@ -397,7 +453,7 @@ class User {
         }) 
     }
 
-    getsavedposts = (request, response) => {
+    getupvotedposts = (request, response) => {
         const { username, email } = request.body
         SQL.query(this.CheckUserExistenceQuery, [
 
@@ -405,7 +461,7 @@ class User {
 
         ], (err, results) => {
             if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 });
-            if (!err) SQL.query(this.GetSavedPostsQuery, [
+            if (!err) SQL.query(this.GetUpvotedPostsQuery, [
 
                 username
 
@@ -426,13 +482,16 @@ class User {
         ], (err, results) => {
             if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
             if (!err) {
-                if (results.length === 0 ) response.send({message: 'This is not a valid post.'})
+                if (results.length === 0 ) response.send({message: 'This is not a valid post.', status: 400})
                 if (results.length === 1) {
-                    response.send({...results[0]});
+                    response.send( { post: { ...results[0] }, status: 210 } );
                 }
             }
         })
     }
+
+    FollowUserQuery = 'INSERT INTO userfollows(followinguser, followedbyuser) SELECT * FROM (SELECT ?, ?) as tmp WHERE NOT EXISTS (SELECT * FROM userfollows WHERE followinguser = ? AND followedbyuser = ?) LIMIT 1;'
+    UnfollowUserQuery = 'DELETE FROM userfollows WHERE followinguser = ? AND followedbyuser = ? ;';
 
     follow = (request, response) => {
         const { body: { username, email, usertofollow } } = request;
@@ -440,7 +499,18 @@ class User {
             usertofollow, username, usertofollow, username
         ], (err, results) => {
             if (err) response.send({ message: 'There has been an error.', err: err, status: 400});
-            if (!err) response.send({ message: 'Following', status: 210 })
+            if (!err) {
+                SQL.query(this.GetUserFollowersQuery, [
+                    usertofollow
+                ], (err, newfollowers) => {
+                    const filterForIfLoggedInUserIsAFollower = newfollowers.filter(follower => {
+                        if (follower.followedbyuser === username) return follower;
+                    })
+                    const newIsLoggedInUserAFollowerStatus = filterForIfLoggedInUserIsAFollower.length === 1 ? true : false
+                    if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
+                    if (!err) response.send({ newIsLoggedInUserAFollowerStatus, newfollowers, message: 'Successfully followed the user!', status: 210 })
+                })
+            }
         })
     }
     
@@ -450,7 +520,19 @@ class User {
             usertounfollow, username
         ], (err, results) => {
             if (err) response.send({ message: 'There has been an error.', err: err, status: 400});
-            if (!err) response.send({ message: 'Successfully unfollowed the user!', status: 210 })
+            if (!err) {
+                SQL.query(this.GetUserFollowersQuery, [
+                    usertounfollow
+                ], (err, newfollowers) => {
+                    const filterForIfLoggedInUserIsAFollower = newfollowers.filter(follower => {
+                        if (follower.followedbyuser === username) return follower;
+                    })
+                    const newIsLoggedInUserAFollowerStatus = filterForIfLoggedInUserIsAFollower.length === 0 ? false : true
+                    if (err) response.send({ message: 'There has been an error.', err, status: 400});
+                    if (!err) response.send({ newIsLoggedInUserAFollowerStatus, newfollowers, message: 'Successfully unfollowed the user!', status: 210 })
+                    
+                })
+            }
         })
     }
 
@@ -474,6 +556,7 @@ class User {
         SQL.query(this.GetUserFeedQuery, [
             username, username
         ], (err, timelineposts) => {
+/*             const TimelineOfPostsNoDuplicates = timelineposts.filter( ( post, idx ) => { return timelineposts.indexOf(post) === idx } ) */
             if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
             if (!err) response.send({ timelineposts, status: 210 })
         })

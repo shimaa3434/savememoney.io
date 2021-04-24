@@ -2,14 +2,14 @@ import { dispatchRegisterLoading, dispatchRegisterMessage } from './DispatchType
 import Axios from 'axios';
 
 
-export const RegisterUser = (name:string, username:string, email:string, password:string) => {
+export const RegisterUser = (namehead:string, username:string, email:string, password:string) => {
     return async (dispatch:Function) => {
         dispatch(dispatchRegisterLoading(true));
         await Axios.post('/api/users/signup', {
             email,
             username,
             password,
-            name
+            namehead
         })
         .then((resp:any) => {
             const StatusCode = resp.status;

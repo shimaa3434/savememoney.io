@@ -24,19 +24,33 @@ class Search extends Component<SearchPropsInt> {
 
     render () {
 
-        const { DATA } = this.props;
+        const { DATA, LOADING } = this.props;
         
         return (
             <div className='flex flex-col w-screen items-center'>
-                <SearchForm />
-                <div className='w-screen bg-white flex flex-col md:flex-row md:flex-wrap justify-center'>
-                    {DATA && DATA.map(({title, category, image, url, urldomain, tstamp, price, post_id, user_name, upvotes, downvotes, id, pfp}:PostPropsInt&postcollectionProps, i:number) => {
-                    return <PostCard
-                    title={title} category={category} image={image} url={url} tstamp={tstamp}
-                    price={price} urldomain={urldomain} post_id={post_id}
-                    user_name={user_name} upvotes={upvotes} downvotes={downvotes} id={id} pfp={pfp}
-                    />
-                    })}
+                <SearchForm styles='w-4/5 flex flex-row items-center md:hidden my-4' />
+                <div className='flex flex-row justify-center w-screen'>
+                    <div className='flex flex-col items-center w-screen lg:w-2/5 my-10'>
+                        {
+                            !LOADING ?
+                                <div className='flex flex-col items-center w-full'>
+                                    {DATA && DATA.length > 0 ?
+
+                                        DATA.map(({title, category, image, url, urldomain, tstamp, price, post_id, user_name, upvotes, downvotes, descript, id, pfp}:PostPropsInt&postcollectionProps, i:number) => {
+                                            return <PostCard
+                                            title={title} category={category} image={image} url={url} tstamp={tstamp}
+                                            price={price} urldomain={urldomain} post_id={post_id}
+                                            user_name={user_name} upvotes={upvotes} downvotes={downvotes} id={id} pfp={pfp} descript={descript}
+                                            />
+                                        })
+                                        :
+                                        <div>No results, make a search!</div>
+                                    }
+                                </div>
+                                :
+                                <img src={'https://savememoneypfp.s3.us-east-2.amazonaws.com/loader.svg'} className='h-32 w-32 m-4' alt='' />
+                        }
+                    </div>
                 </div>
             </div>
         )
@@ -44,9 +58,9 @@ class Search extends Component<SearchPropsInt> {
 }
 
 const mapStateToProps = (state:any) => {
+    const { SearchState: { DATA, LOADING, INPUT } } = state;
     return {
-        DATA: state.SearchState.DATA,
-        LOADING: state.SearchState.LOADING
+        DATA, LOADING, INPUT
     };
 };
 const mapDispatchToProps = (dispatch:Function) => {

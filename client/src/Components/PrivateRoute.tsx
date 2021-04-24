@@ -7,7 +7,6 @@ const PrivateRoute:React.FC<{component:React.FC, path: any, exact: boolean, cond
     return condition ?
     (
         <div>
-            <Header />
             <Route path={path} exact={exact} component={component} />
         </div>
     )

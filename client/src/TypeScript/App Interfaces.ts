@@ -25,14 +25,18 @@ export interface profileReducer {
         userdata: {
             namehead: string,
             bio: string,
-            username: string
+            username: string,
+            pfp:string
         },
         followdata: {
             followers: Array<{ followedbyuser: string }>,
-            following: Array<{ followinguser: string }>
+            following: Array<{ followinguser: string }>,
+            loggedinuserisfollower: boolean
         }
-        status: number
-    }
+        status: number,
+        placeholder?:boolean
+    },
+    REDIRECT: boolean
 }
 
 export interface registerProps {
@@ -49,7 +53,6 @@ export interface registerReducer {
 export interface profilepostcardProps {
     upvotes: number,
     price: string,
-    downvotes: number,
     category: string,
     user_name: string,
     id: number,
@@ -80,7 +83,8 @@ export interface postcollectionProps {
     downvotes: number,
     tstamp: number,
     id: number,
-    pfp:string
+    pfp:string,
+    descript:string
 }
 
 
@@ -142,7 +146,7 @@ export interface PostPropsInt {
     postid?: string, title?: string,
     category: string, image: string,
     url?: string, urldomain?: string,
-    tstamp: number, price?: string, id:number
+    tstamp: number, price?: string, id:number, descript:string
 };
 
 // FOR USE IN CATEGORY.TSX FOR CONNECTED REDUX PROPS AND ROUTE PROPS
@@ -181,7 +185,7 @@ export interface SearchPropsInt {
     CATEGORY: searchParameter,
     PRICERANGE: searchParameter | Array<string>,
     LOADING: boolean,
-    BGCOLOR?: 'string',
+    styles: string,
     GetSearch: Function
     setSearchInput: Function,
     setSearchCategory: Function,
@@ -218,7 +222,9 @@ export interface authLayerProps {
     
     CheckUserAuth: Function,
     ATTEMPTEDAUTH: boolean,
-    LOGGEDIN: boolean
+    LOGGEDIN: boolean,
+    LOGGEDINUSERNAME: string | null,
+    LOGGEDINPFP: string
 }
 
 // FOR USER REDUCER
@@ -226,5 +232,17 @@ export interface authLayerProps {
 export interface UserReducerInt {
     LOGGEDIN: boolean,
     ATTEMPTEDAUTH: boolean,
-    LOGGEDINUSERNAME: string | null
+    LOGGEDINUSERNAME: string | null,
+    LOGGEDINPFP: string
+}
+
+// FOLLOW ACCOUNT LIST ITEM
+
+export interface followaccountlistitemProps {
+    accountusername: string,
+    ofaccount: string,
+    namehead:string,
+    type: string,
+    pfp:string,
+    closeModal: Function
 }

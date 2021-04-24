@@ -5,7 +5,7 @@ import {CreateAPost} from '../Redux/Actions/CreatePostActions'
 import LoadingIcon from '../Media/Images/loading.svg'
 import Select from 'react-select'
 import { GroupSelectOptions } from './Search/SearchSelectOptions'
-
+import { TextField } from '@material-ui/core';
 const CreatePost:React.FC<createpostProps> = ({ CreateAPost, MESSAGE, LOADING }) => {
 
     const [ price, setPrice ] = useState<string>('')
@@ -18,12 +18,12 @@ const CreatePost:React.FC<createpostProps> = ({ CreateAPost, MESSAGE, LOADING })
 
     return (
     <form className='w-screen flex flex-col items-center py-10' onSubmit={(event:any) => {event.preventDefault();}}>
-        <input className='w-4/5 h-10 my-4 border-2 rounded pl-4 py-6 border-blue-800 md:w-1/3' value={url} placeholder='Enter the product link' onChange={({ target: { value } }) => { setURL(value) }} />
-        <input className='w-4/5 h-10 my-4 border-2 rounded pl-4 py-6 border-blue-800 md:w-1/3' value={price} placeholder='Enter the sale price' onChange={({ target: { value } }) => { setPrice(value) }} />
-        <input className='w-4/5 h-10 my-4 border-2 rounded pl-4 py-6 border-blue-800 md:w-1/3' value={title} placeholder='Enter the title' onChange={({ target: { value } }) => { setTitle(value) }} />
-        <input className='w-4/5 h-10 my-4 border-2 rounded pl-4 py-6 border-blue-800 md:w-1/3' value={descript} placeholder='Enter the description' onChange={({ target: { value } }) => { setDescript(value) }} />
+        <TextField className='w-4/5 h-14 my-6 border-2 rounded pl-4 border-blue-800 md:w-2/4 lg:w-1/3' value={url} placeholder='Enter the product link' onChange={({ target: { value } }) => { setURL(value) }} />
+        <TextField className='w-4/5 h-14 my-6 border-2 rounded pl-4 border-blue-800 md:w-2/4 lg:w-1/3' value={price} placeholder='Enter the sale price' onChange={({ target: { value } }) => { setPrice(value) }} />
+        <TextField className='w-4/5 h-14 my-6 border-2 rounded pl-4 border-blue-800 md:w-2/4 lg:w-1/3' value={title} placeholder='Enter the title' onChange={({ target: { value } }) => { setTitle(value) }} />
+        <TextField className='w-4/5 h-14 my-6 border-2 rounded pl-4 border-blue-800 md:w-2/4 lg:w-1/3' value={descript} placeholder='Enter the description' onChange={({ target: { value } }) => { setDescript(value) }} />
         <input type='file' onChange={({ target: { files } }) => { if ( files ) { setImageFile(files[ files.length - 1 ]) } }}/>
-        <Select options={GroupSelectOptions} isClearable={true} label='Category' className='my-6 w-4/5 md:w-1/3 lg:w-1/6' onChange={(event:any) => {
+        <Select options={GroupSelectOptions} isClearable={true} label='Category' className='my-6 w-4/5 md:w-2/4 lg:w-1/3' onChange={(event:any) => {
             if (event.value) {
                 setCategory(event.value)
             } else {

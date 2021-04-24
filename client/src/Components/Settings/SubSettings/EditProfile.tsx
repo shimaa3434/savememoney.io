@@ -1,7 +1,8 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react'
 import Modal from 'react-modal';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { dispatchLoggedInPFP } from '../../../Redux/Actions/DispatchTypes';
 
 const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email:string, pfp:string, data:any }> = ({ username, namehead, bio, email, pfp, data }) => {
 
@@ -13,6 +14,7 @@ const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email
     const [ PFPModalStatus, setPFPModalStatus ] = useState<boolean>(false);
     const [ pfploading, setPFPLoading ] = useState<boolean>(false);
     let x:string = pfp;
+    const dispatch = useDispatch()
 
     const handleUploadPFP = async (file:any) => {
         setPFPModalStatus(false)
@@ -22,9 +24,10 @@ const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email
         await axios.post('/api/users/uploadnewpfp', FD)
         .then(({ data: { newpfp, status, redirecturl } }) => {
             setPFPLoading(false);
+            if (status === 210 && redirecturl) window.location.reload()
             setCurrentPFP(newpfp);
+            dispatch(dispatchLoggedInPFP(newpfp))
             let x = newpfp
-            if (status === 210 && redirecturl) window.location.assign(window.location.origin + redirecturl)
         }
         )
         .catch(err => console.log(err))
@@ -36,21 +39,19 @@ const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email
         .then(({ data: { newpfp, status, redirecturl } }) => {
             setPFPLoading(false);
             setCurrentPFP(newpfp);
+            dispatch(dispatchLoggedInPFP(newpfp))
         })
     }
 
     useEffect(() => {
-        setCurrentPFP(x)
+        setCurrentPFP(x);
     }, [ x ])
 
     const handleDataChange = async (usernameinput:string, nameinput:string, bioinput:string, emailinput:string) => {
         await axios.post('/api/users/editprofileinfo', { usernameinput, nameinput, bioinput, emailinput })
-        .then(({ data: { status, newusernameinput, newbioinput, newnameinput, newemailinput } }) => {
+        .then(({ data: { status, redirecturl } }) => {
             if (status === 210) {
-                setUsernameInput(usernameinput)
-                setBioInput(newbioinput);
-                setNameInput(newnameinput);
-                setEmailInput(newemailinput);
+                if (redirecturl) window.location.assign( window.location.origin + redirecturl )
             }
         })
         .catch(err => console.log(err))
@@ -77,7 +78,7 @@ const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email
                         </span>
                     </div>
                 </div>
-                <form className='flex flex-col items-center w-full' onSubmit={ () => { handleDataChange(usernameInput, nameInput, bioInput, emailInput) } }>
+                <form className='flex flex-col items-center w-full' onSubmit={ (event) => { event.preventDefault(); handleDataChange(usernameInput, nameInput, bioInput, emailInput) } }>
                     <div className='flex flex-row w-full my-4'>
                         <div className='flex flex-row items-center justify-left w-1/2'>
                             <label className='font-bold' htmlFor='namehead'>Name</label>

@@ -4,7 +4,6 @@ import React from 'react'
 import Login from '../Login';
 import { connect } from 'react-redux';
 import { homeProps } from '../../TypeScript/App Interfaces';
-import Header from '../Layout/Header/Header';
 
 const Home:React.FC<homeProps> = ({ LOGGEDIN }) => {
 
@@ -13,13 +12,9 @@ const Home:React.FC<homeProps> = ({ LOGGEDIN }) => {
     <div>
         {LOGGEDIN ? 
             (
-                <div>
-                    <Header/>
-                    <Timeline />
-                </div>
+                <Timeline />
             )
         :
-
             (
                 <div className='flex flex-col items-center w-screen bg-white'>
                     <Login />

@@ -24,7 +24,7 @@ const GroupHeading = (props:any) => {
     )
 }
 
-const SearchForm:React.FC<SearchPropsInt> = ({BGCOLOR, INPUT, CATEGORY, PRICERANGE, LOADING, GetSearch, setSearchInput, setSearchCategory, setSearchPriceRange}) => {
+const SearchForm:React.FC<SearchPropsInt> = ({styles, INPUT, CATEGORY, PRICERANGE, LOADING, GetSearch, setSearchInput, setSearchCategory, setSearchPriceRange}) => {
 
     const setQueryLink = (input:searchParameter, category:searchParameter, pricerange:searchParameter) => {
         if (input) {
@@ -41,11 +41,24 @@ const SearchForm:React.FC<SearchPropsInt> = ({BGCOLOR, INPUT, CATEGORY, PRICERAN
     };
 
     return (
-        <form className={`w-full ${BGCOLOR} flex flex-col md:w-3/4`} onSubmit={(event:any) => {event.preventDefault();}}>
-                <div className='w-full flex items-center justify-center md:mx-4 my-2'>
-                    <TextField value={INPUT} onChange={(event:any) => {setSearchInput(event.target.value)}} className='w-4/5 lg:w-1/2 bg-white' label='Search for any item...' />
-                </div>
-                <div className='flex flex-row justify-center my-6'>
+        <form className={`${styles} flex`} onSubmit={(event:any) => {event.preventDefault();}}>
+
+                    <TextField value={INPUT} onChange={(event:any) => {setSearchInput(event.target.value)}} className='w-4/5 lg:w-full bg-white' label='Search for any item...' />
+                    <Link className=' outline-none text-white bg-blue-800 no-underline flex flex-col items-center hover:opacity-75 w-20 rounded px-1 py-2 h-full' to={`/search${setQueryLink(INPUT, CATEGORY, PRICERANGE)}`}
+                    onClick={() => {
+                        if (INPUT) GetSearch(setQueryLink(INPUT, null, null))
+                    }
+                    }>
+                    <button type='submit' className='w-20 h-full text-lg font-bold rounded outline-none' onClick={(event:any) => {
+                        if (INPUT === '') {
+                            event.preventDefault();
+                        }
+                    }}>
+                        GO
+                    </button>
+                    </Link>
+
+                {/* <div className='flex flex-row justify-center my-6'>
                     <Select options={GroupSelectOptions} components={{ GroupHeading }} placeholder='Category' className='mx-2 w-2/5 md:w-1/3 lg:w-1/6' isClearable={true} 
                     onChange={(event:any) => {
                         if (event) {
@@ -81,7 +94,7 @@ const SearchForm:React.FC<SearchPropsInt> = ({BGCOLOR, INPUT, CATEGORY, PRICERAN
                     </button>
                     </Link>
                     {LOADING && <img className='h-10 w-10 mx-10' src={LOADINGSPINNER} alt='loading spinner' />}
-                </div>
+                </div> */}
             </form>
     );
 };
