@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react'
+import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
 import ChangePassword from './SubSettings/ChangePassword';
 import EditProfile from './SubSettings/EditProfile';
@@ -22,6 +23,9 @@ const Settings = () => {
 
     return (
         <div className='w-screen h-screen flex flex-row justify-center'>
+            <Helmet>
+                <title> Settings | SaveMeMoney </title>
+            </Helmet>
             { data && !loading ?
                 <div className='flex flex-row h-9/10 lg:w-2/5 border-1 border-lightgrey'>
                     <div className='hidden md:flex md:flex-row lg:w-2/6 h-full border-r-1 border-lightgrey '>
@@ -29,16 +33,12 @@ const Settings = () => {
                             <li className='p-4 font-bold text-lg w-full text-left border-b-1 border-black' onClick={() => { setSettingsView('edit-profile') }}>
                                 Edit Profile
                             </li>
-    {/*                         <li className='my-4 font-bold text-lg' onClick={() => { setSettingsView('change-password') }}>
-                                Change Password
-                            </li> */}
                         </ul>
                     </div>
                     <div className='w-screen lg:w-4/6'>
                     
                                 <div>
                                     { settingsView === 'edit-profile' && <EditProfile data={data} username={data.username} bio={data.bio} namehead={data.namehead} email={data.email} pfp={data.pfp} /> }
-                                    {/* { settingsView === 'change-password' && <ChangePassword username={data.username} pfp={data.pfp} /> } */}
                                 </div>
                         
                     </div>

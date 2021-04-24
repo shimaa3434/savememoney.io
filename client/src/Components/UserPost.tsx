@@ -1,5 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet'
 import { Redirect } from 'react-router'
 import Header from './Layout/Header/Header'
 import PostCard from './PostCard/PostCard'
@@ -33,6 +34,9 @@ const UserPost:React.FC<userPostProps> = ({ match: { params: { user_name, post_i
 
     return (
         <div className='flex flex-row justify-center w-screen'>
+            <Helmet>
+                <title> { !post ? 'Loading post...' : `@${user_name}'s Post ${post_id} - ${post.title} for $${post.price} | SaveMeMoney` } </title>
+            </Helmet>
             {
                 !loading ?
                     <div className='flex flex-row justify-center w-screen'>

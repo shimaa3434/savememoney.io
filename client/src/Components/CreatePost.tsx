@@ -6,6 +6,7 @@ import LoadingIcon from '../Media/Images/loading.svg'
 import Select from 'react-select'
 import { GroupSelectOptions } from './Search/SearchSelectOptions'
 import { TextField } from '@material-ui/core';
+import { Helmet } from 'react-helmet'
 const CreatePost:React.FC<createpostProps> = ({ CreateAPost, MESSAGE, LOADING }) => {
 
     const [ price, setPrice ] = useState<string>('')
@@ -30,7 +31,7 @@ const CreatePost:React.FC<createpostProps> = ({ CreateAPost, MESSAGE, LOADING })
                 setCategory('')
             }
         }} />
-        <button className='ring-4 ring-blue-200 text-white text-xl font-bold bg-blue-800 px-4 py-4 w-3/5 rounded-full md:w-1/5' type='submit' onClick={
+        <button className='flex flex-col items-center justify-center py-2 px-12 rounded text-white text-xl bg-blue-600' type='submit' onClick={
             event => {
                 if (url !== '' && price !== '' && category !== '' && title !== '' && descript !== '' && imageFile !== {}) {
                     FD.append('url', url)
@@ -46,6 +47,9 @@ const CreatePost:React.FC<createpostProps> = ({ CreateAPost, MESSAGE, LOADING })
             POST
         
         </button>
+        <Helmet>
+            <title> Create A Post | SaveMeMoney </title>
+        </Helmet>
         {LOADING && <img src={LoadingIcon} alt='loading icon' />}
         {MESSAGE && <span>{MESSAGE.message}</span>}
     </form>

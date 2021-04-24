@@ -57,44 +57,6 @@ const SearchForm:React.FC<SearchPropsInt> = ({styles, INPUT, CATEGORY, PRICERANG
                         GO
                     </button>
                     </Link>
-
-                {/* <div className='flex flex-row justify-center my-6'>
-                    <Select options={GroupSelectOptions} components={{ GroupHeading }} placeholder='Category' className='mx-2 w-2/5 md:w-1/3 lg:w-1/6' isClearable={true} 
-                    onChange={(event:any) => {
-                        if (event) {
-                            setSearchCategory(event.value);
-                        } else {
-                            setSearchCategory('');
-                        };
-                    }}
-                    />
-                    <Select  options={priceSelectOptions} placeholder='Price Range' className='mx-2 w-2/5 md:w-1/3 lg:w-1/6' isClearable={true}
-                    onChange={(event:any) => {
-                        if (event) {
-
-                            setSearchPriceRange(event.value);
-                        } else {
-                            setSearchPriceRange('');
-                        };
-                    }}
-                    />
-                </div>
-                <div className='flex flex-col justify-center items-center mb-4'>
-                    <Link className=' text-white ring-4 ring-white bg-blue-800 no-underline flex flex-col items-center hover:opacity-75 w-4/6 rounded px-1 py-2 md:w-1/6' to={`/search${setQueryLink(INPUT, CATEGORY, PRICERANGE)}`}
-                    onClick={() => {
-                        if (INPUT || CATEGORY || PRICERANGE) GetSearch(setQueryLink(INPUT, CATEGORY, PRICERANGE))
-                    }
-                    }>
-                    <button type='submit' className='w-full h-full text-lg font-bold rounded outline-none' onClick={(event:any) => {
-                        if (INPUT === '' && CATEGORY === null && PRICERANGE === null) {
-                            event.preventDefault();
-                        }
-                    }}>
-                        SEARCH
-                    </button>
-                    </Link>
-                    {LOADING && <img className='h-10 w-10 mx-10' src={LOADINGSPINNER} alt='loading spinner' />}
-                </div> */}
             </form>
     );
 };

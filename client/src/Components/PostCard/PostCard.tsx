@@ -13,24 +13,8 @@ const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, c
 
     const [savedstatus, setSavedStatus] = useState<boolean>(false);
     const [ currentUpvotes, setCurrentUpvotes ] = useState<number>(upvotes);
-    /* const [ downvoteStatus, setDownvoteStatus ] = useState<boolean>(); */
     const [ upvoteStatus, setUpvoteStatus ] = useState<boolean>();
     const [ currentDownvotes, setCurrentDownvotes ] = useState<number>(downvotes);
-    // ADD POSTS STATUS PER 
-
-    /* const savePost = async (id:number, post_user_name:string, ) => {
-        await axios.post('/api/posts/save', { post_id: id, post_user_name })
-        .then(({ data: { redirecturl, err, status } }) => {
-            if (status === 210) setSavedStatus(true);
-        })
-    }
-
-    const unsavePost = async (id:number, post_user_name:string, ) => {
-        await axios.post('/api/posts/unsave', { post_id: id, post_user_name })
-        .then(({ data: { redirecturl, err, status } }) => {
-            if (status === 210) setSavedStatus(false);
-        })
-    } */
 
     const upvotePost = async (id:number, post_user_name:string) => {
         await axios.post('/api/posts/upvote', { post_id: id, post_user_name })
@@ -38,12 +22,6 @@ const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, c
             setCurrentUpvotes(upvotes);
         })
     }
-    /* const downvotePost = async (id:number, post_user_name:string) => {
-        await axios.post('/api/posts/downvote', { post_id: id, post_user_name })
-        .then(({ data: { downvotes, upvotes } }) => {
-            setCurrentDownvotes(downvotes);
-        })
-    } */
 
     const [ postOptionsModalStatus, setPostOptionsModalStatus ] = useState<boolean>(false)
     
@@ -103,14 +81,7 @@ const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, c
             <div className='flex flex-col h-vh25 w-full'>
                 <div className='flex flex-row items-center w-full justify-between border-b-1 border-t-1 border-lightgrey px-2 py-4'>
                     <div className='flex flex-row items-center'>
-                        {/* <img src={saved ? 'https://savememoneysitewideimages.s3.us-east-2.amazonaws.com/savedpost.svg' : 'https://savememoneysitewideimages.s3.us-east-2.amazonaws.com/unsavedpost.svg'}  className='h-8 w-8 mx-2 cursor-pointer'
-                        onClick={() => {
-                            if ( saved ) setSaved(false)
-                            if ( !saved ) setSaved(true)
-                        }}
-                        /> */}
                         <img onClick={() => { upvotePost(id, user_name) }} src='https://savememoneysitewideimages.s3.us-east-2.amazonaws.com/upvote.svg' className='h-8 w-8 mx-2 cursor-pointer' />
-                        {/* <img onClick={() => { downvotePost(id, user_name) }} src='https://savememoneysitewideimages.s3.us-east-2.amazonaws.com/downvote.svg' className='h-8 w-8 mx-2 cursor-pointer' /> */}
                         <span className='mx-2'>{currentUpvotes} </span> {/* | {currentDownvotes} */}
                     </div>
                     <div className='flex flex-row items-center'>
@@ -138,9 +109,6 @@ const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, c
                         <li className='w-full py-2 text-center cursor-pointer' onClick={() => { upvotePost(id, user_name); setPostOptionsModalStatus(false); document.body.style.overflowY = 'unset' }}>
                             Upvote Post
                         </li>
-                        {/* <li className='w-full py-2 text-center' onClick={() => { downvotePost(id, user_name); setPostOptionsModalStatus(false) }}>
-                            Downvote Post
-                        </li> */}
                     </ul>
                 </Modal>
             }

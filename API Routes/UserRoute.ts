@@ -72,11 +72,4 @@ Router.post('/editprofileinfo', JWTAuthMiddleware, (request, response) => {
     User.editprofileinfo(request, response);
 })
 
-
-/* 
-Router.get('/followdata/:usernameparam', (request:any, response:any) => {
-    User.followdata(request, response)
-})
-*/
-
 module.exports = Router;

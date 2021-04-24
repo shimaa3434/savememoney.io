@@ -54,7 +54,6 @@ class AuthLayer extends Component<authLayerProps> {
                     <PrivateRoute exact={true} path='/register' component={Register} condition={!LOGGEDIN && !LOGGEDIN} />
                     <PrivateRoute exact={true} path='/upvoted' component={UpvotedPosts} condition={LOGGEDIN && LOGGEDIN} />
                     <PrivateRoute exact={true} path='/trending' component={Trending} condition={LOGGEDIN && LOGGEDIN} />
-                    {/* <PrivateRoute exact={true} path='/login' component={Login} condition={LOGGEDIN && LOGGEDIN} /> */}
                     <PrivateRoute exact={true} path='/createpost' component={CreatePost} condition={LOGGEDIN && LOGGEDIN} />
                 </Switch>
                 {

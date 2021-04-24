@@ -1,5 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 import { postcollectionProps, profilepostcardProps } from '../TypeScript/App Interfaces'
 import PostCard from './PostCard/PostCard'
@@ -25,6 +26,9 @@ const UpvotedPosts = () => {
 
     return (
         <div className='w-screen flex flex-col items-center'>
+            <Helmet>
+                <title> Upvoted Posts | SaveMeMoney </title>
+            </Helmet>
             <div className='w-screen h-screen flex flex-col items-center lg:w-1/2'>
                 <span className='text-black font-bold text-xl my-6'> Upvoted Posts </span>
                 <div className='flex flex-col items-center w-full'>

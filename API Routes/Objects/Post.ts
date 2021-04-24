@@ -13,7 +13,6 @@ class Post {
         this.savepost = this.savepost.bind(this);
         this.unsavepost = this.unsavepost.bind(this);
         this.upvote = this.upvote.bind(this);
-        /* this.downvote = this.downvote.bind(this); */
         this.trending=this.trending.bind(this);
     }
 
@@ -229,78 +228,7 @@ class Post {
             }
         })
     }
-    
-/*     UpdatePostDownvoteCountQuery = ' UPDATE posts SET downvotes = ? WHERE id = ? AND user_name = ? AND EXISTS (SELECT username from users WHERE username = ?) '
-    CheckIfDownvotedByUserQuery = 'SELECT * FROM postvotes WHERE downvotedbyuser = ?'
-    RemovePostDownvoteQuery = 'DELETE FROM postvotes WHERE downvotedbyuser = ? AND post_id = ?'
-    downvote = (request, response) => {
-        const { body: { username, email, post_id, post_user_name } } = request;
-        SQL.query(this.CheckIfDownvotedByUserQuery, [
-            username, post_id
-        ], ( err, results ) => {
-            if ( err ) response.send({ message: 'There has been an error.', err, status: 400 })
-            if ( !err ) {
-                if ( results.length === 0 ) {
-                    SQL.query(this.GetCurrentDownvotesQuery, [
-                        post_id, post_user_name
-                    ], (err, results) => {
-                        if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
-                        if (!err) {
-                            if (results.length === 0) response.send({ message: 'This is not a valid post id and username.' })
-                            const downvotescount = results[0].downvotes;
-                            const NewDownvoteCount = downvotescount + 1
-                            SQL.query(this.UpdatePostDownvoteCountQuery, [
-                                downvotescount + 1, post_id, post_user_name, username
-                            ], (err, results) => {
-                                if (err) response.send({ message: 'There has been an error', err, status: 400 })
-                                if (!err) {
-                                    SQL.query('INSERT INTO postvotes(post_id, downvotedbyuser) VALUES(?, ?);', [
-                                        post_id, username
-                                    ], (err, results) => {
-                                        if (err) response.send({ message: 'There has been an error.', err, status: 400 })
-                                        if (!err) {
-                                            response.send({
-                                                message: 'The post has been upvoted.',
-                                                status: 210,
-                                                downvotes: NewDownvoteCount
-                                            })
-                                        }
-                                    })
-                                } 
-                            })
-                        }
-                    })
-                } else {
-                    SQL.query(this.GetCurrentDownvotesQuery, [
-                        post_id, post_user_name, username
-                    ], (err, results) => {
-                        if ( err ) response.send({ message: 'There has been an error.', err, status: 400 })
-                        if ( !err ) {
-                            if (results.length === 0) response.send({ message: 'This is not a valid post id and username.', status: 400 })
-                            if ( results.length === 1 ) {
-                                const downvotescount = results[0].downvotes;
-                                const NewDownvoteCount = downvotescount - 1
-                                SQL.query(this.UpdatePostDownvoteCountQuery, [
-                                    NewDownvoteCount, post_id, post_user_name, username
-                                ], (err, results) => {
-                                    if ( err ) response.send({ message: 'There has been an error.', err, status: 400 })
-                                    if ( !err ) SQL.query(this.RemovePostDownvoteQuery, [
-                                        username, post_id
-                                    ], ( err, results ) => {
-                                        if ( err ) response.send({ message: 'There has been an error.', err, status: 400 })
-                                        if ( !err ) response.send({ message: ' The post has been un-downvoted.', status: 210, downvotes: NewDownvoteCount })
-                                    })
-                                })
-                            }
-                        }
-                    })
-                }
-            }
-        
 
-        })
-    }
- */
     GetTrendingPostsQuery = 'SELECT * FROM posts ORDER BY upvotes DESC;'
 
     trending = (request, response) => {

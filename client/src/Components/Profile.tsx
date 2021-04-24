@@ -9,6 +9,7 @@ import { Link, Redirect } from 'react-router-dom';
 import PostCard from './PostCard/PostCard';
 import FollowAccountListItem from './Timeline/FollowAccountListItem';
 import axios from 'axios';
+import { Helmet } from 'react-helmet';
 
 const Profile:React.FC<{match:any, DATA:any, LOADING:boolean, GetProfile:Function, LOGGEDINUSERNAME:string}>
 = ({match, LOADING, DATA, GetProfile, LOGGEDINUSERNAME}) => {
@@ -47,6 +48,9 @@ const Profile:React.FC<{match:any, DATA:any, LOADING:boolean, GetProfile:Functio
 
     return (
         <div className='flex flex-row justify-center w-screen'>
+            <Helmet>
+                <title> @{ match.params.username }'s profile | SaveMeMoney </title>
+            </Helmet>
             {
             !LOADING ? <div className='flex flex-row justify-center w-screen'>
             {

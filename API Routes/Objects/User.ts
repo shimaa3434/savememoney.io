@@ -59,7 +59,6 @@ class User {
             if (!err) {
                 if (results.length === 1) {response.status(400).send({message: 'An user with this username or email already exists.'});}
                 if (results.length === 0) {
-                    // Maybe add message handling if user password is to short / not too complex?
 
                     const HashedPassword = await BCrypt.hash(requestBody.password, 10);
 
@@ -250,7 +249,6 @@ class User {
                                                         if (follower.followinguser !== LOGGEDINUSERNAME) return follower.followedbyuser === LOGGEDINUSERNAME
                                                     });
                                                     const isLoggedInUserAFollowerStatus = FilterForIfLoggedInUserIsAFollower.length !== 0 ? true : false
-                                                    /* console.log({ followers, FilterForIfLoggedInUserIsAFollower, isLoggedInUserAFollowerStatus }) */
                                                     if (savedpostsresults.length > 0) {
 
                                                         const PostsWithIfSavedStatus = posts.map((post, i) => {
@@ -259,14 +257,6 @@ class User {
                                                             } else if (savedpostsresults[i].post_id !== posts[i].id) {
                                                                 return { ...post, savedbyloggedinuser: false }
                                                             }
-                                                            /* const withSavedStatus = savedpostsresults.map(savedpost => {
-                                                                console.log(savedpost.post_id, post.id)
-                                                                if (savedpost.post_id === post.id) { return { ...post, savedbyloggedinuser: true } }
-                                                                else { return { ...post, savedbyloggedinuser: false } }
-                                                            })
-
-                                                            console.log(withSavedStatus)
-                                                            return withSavedStatus */
                                                         })
                                                         response.send({
                                                             message: 'Here is the user data.',
@@ -340,7 +330,6 @@ class User {
             const currentPFPFileSplit = results[0].pfp.split(/\//gi)
             const currentPFPFile = currentPFPFileSplit[ currentPFPFileSplit.length - 1 ]
             if (currentPFPFile !== 'user-512.png') {
-/*                 console.log(`${username}pfp.${fileType}`, currentPFPFile) */
                 S3.deleteObject({ Bucket, Key: currentPFPFile},
                     (err, data) => {
                         if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
@@ -556,7 +545,6 @@ class User {
         SQL.query(this.GetUserFeedQuery, [
             username, username
         ], (err, timelineposts) => {
-/*             const TimelineOfPostsNoDuplicates = timelineposts.filter( ( post, idx ) => { return timelineposts.indexOf(post) === idx } ) */
             if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
             if (!err) response.send({ timelineposts, status: 210 })
         })

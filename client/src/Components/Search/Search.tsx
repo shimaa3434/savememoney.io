@@ -5,6 +5,7 @@ import SearchForm from './SearchForm';
 import {connect} from 'react-redux';
 
 import PostCard from '../PostCard/PostCard';
+import { Helmet } from 'react-helmet';
 
 class Search extends Component<SearchPropsInt> {
 
@@ -28,6 +29,9 @@ class Search extends Component<SearchPropsInt> {
         
         return (
             <div className='flex flex-col w-screen items-center'>
+                <Helmet>
+                    <title> Search | SaveMeMoney </title>
+                    </Helmet>
                 <SearchForm styles='w-4/5 flex flex-row items-center md:hidden my-4' />
                 <div className='flex flex-row justify-center w-screen'>
                     <div className='flex flex-col items-center w-screen lg:w-2/5 my-10'>

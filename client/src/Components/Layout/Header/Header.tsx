@@ -77,15 +77,6 @@ const Header:React.FC<{ LOGGEDINPFP:string, LOGGEDIN:boolean, LogoutUser:Functio
                 </ul>
                 {showMenu && <MobileMenu setShowMenu={setShowMenu} showMenu={showMenu} LOGGEDIN={LOGGEDIN} LogoutUser={LogoutUser} />}
                 </div>
-                {/* <ul className='w-screen overflow-x-scroll py-2 list-style-none flex flex-row  border-b-2 border-t-2 border-lighterblue '>
-                    {
-                        GroupSelectOptions.map(({ label }) => {
-                            return <Link to={`/categories/${label}`} className='mx-2 text-black'>
-                                        { label }
-                                    </Link>
-                        })
-                    }
-                </ul> */}
             </div>
     );
 }

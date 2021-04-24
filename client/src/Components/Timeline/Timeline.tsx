@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import PostCard from '../PostCard/PostCard'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
 
 class Timeline extends Component<PostsPropsInt> {
 
@@ -31,6 +32,9 @@ class Timeline extends Component<PostsPropsInt> {
         return (
             
                 <div className='flex flex-row justify-center w-screen'>
+                    <Helmet>
+                        <title> Timeline | SaveMeMoney </title>
+                    </Helmet>
                     {
                         !LOADING ?
                             <div className='flex flex-row justify-center w-full'>

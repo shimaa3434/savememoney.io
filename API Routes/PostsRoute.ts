@@ -27,10 +27,6 @@ Router.post('/unsave', JWTMiddleware, (request, response) => {
 Router.post('/upvote', JWTMiddleware, (request, response) => {
     Post.upvote(request, response)
 })
-/* 
-Router.post('/downvote', JWTMiddleware, (request, response) => {
-    Post.downvote(request, response)
-}) */
 
 Router.get('/trending', JWTMiddleware, (request, response) => {
     Post.trending(request, response)
