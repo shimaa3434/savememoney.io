@@ -120,7 +120,7 @@ const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, c
                     </div>
                 </div>
                 <div className='w-full px-2 py-2 block'>
-                    <aside className='font-bold float-left mr-2'>{user_name}</aside>
+                    <Link to={`/users/${user_name}`} className='font-bold float-left mr-2'>{user_name}</Link>
                     <span className='w-full'> { descript } </span>
                 </div>
             </div>
@@ -132,10 +132,10 @@ const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, c
                 >
                     <ul className='list-style-none flex flex-col items-center m-0 p-0 w-full'>
 
-                        <Link to={`/users/${user_name}/${id}`} className='w-full py-2 text-center' onClick={() => { document.body.style.overflowY = 'hidden' }}>
+                        <Link to={`/users/${user_name}/${id}`} className='w-full py-2 text-center' onClick={() => { setPostOptionsModalStatus(false); document.body.style.overflowY = 'unset' }}>
                             Go to post
                         </Link>
-                        <li className='w-full py-2 text-center' onClick={() => { upvotePost(id, user_name); setPostOptionsModalStatus(false); document.body.style.overflowY = 'hidden' }}>
+                        <li className='w-full py-2 text-center cursor-pointer' onClick={() => { upvotePost(id, user_name); setPostOptionsModalStatus(false); document.body.style.overflowY = 'unset' }}>
                             Upvote Post
                         </li>
                         {/* <li className='w-full py-2 text-center' onClick={() => { downvotePost(id, user_name); setPostOptionsModalStatus(false) }}>

@@ -37,9 +37,10 @@ const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email
         setPFPLoading(true)
         await axios.get('/api/users/removecurrentpfp')
         .then(({ data: { newpfp, status, redirecturl } }) => {
-            setPFPLoading(false);
-            setCurrentPFP(newpfp);
+            setPFPModalStatus(false)
             dispatch(dispatchLoggedInPFP(newpfp))
+            setCurrentPFP(newpfp);
+            setPFPLoading(false);
         })
     }
 
@@ -52,6 +53,7 @@ const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email
         .then(({ data: { status, redirecturl } }) => {
             if (status === 210) {
                 if (redirecturl) window.location.assign( window.location.origin + redirecturl )
+                if (!redirecturl) window.location.reload()
             }
         })
         .catch(err => console.log(err))
@@ -103,7 +105,7 @@ const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email
                         </div>
                         <input className='border-2 border-blue-600 py-2 px-2 rounded-lg outline-none w-full' value={ emailInput } placeholder='Email' id='email' onChange={({ target: { value } }) => { setEmailInput(value) }} />
                     </div>
-                    <button type='submit' disabled={EnableSubmitButtonOnChange} className={`py-2 px-6 rounded text-white ${EnableSubmitButtonOnChange ? 'bg-blue-300' : 'bg-blue-600'}`}>
+                    <button type='submit' disabled={EnableSubmitButtonOnChange} className={`flex flex-col items-center justify-center py-2 px-6 rounded text-white ${EnableSubmitButtonOnChange ? 'bg-blue-300' : 'bg-blue-600'}`}>
                         Submit
                     </button>
                 </form>
