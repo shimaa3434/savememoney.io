@@ -9,6 +9,7 @@ const cors = require('cors');
 var Express = require('express');
 const AWS = require('aws-sdk');
 const App = Express();
+require('dotenv').config()
 const Port = 6667;
 
 App.use(Express.json());
@@ -25,4 +26,4 @@ Cron.schedule('*/59 * * * *', () => {
     
 })
 
-App.listen(Port, () => {console.log(`Listening on port ${Port}.`)});
+App.listen(process.env.PORT || Port, () => {console.log(`Listening on port ${Port}.`)});
