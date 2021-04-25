@@ -4,7 +4,6 @@ const SearchRoute = require('./API Routes/SearchRoute');
 const PostsRoute = require('./API Routes/PostsRoute');
 const UsersRoute = require('./API Routes/UserRoute');
 const InitialAuthRoute = require('./API Routes/InitialAuthRoute');
-const Cron = require('node-cron');
 const cors = require('cors');
 declare var require:any
 declare var module:any
@@ -24,9 +23,6 @@ App.use('/api/search', SearchRoute);
 App.use('/api/users', UsersRoute);
 
 App.use('/api', InitialAuthRoute);
-
-Cron.schedule('*/59 * * * *', () => {
-    
-})
+App.get('/working', (request, response) => { response.send('Working.') })
 
 App.listen(process.env.PORT || Port, () => {console.log(`Listening on port ${Port}.`)});
