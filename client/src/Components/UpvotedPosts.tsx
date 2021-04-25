@@ -1,10 +1,8 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
-import { postcollectionProps, profilepostcardProps } from '../TypeScript/App Interfaces'
-import PostCard from './PostCard/PostCard'
-import Post from './PostCard/PostCard'
+import { profilepostcardProps } from '../TypeScript/App Interfaces'
 import ProfilePostCardVariant from './ProfilePostCardVariant'
 
 

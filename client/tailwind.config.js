@@ -18,9 +18,6 @@ module.exports = {
       screens: {
         phone: '200px'
       },
-      backgroundImage: (theme) => ({
-        'hero-pattern': "url('./Media/Images/heroimageclearlefttorightslow.svg')"
-      }),
       colors: {
         seagreen: '#16c79a',
         darkblue: '#19456b',

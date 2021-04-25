@@ -7,11 +7,6 @@ import Post from '../PostCard/PostCard';
 
 class Category extends Component<CategoryPropsInt> {
 
-
-    constructor (props:CategoryPropsInt) {
-        super(props)
-    }
-
     componentWillMount () {
         this.props.getCategory(this.props.match.params.category)
     }

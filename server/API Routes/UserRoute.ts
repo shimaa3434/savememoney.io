@@ -1,5 +1,4 @@
-declare var require:any
-declare var module:any
+
 var Router = require('express').Router();
 import UserClass from './Objects/User';
 var JWTAuthMiddleware = require('./Middleware/Authentication');

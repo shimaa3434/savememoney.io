@@ -1,11 +1,7 @@
-declare var require:any
-declare var module:any
+
 var SQL = require('../../DBConnection');
 import useBucket from '../../AWS/AWSDetails'
 
-interface createBody { title: string, category: string, image: string | null, url: string, tstamp: Date, price: number | string, email: string, username: string }
-interface deleteBody { id: number, username: string, email: string }
-interface getuserpostsBody { username: string, email: string }
 
 class Post {
     constructor() {

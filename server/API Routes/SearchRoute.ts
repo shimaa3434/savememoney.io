@@ -1,5 +1,4 @@
-declare var require:any
-declare var module:any
+
 var Express = require('express');
 var Router = Express.Router();
 var SQL = require('../DBConnection');

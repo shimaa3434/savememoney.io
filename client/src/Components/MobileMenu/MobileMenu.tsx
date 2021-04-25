@@ -1,5 +1,4 @@
 import {MobileMenuProps} from '../../TypeScript/App Interfaces';
-import MobileMenuIcon from '../../Media/Images/XCloseIcon.svg';
 import {Link} from 'react-router-dom';
 import React from 'react';
 import Modal from '../Modal/Modal';

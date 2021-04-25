@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react'
 import { postcollectionProps, PostPropsInt, profilepostcardProps } from '../TypeScript/App Interfaces'
-import Post from './PostCard/PostCard';
 import {connect} from 'react-redux'
 import { GetProfile } from '../Redux/Actions/ProfileActions';
 import ProfilePostCardVariant from './ProfilePostCardVariant';
 import Modal from 'react-modal'
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import PostCard from './PostCard/PostCard';
 import FollowAccountListItem from './Timeline/FollowAccountListItem';
 import axios from 'axios';
@@ -15,28 +14,22 @@ const Profile:React.FC<{match:any, DATA:any, LOADING:boolean, GetProfile:Functio
 = ({match, LOADING, DATA, GetProfile, LOGGEDINUSERNAME}) => {
 
     const [ view, setView ] = useState<number>(0);
-    const [ profiletimeline, setProfileTimeline ] = useState<number>(18);
-    const [ profileoverview, setProfileOverview ] = useState<number>(18);
     const [ showFollowers, setShowFollowers ] = useState<boolean>(false);
     const [ showFollowing, setShowFollowing ] = useState<boolean>(false);
     let isLoggedInUserAFollowerStatus = false;  let followerscount:number = 0; let followingcount:number = 0; let followers:any[] = []; let following:any[] = [];
 
     if ( DATA ) { isLoggedInUserAFollowerStatus = DATA.followdata.loggedinuserisfollower; followerscount = DATA.followdata.followers.length; followers = DATA.followdata.followers; followingcount = DATA.followdata.following.length; following = DATA.followdata.following; }
     
-    const [ newfollowers, setNewFollowers ] = useState<any[]|undefined>(undefined);
     const followUser = async (usertofollow:string) => {
         await axios.post('/api/users/follow', { usertofollow })
-        .then(( { data: { newfollowers, newIsLoggedInUserAFollowerStatus, status } } ) => {
+        .then(( { data: { status } } ) => {
             if (status === 210) window.location.reload()
         })
     }
 
-    
-
-    
     const unfollowUser = async (usertounfollow:string) => {
         await axios.post('/api/users/unfollow', { usertounfollow })
-        .then(( { data: { newfollowers, newIsLoggedInUserAFollowerStatus, status } } ) => {
+        .then(( { data: { status } } ) => {
             if (status === 210) window.location.reload()
         })
     }

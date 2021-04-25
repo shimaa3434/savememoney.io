@@ -1,6 +1,5 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import { Link } from 'react-router-dom'
 import { authLayerProps } from '../TypeScript/App Interfaces';
 import Category from './Category/Category';
 import Home from './Home/Home';
@@ -18,15 +17,10 @@ import CreatePost from './CreatePost';
 import UpvotedPosts from './UpvotedPosts';
 import UserPost from './UserPost';
 import NotFound from './NotFound';
-import SearchForm from './Search/SearchForm';
 import Trending from './Trending';
 import MobileNavFooter from './Layout/MobileNavFooter';
 
 class AuthLayer extends Component<authLayerProps> {
-
-    constructor (props:authLayerProps) {
-        super(props)
-    }
     
     componentWillMount() {
         this.props.CheckUserAuth();

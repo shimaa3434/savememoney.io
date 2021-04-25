@@ -1,10 +1,9 @@
-import MobileMenuIcon from '../../../Media/Images/MobileMenuIcon.svg';
 import MobileMenu from '../../MobileMenu/MobileMenu';
 import {Link} from 'react-router-dom';
 import {useState} from 'react';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { LogoutUser } from '../../../Redux/Actions/UserActions';
-import { GroupSelectOptions } from '../../Search/SearchSelectOptions';
+
 import SearchForm from '../../Search/SearchForm';
 import Modal from 'react-modal';
 

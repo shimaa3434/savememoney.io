@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 const ChangePassword:React.FC<{username:string, pfp:string }> = ({ username, pfp }) => {
     return (

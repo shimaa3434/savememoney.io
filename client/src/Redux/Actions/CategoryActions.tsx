@@ -6,7 +6,7 @@ export const getCategory:Function = (param:string) => {
 
     return async (dispatch:Function) => {
         dispatch(setLoading(true))
-        const Response = await Axios.get(`/api/categories/${param}`)
+        await Axios.get(`/api/categories/${param}`)
         .then((resp) => {
             dispatch(setCategory(resp.data))
             dispatch(setLoading(false))

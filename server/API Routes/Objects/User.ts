@@ -1,5 +1,4 @@
-declare var require:any
-declare var module:any
+
 var SQL = require('../../DBConnection');
 var BCrypt = require('bcrypt');
 var JWT = require('jsonwebtoken');

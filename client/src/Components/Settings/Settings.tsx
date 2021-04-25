@@ -1,19 +1,18 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet';
-import { useSelector } from 'react-redux';
-import ChangePassword from './SubSettings/ChangePassword';
 import EditProfile from './SubSettings/EditProfile';
 
 const Settings = () => {
-    const LOGGEDINUSERNAME = useSelector((store:any) => store.UserState.LOGGEDINUSERNAME);
     const [ loading, setLoading ] = useState<boolean>(false)
     const [ settingsView, setSettingsView ] = useState<string>('edit-profile');
     const [ data, setData ] = useState<any>(null)
     const fetchData = async () => {
+        setLoading(true)
         await axios.post('/api/users/settings')
         .then(({ data }) => {
             setData(data)
+            setLoading(false)
         })
     }
 

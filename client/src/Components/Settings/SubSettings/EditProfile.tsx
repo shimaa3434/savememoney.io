@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react'
 import Modal from 'react-modal';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { dispatchLoggedInPFP } from '../../../Redux/Actions/DispatchTypes';
 
 const EditProfile:React.FC<{ username:string, namehead:string, bio:string, email:string, pfp:string, data:any }> = ({ username, namehead, bio, email, pfp, data }) => {

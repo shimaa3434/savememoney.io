@@ -5,7 +5,7 @@ export const getPosts = () => {
 
     return async (dispatch:Function) => {
         dispatch(setLoading(true))
-        const Response = await Axios.get('/api/users/timeline')
+         await Axios.get('/api/users/timeline')
         .then(({ data }) => {
             dispatch(setLoading(false)); dispatch(setPosts(data));
         })

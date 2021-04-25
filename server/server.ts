@@ -4,11 +4,17 @@ const PostsRoute = require('./API Routes/PostsRoute');
 const UsersRoute = require('./API Routes/UserRoute');
 const InitialAuthRoute = require('./API Routes/InitialAuthRoute');
 const cors = require('cors');
+const path = require('path');
 var Express = require('express');
 const AWS = require('aws-sdk');
 const App = Express();
 require('dotenv').config()
 const Port = 6667;
+
+if ( process.env.NODE_ENV === 'production' ) {
+    App.use( Express.static( 'client/build' ) );
+    App.get( '*', ( request, response ) => { response.sendFile( path.resolve( __dirname, 'client', 'build', 'index.html' ) ) } )
+}
 
 App.use(Express.json());
 App.use(Express.urlencoded({extended: true}));

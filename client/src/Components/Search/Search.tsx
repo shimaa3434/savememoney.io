@@ -9,10 +9,6 @@ import { Helmet } from 'react-helmet';
 
 class Search extends Component<SearchPropsInt> {
 
-    constructor (props:SearchPropsInt) {
-        super(props);
-    }
-
     componentWillMount () {
         if (window.location.search) {
             GetSearch(window.location.search);

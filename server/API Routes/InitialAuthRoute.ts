@@ -1,7 +1,7 @@
-declare var require:any
+
 var Router = require('express').Router();
 var JWT = require('jsonwebtoken');
-declare var module:any
+
 
 Router.post('/auth', (request:any, response:any) => {
     const Cookies = request.headers.cookie;

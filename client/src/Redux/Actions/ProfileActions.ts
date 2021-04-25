@@ -1,5 +1,5 @@
 import Axios from "axios"
-import { dispatchProfileBio, dispatchProfileData, dispatchProfileLoading, dispatchProfileNamehead, dispatchProfileRedirect, dispatchProfileUsername } from "./DispatchTypes"
+import { dispatchProfileData, dispatchProfileLoading, dispatchProfileRedirect } from "./DispatchTypes"
 
 
 export const GetProfile = (usernameparameter:string) => {

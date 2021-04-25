@@ -1,13 +1,11 @@
 import {GetSearch, setSearchInput, setSearchCategory, setSearchPriceRange} from '../../Redux/Actions/SearchActions';
-import {priceSelectOptions, categorySelectOptions, GroupSelectOptions} from './SearchSelectOptions'
 import {SearchPropsInt} from '../../TypeScript/App Interfaces';
 import {searchParameter} from '../../TypeScript/App Types';
 import {TextField} from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import {connect} from 'react-redux';
-import Select, { components } from 'react-select';
+import { components } from 'react-select';
 import React from 'react';
-import LOADINGSPINNER from '../../Media/Images/loading.svg';
 
 const groupStyles = {
     color: 'white',

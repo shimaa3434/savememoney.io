@@ -1,20 +1,14 @@
-import HyperLinkChainIcon from '../../Media/Images/noimagelink.svg'
+
 import {postcollectionProps, PostPropsInt} from '../../TypeScript/App Interfaces'
 import {Link} from 'react-router-dom';
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import axios from 'axios';
-import PostSettingsIcon from '../../Media/Images/postsettings.svg'
 import Modal from 'react-modal'
-import UnsavedPostIcon from '../../Media/Images/unsavedposticon.svg'
-import SavedPostIcon from '../../Media/Images/savedposticon.svg'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 
 const PostCard:React.FC<PostPropsInt & postcollectionProps> = ({postid, title, category, image, url, urldomain, tstamp, price, id, descript,    upvotes, downvotes, post_id, user_name, pfp     }) => {
 
-    const [savedstatus, setSavedStatus] = useState<boolean>(false);
     const [ currentUpvotes, setCurrentUpvotes ] = useState<number>(upvotes);
-    const [ upvoteStatus, setUpvoteStatus ] = useState<boolean>();
-    const [ currentDownvotes, setCurrentDownvotes ] = useState<number>(downvotes);
 
     const upvotePost = async (id:number, post_user_name:string) => {
         await axios.post('/api/posts/upvote', { post_id: id, post_user_name })

@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { createpostProps } from '../TypeScript/App Interfaces'
 import {CreateAPost} from '../Redux/Actions/CreatePostActions'
-import LoadingIcon from '../Media/Images/loading.svg'
 import Select from 'react-select'
 import { GroupSelectOptions } from './Search/SearchSelectOptions'
 import { TextField } from '@material-ui/core';
@@ -50,7 +49,7 @@ const CreatePost:React.FC<createpostProps> = ({ CreateAPost, MESSAGE, LOADING })
         <Helmet>
             <title> Create A Post | SaveMeMoney </title>
         </Helmet>
-        {LOADING && <img src={LoadingIcon} alt='loading icon' />}
+        {LOADING && <img src={'https://savememoneypfp.s3.us-east-2.amazonaws.com/loader.svg'} className='h-24 w-24 m-4' alt='' />}
         {MESSAGE && <span>{MESSAGE.message}</span>}
     </form>
     )
