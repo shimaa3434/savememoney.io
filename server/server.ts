@@ -1,4 +1,4 @@
-
+declare var require:any;
 const CategoryRoute = require('./API Routes/CategoryRoute');
 const SearchRoute = require('./API Routes/SearchRoute');
 import PostClass from './API Routes/Objects/Post'
