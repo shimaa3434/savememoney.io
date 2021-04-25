@@ -1,5 +1,4 @@
 
-const CategoryRoute = require('./API Routes/CategoryRoute');
 const SearchRoute = require('./API Routes/SearchRoute');
 const PostsRoute = require('./API Routes/PostsRoute');
 const UsersRoute = require('./API Routes/UserRoute');
@@ -15,7 +14,6 @@ App.use(Express.json());
 App.use(Express.urlencoded({extended: true}));
 App.use(cors());
 App.use('/api/posts', PostsRoute);
-App.use('/api/categories', CategoryRoute);
 App.use('/api/search', SearchRoute);
 App.use('/api/users', UsersRoute);
 
