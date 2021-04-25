@@ -1,3 +1,5 @@
+declare var require:any
+declare var module:any
 var Express = require('express');
 var Router = Express.Router();
 var SQL = require('../DBConnection');
@@ -33,16 +35,15 @@ Router.get('', (req:any, res:any)=> {
         if (!InputIntegrityValidator(input)) return false
     }
 
-
     const createQuery = (input:ParameterMatch, category:ParameterMatch, pricerange:ParameterMatch):string => {
-        if (input && category && pricerange) return `SELECT * FROM posts WHERE title LIKE ${input} AND category LIKE '${category}' and price BETWEEN ${pricerange[0]} AND ${pricerange[1]} ORDER BY tstamp DESC;`
-        if (!input && category && pricerange) return `SELECT * FROM posts WHERE category LIKE '${category}' and price BETWEEN ${pricerange[0]} AND ${pricerange[1]} ORDER BY tstamp DESC;`
-        if (!input && !category && pricerange) return `SELECT * FROM posts WHERE price BETWEEN ${pricerange[0]} AND ${pricerange[1]} ORDER BY tstamp DESC;`
-        if (!input && category && !pricerange) return `SELECT * FROM posts WHERE category LIKE '${category}' ORDER BY tstamp DESC;`
-        if (!input && category && pricerange) return `SELECT * FROM posts WHERE category LIKE '${category}' price LIKE '${pricerange[0]} AND ${pricerange[1]}' ORDER BY tstamp DESC;`
-        if (input && !category && !pricerange) return `SELECT * FROM posts WHERE title LIKE ${input} ORDER BY tstamp DESC;`
-        if (input && category && !pricerange) return `SELECT * FROM posts WHERE title LIKE ${input} AND category LIKE '${category}' ORDER BY tstamp DESC;`
-        if (input && !category && pricerange) return `SELECT * FROM posts WHERE title LIKE ${input} AND price BETWEEN ${pricerange[0]} AND ${pricerange[1]} ORDER BY tstamp DESC;`
+        if (input && category && pricerange) return `SELECT users.pfp, posts.id, posts.title, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes FROM posts INNER JOIN users ON posts.user_name = users.username WHERE title LIKE ${input} AND category LIKE '${category}' and price BETWEEN ${pricerange[0]} AND ${pricerange[1]} ORDER BY tstamp DESC;`
+        if (!input && category && pricerange) return `SELECT users.pfp, posts.id, posts.title, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes FROM posts INNER JOIN users ON posts.user_name = users.username WHERE category LIKE '${category}' and price BETWEEN ${pricerange[0]} AND ${pricerange[1]} ORDER BY tstamp DESC;`
+        if (!input && !category && pricerange) return `SELECT users.pfp, posts.id, posts.title, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes FROM posts INNER JOIN users ON posts.user_name = users.username WHERE price BETWEEN ${pricerange[0]} AND ${pricerange[1]} ORDER BY tstamp DESC;`
+        if (!input && category && !pricerange) return `SELECT users.pfp, posts.id, posts.title, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes FROM posts INNER JOIN users ON posts.user_name = users.username WHERE category LIKE '${category}' ORDER BY tstamp DESC;`
+        if (!input && category && pricerange) return `SELECT users.pfp, posts.id, posts.title, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes FROM posts INNER JOIN users ON posts.user_name = users.username WHERE category LIKE '${category}' price LIKE '${pricerange[0]} AND ${pricerange[1]}' ORDER BY tstamp DESC;`
+        if (input && !category && !pricerange) return `SELECT users.pfp, posts.id, posts.title, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes FROM posts INNER JOIN users ON posts.user_name = users.username WHERE title LIKE ${input} ORDER BY tstamp DESC;`
+        if (input && category && !pricerange) return `SELECT users.pfp, posts.id, posts.title, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes FROM posts INNER JOIN users ON posts.user_name = users.username WHERE title LIKE ${input} AND category LIKE '${category}' ORDER BY tstamp DESC;`
+        if (input && !category && pricerange) return `SELECT users.pfp, posts.id, posts.title, posts.category, posts.image, posts.url, posts.tstamp, posts.price, posts.urldomain, posts.user_name, posts.descript, posts.upvotes, posts.downvotes FROM posts INNER JOIN users ON posts.user_name = users.username WHERE title LIKE ${input} AND price BETWEEN ${pricerange[0]} AND ${pricerange[1]} ORDER BY tstamp DESC;`
     }
 
     SQL.query(

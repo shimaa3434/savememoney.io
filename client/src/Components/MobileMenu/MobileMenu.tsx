@@ -9,61 +9,43 @@ const MobileMenu:React.FC<MobileMenuProps> = ({setShowMenu, showMenu, LOGGEDIN, 
 
 
         <Modal toggleModal={setShowMenu} toggleStatus={showMenu}>
-                <ul className='flex flex-col p-0 m-0 list-none items-center w-full h-full bg-blue-800'>
-                    <Link to='/' className='py-4 w-full text-center no-underline text-white border-b-2 border-white border-opacity-25 text-2xl first:border-t-2 first:border-white first:border-opacity-25' onClick={() => {
-                        setShowMenu(false);
-                        document.body.style.overflowY='unset';
-                    }}>
-                        HOME
-                    </Link>
-                    <Link to='/categories' className='py-4 w-full text-center no-underline text-white border-b-2 border-white border-opacity-25 text-2xl' onClick={() => {
-                        setShowMenu(false);
-                        document.body.style.overflowY='unset';
-                    }}>
-                        CATEGORIES
-                    </Link>
-                    <Link to='/search' className='py-4 w-full text-center no-underline text-white  border-b-2 border-white border-opacity-25 text-2xl' onClick={() => {
-                        setShowMenu(false);
-                        document.body.style.overflowY='unset';
-                    }}>
-                        SEARCH
-                    </Link>
-                    {LOGGEDIN ? 
-
-                    <Link to='/' className='py-4 w-full text-center no-underline text-white  border-b-2 border-white border-opacity-25 text-2xl' onClick={() => {
-                            LogoutUser();
-                            setShowMenu(false);
-                            document.body.style.overflowY='unset';
-                        }}>
-                        LOG OUT
-                    </Link>
-
-                    :
-
-                    <Link to='/login' className='py-4 w-full text-center no-underline text-white  border-b-2 border-white border-opacity-25 text-2xl' onClick={() => {
-                            setShowMenu(false);
-                            document.body.style.overflowY='unset';
-                        }}>
-                        LOG IN
-                    </Link>
-                    }
+                <ul className='flex flex-col p-0 m-0 list-none items-center w-full h-full bg-white'>
                     {!LOGGEDIN &&
 
-                    <Link to='/register' className='py-4 w-full text-center no-underline text-white  border-b-2 border-white border-opacity-25 text-2xl' onClick={() => {
-                            setShowMenu(false);
-                            document.body.style.overflowY='unset';
-                        }}>
+                    <Link to='/register' className='py-4 w-full text-center no-underline text-black  border-b-2 border-white border-opacity-25 text-2xl' onClick={() => {
+                        setShowMenu(false);
+                        document.body.style.overflowY='unset';
+                    }}>
                         SIGN UP
                     </Link>
                     }
                     {
                         LOGGEDIN && 
-                            <Link to='/settings' className='py-4 w-full text-center no-underline text-white  border-b-2 border-white border-opacity-25 text-2xl' onClick={() => {
+                            <Link to='/settings' className='py-4 w-full text-center no-underline text-black  border-b-2 border-white border-opacity-25 text-2xl' onClick={() => {
                                 setShowMenu(false);
                                 document.body.style.overflowY='unset';
                             }}>
-                                SETTINGS
+                                Settings
                             </Link>
+                    }
+                    {
+                        LOGGEDIN && 
+                            <Link to='/upvoted' className='py-4 w-full text-center no-underline text-black  border-b-2 border-white border-opacity-25 text-2xl' onClick={() => {
+                                setShowMenu(false);
+                                document.body.style.overflowY='unset';
+                            }}>
+                                Upvoted
+                            </Link>
+                    }
+                    {LOGGEDIN && 
+        
+                        <Link to='/' className='py-4 w-full text-center no-underline text-black  border-b-2 border-grey-400 border-opacity-50 text-2xl' onClick={() => {
+                            LogoutUser();
+                            setShowMenu(false);
+                            document.body.style.overflowY='unset';
+                        }}>
+                            Log out
+                        </Link>
                     }
                 </ul>
         </Modal>

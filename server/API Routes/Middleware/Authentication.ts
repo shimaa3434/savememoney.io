@@ -1,3 +1,5 @@
+declare var require:any
+declare var module:any
 var JWT = require('jsonwebtoken');
 
 

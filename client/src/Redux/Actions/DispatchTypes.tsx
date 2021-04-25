@@ -22,7 +22,14 @@ import {
     SET_PROFILE_BIO,
     SET_PROFILE_NAMEHEAD,
     SET_PROFILE_DATA,
-    SET_PROFILE_LOADING
+    SET_PROFILE_LOADING,
+    SET_CREATEPOST_LOADING,
+    SET_CREATEPOST_URL,
+    SET_CREATEPOST_CATEGORY,
+    SET_CREATEPOST_PRICE,
+    SET_CREATEPOST_MESSAGE,
+    SET_USER_LOGGED_IN_USERNAME,
+    SET_USER_LOGGED_IN_PFP
 } from '../types';
 
 // GENERAL & REUSABLE
@@ -89,29 +96,20 @@ export const dispatchLoggedIn = (status: boolean) => {
     return {type: SET_USER_LOGGED_IN, payload: status}
 }
 
+export const dispatchLoggedInUsername = (username: string | null) => {
+    return {type: SET_USER_LOGGED_IN_USERNAME, payload: username}
+}
+
+export const dispatchLoggedInPFP = (pfp: string) => {
+    return {type: SET_USER_LOGGED_IN_PFP, payload: pfp}
+}
+
 export const dispatchUserAttemptedAuth = () => {
     return {type: SET_USER_ATTEMPTED_AUTH, payload: true};
 }
 
 
 // register reducer  and component
-
-
-export const dispatchRegisterPassword = (password:string) => {
-    return {type: SET_REGISTER_PASSWORD, payload: password};
-};
-
-export const dispatchRegisterEmail = (email:string) => {
-    return {type: SET_REGISTER_EMAIL, payload: email};
-};
-
-export const dispatchRegisterName = (name:string) => {
-    return {type: SET_REGISTER_NAME, payload: name};
-};
-
-export const dispatchRegisterUsername = (username:string) => {
-    return {type: SET_REGISTER_USERNAME, payload: username};
-};
 
 export const dispatchRegisterLoading = (type:boolean) => {
     return {type: SET_REGISTER_LOADING, payload: type}
@@ -138,4 +136,19 @@ export const dispatchProfileData = (data:any) => {
 }
 export const dispatchProfileLoading = (status:boolean) => {
     return {type: SET_PROFILE_LOADING, payload: status}
+}
+export const dispatchProfileRedirect = (status:boolean) => {
+    return { type: 'SET_PROFILE_REDIRECT', payload: true }
+}
+
+
+// for createpost reducer
+
+
+export const dispatchCreatePostLoading = (status:boolean) => {
+    return {type: SET_CREATEPOST_LOADING, payload: status}
+}
+
+export const dispatchCreatePostMessage = (message:{message: string, err?: any, redirecturl: null | string}) => {
+    return {type: SET_CREATEPOST_MESSAGE, payload: message}
 }

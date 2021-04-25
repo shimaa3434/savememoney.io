@@ -1,33 +1,19 @@
 import Axios from "axios"
+import { dispatchCreatePostLoading, dispatchCreatePostMessage } from "./DispatchTypes"
 
 
-export const CreateAPost = ( URL:string, CATEGORY:string, PRICE:string) => {
+export const CreateAPost = (FD: FormData) => {
+    
     return async (dispatch:Function) => {
-        await Axios.post('/api/posts/create', {
-            CATEGORY, URL, PRICE
-        })
-        .then((resp:any) => {
-
-
-            if (resp.status === 210) window.location.assign('/users/')
+        dispatch(dispatchCreatePostLoading(true))
+        await Axios.post('/api/posts/create', FD)
+        .then(({ data }) => {
+            dispatch(dispatchCreatePostLoading(false));
+            dispatch(dispatchCreatePostMessage(data))
+            window.location.assign(window.location.origin + data.redirecturl);
         }).catch((err:any) => {
-
+            dispatch(dispatchCreatePostLoading(false));
+            console.log(err)
         })
-    }
-}
-
-export const setCategory = (CATEGORY:string) => {
-    return (dispatch:Function) => {
-        dispatch()
-    }
-}
-export const setURL = (URL:string) => {
-    return (dispatch:Function) => {
-        dispatch()
-    }
-}
-export const setPrice = (PRICE:string) => {
-    return (dispatch:Function) => {
-        dispatch()
     }
 }

@@ -1,268 +1,244 @@
-const Axios = require("axios");
-const Cheerio = require('cheerio');
+declare var require:any
+declare var module:any
 var SQL = require('../../DBConnection');
-var Request = require('request');
+import useBucket from '../../AWS/AWSDetails'
 
-interface createBody {
-    title: string,
-    category: string,
-    image: string | null,
-    url: string,
-    tstamp: Date,
-    price: number | string,
-    email: string,
-    username: string
-}
-
-interface deleteBody {
-    email: string,
-    username: string,
-    title: string
-}
-
-interface getuserpostsBody {
-    username: string,
-    email: string
-}
+interface createBody { title: string, category: string, image: string | null, url: string, tstamp: Date, price: number | string, email: string, username: string }
+interface deleteBody { id: number, username: string, email: string }
+interface getuserpostsBody { username: string, email: string }
 
 class Post {
     constructor() {
-        this.create = this.create.bind(this);
+        this.createv2 = this.createv2.bind(this);
         this.delete = this.delete.bind(this);
         this.getUserPosts = this.getUserPosts.bind(this);
-        this.getNewPosts = this.getNewPosts.bind(this);
-        this.cleanThumbnails = this.cleanThumbnails.bind(this);
-        this.cleanCategory = this.cleanCategory.bind(this);
-        this.findPrice = this.findPrice.bind(this);
-        this.getURLDomain = this.getURLDomain.bind(this);
+        this.savepost = this.savepost.bind(this);
+        this.unsavepost = this.unsavepost.bind(this);
+        this.upvote = this.upvote.bind(this);
+        this.trending=this.trending.bind(this);
     }
 
-    AddPostQuery = 'INSERT INTO posts(title, category, image, url, urldomain, tstamp, price) VALUES(?, ?, ?, ?, ?, ?, ?);';
-    VerifyUserQuery = 'SELECT email FROM users WHERE email = ? AND username = ? ;';
-    DeletePostQuery = 'DELETE FROM posts WHERE title = ? AND username = ? ;';
+    CheckUserExistenceQuery = 'SELECT email, username FROM users WHERE email = ? OR username = ? ;';
     GetUserPostsQuery = 'SELECT * FROM posts WHERE user_name = ? ;';
-    InsertNewSourcePostsQuery = 'INSERT IGNORE INTO posts(postid, title, category, image, url, urldomain, tstamp, price) VALUES(?, ?, ?, ?, ?, ?, ?, ?);'; 
+    InsertNewSourcePostsQuery = 'INSERT IGNORE INTO posts(postid, title, category, image, url, urldomain, tstamp, price) VALUES(?, ?, ?, ?, ?, ?, ?, ?);';
+    GetNewPostIDQuery = 'SELECT id from POSTS WHERE user_name = ? AND tstamp = ? ;'
+    RemoveSavedPostQuery = 'DELETE FROM savedposts WHERE post_id = ? AND post_user_name = ? AND savetousername = ? ;';
+    GetCurrentUpvotesQuery = 'SELECT upvotes FROM posts WHERE id = ? AND user_name = ?'
+    GetCurrentDownvotesQuery = 'SELECT downvotes FROM posts WHERE id = ? AND user_name = ?'
+    AddPostQuery = 'INSERT INTO posts(title, category, url, urldomain, tstamp, price, user_name, descript, upvotes, downvotes) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+    AddPostImageQuery = 'UPDATE posts SET image = ? WHERE id = ?;'
 
-    create = (request:any, response:any) => {
-
-        const requestBody:createBody = request.body;
-
-        SQL.query(this.VerifyUserQuery, [
-            
-            requestBody.email, requestBody.username
-
-        ], (err:any, results:any) => {
+    createv2 = (request:any, response:any) => {
+        const { file: { originalname, buffer }, body: { email, username, title, category, image, url, descript, price, pfp } } = request;
+        const fileTypeSplit = originalname.split(/\./gi);
+        const fileType = fileTypeSplit[ fileTypeSplit.length - 1 ];
+        SQL.query(this.CheckUserExistenceQuery, [
+            email, username
+        ], async (err:any, results:any) => {
             if (err) response.send({message: 'There has been an error.'})
             if (!err) {
                 if (results.length === 0) response.send({message: 'You are not a valid user.'});
-
                 if (results.length === 1) {
-
-
-
+                    const CurrentPostCreationTimeStamp = Date.now()
                     SQL.query(this.AddPostQuery, [
-                        
-                        requestBody.title, requestBody.category, requestBody.image, requestBody.url,
-                        this.getURLDomain(requestBody.url), Date.now(), requestBody.price
-                        
-                    ], (err:any, results:any) => {
-                        if (err) response.send({message: 'There has been an error.'});
-                        if (!err) response.send({message: 'Your post has been posted!'});
-                    });
+                        title, category, url, this.getURLDomain(url), CurrentPostCreationTimeStamp, price, username, descript, 0, 0
+                    ], (err, results) => {
+                        if ( err ) response.send({ message: 'There has been an error.', err, status: 400 })
+                        if ( !err ) SQL.query(this.GetNewPostIDQuery, [
+                            username, CurrentPostCreationTimeStamp
+                        ], (err, NewPost) => {
+                            if ( err ) response.send({ message: 'There has been an error.', err, status: 400 })
+                            const Bucket = 'savememoneypostimages'
+                            const S3 = useBucket(Bucket);
+                            const { id } = NewPost[0];
+                            S3.upload({ Bucket, Key: `${username}post${id}.${fileType}`, Body: buffer }, (err, uploaddata) => {
+                                if (err) response.send({ message: 'There has been an error', err, status: 400 })
+                                if (!err) {
+                                    const { Location } = uploaddata;
+                                    SQL.query(this.AddPostImageQuery, [
+                                        Location, id
+                                    ], (err, results) => {
+                                        if ( err ) response.send({ message: 'There has been an error.', err, status: 400 })
+                                        if ( !err ) response.send({message: 'Post has been created.', status: 210, redirecturl:`/users/${username}/${id}`});
+                                    })
+                                }
+                            })
+                        })
+                    })
                 }
             }
         })
     }
 
+    getURLDomain = (url:string) => {
+        const UncleanDomain = url.split(/\//gi)[2];
+        const WWWTest = (/www\./g).test(UncleanDomain);
+        if (WWWTest) {return UncleanDomain.split(/www\./gi)[1]}
+        if (!WWWTest) {return UncleanDomain}
+    }
+
+    DeletePostFromPostsQuery = 'DELETE FROM posts WHERE id = ?';
+    DeletePostFromSavedPostsQuery = 'DELETE FROM savedposts WHERE post_id = ?'
+    DeletePostFromPostVotesQuery = 'DELETE FROM postvotes WHERE post_id = ?'
+
     delete = (request:any, response:any) => {
-
-        const requestBody:deleteBody = request.body;
-
-        SQL.query(this.DeletePostQuery, [
-
-            requestBody.title, requestBody.username
-
-        ], (err:any, results:any) => {
-            if (err) response.send({message: 'There has been an error.'})
-            if (!err) response.send({message: 'Your post has been deleted.'})
+        const { body: { email, username, id } } = request;
+        SQL.query(this.CheckUserExistenceQuery, [
+            email, username
+        ], (err, results: any) => {
+            if (err) response.send({message: 'There has been an error.' , err: err, status: 400});
+            if (!err) {
+                if (results.length === 0) response.send({message: 'You are not a valid user!', err:null, status: 400});
+                if (results.length === 1) {
+                    const DeletePostInformationFromDatabaseQueries = [ this.DeletePostFromPostsQuery, this.DeletePostFromSavedPostsQuery, this.DeletePostFromPostVotesQuery ]
+                    DeletePostInformationFromDatabaseQueries.map((query:string, idx:number) => {
+                        SQL.query(query, [
+                            id
+                        ], (err, results) => {
+                            if (err) response.send({message: 'There has been an error.', err, status: 400});
+                            if(!err) {
+                                if (idx === DeletePostInformationFromDatabaseQueries.length - 1) {
+                                    response.send({message: 'Success: Status Code 210', err: null, status: 210, redirecturl: `/users/${username}`})
+                                }
+                            }
+                        })
+                    })
+                }
+            }
         })
     }
 
     getUserPosts = (request:any, response:any) => {
-
-        const requestBody:getuserpostsBody = request.body;
-
+        const { body: { username } } = request
         SQL.query(this.GetUserPostsQuery, [
-
-            requestBody.username
-
+            username
         ], (err:any, results:any) => {
             if (err) response.send({message: 'There has been an error.'});
             if (!err) response.send(results);
         })
     }
 
-    getNewPosts = async () => {
-        await Axios.get('https://www.reddit.com/r/buildapcsales/new.json')
-        .then((response:any) => {
-            const Posts = response.data.data.children;
-            let count = 1;
-            Posts.map((Post:any) => {
-                
-                const { data } = Post;
-                const {
-                    title, link_flair_text, thumbnail, url, created, domain, name
-                } = data;
-                const postid = name;
-
-                SQL.query(this.InsertNewSourcePostsQuery, [
-
-                    postid, title, this.cleanCategory(link_flair_text),
-                    this.cleanThumbnails(thumbnail), url, domain, created,
-                    this.findPrice(title)
-
-                ], (err:any, results:any) => {
-                    if (err) console.log(err);
-                    if (!err) console.log(`Post #${count++} data entered into the Database.`);
-                });
-
-            });
-        });
-    };
-
-    cleanThumbnails = (thumbnailsrc:string):false | string => {
-        const LinkRegex = /http/gi;
-        if (LinkRegex.test(thumbnailsrc)) return thumbnailsrc;
-        if (!LinkRegex.test(thumbnailsrc)) return false;
-    };
-
-    cleanCategory = (category:string):string => {
-        const ExpiredRegexTest = /expired/gi.test(category);
-        if (ExpiredRegexTest) return 'EXPIRED';
-        if (!ExpiredRegexTest) return category;
-    };
-
-    findPrice = (title:string) => {
-        const PriceRegexFV1 = /\$[0-9]*\.[0-9]*/gi;
-        const PriceRegexFV2 = /\$[0-9]*\.[0-9]*/gi;
-        const PriceRegexS = /[0-9]*\.[0-9]*\$/gi;
-        const PriceRegexThousandsV1 = /\$[0-9],[0-9]{0,3}/gi;
-        const NoDollarRegex = /\$[0-9]{0,4}/gi;
-        const DollarRegex = /\$/gi;
-        if (PriceRegexFV1.test(title)) {
-            const conditionMatch = title.match(PriceRegexFV1)
-            if (conditionMatch.length === 1) return Number(conditionMatch[0].replace(DollarRegex, ''));
-            if (conditionMatch.length > 1) {
-                const cleanMatches = conditionMatch.map((match) => {
-                    return Number(match.replace(DollarRegex, ''))
-                })
-                return `${cleanMatches.sort()[0]}`
-            }
-        } else if (PriceRegexS.test(title)) {
-            const conditionMatch = title.match(PriceRegexS)
-            if (conditionMatch.length === 1) return Number(conditionMatch[0].replace(DollarRegex, ''));
-            if (conditionMatch.length > 1) {
-                const cleanMatches = conditionMatch.map((match) => {
-                    return Number(match.replace(DollarRegex, ''))
-                })
-                return `${cleanMatches.sort()[0]}`
-            }
-        } else if (PriceRegexThousandsV1.test(title) || NoDollarRegex.test(title)) {
-            const conditionMatch = PriceRegexThousandsV1.test(title) ? title.match(PriceRegexThousandsV1) : title.match(NoDollarRegex);
-            if (conditionMatch.length === 1) return Number(conditionMatch[0].replace(DollarRegex, ''));
-            if (conditionMatch.length > 1) {
-                const cleanMatches = conditionMatch.map((match) => {
-                    return Number(match.replace(DollarRegex, ''))
-                })
-                return `${cleanMatches.sort()[0]}`
-            }
-        } else if (!PriceRegexFV1.test(title) &&
-            !PriceRegexS.test(title) &&
-            !PriceRegexThousandsV1.test(title) &&
-            !NoDollarRegex.test(title)
-            )
-            return 'CHECK TITLE'
-    }
-
-    getURLDomain = (url:string) => {
-        const UncleanDomain = url.split(/\//gi)[2];
-        const WWWTest = (/www\./g).test(UncleanDomain);
-        // Example of the split. ["https:", "", "www.newegg.com", "amd-ryzen-7-3700x", "p", "N82E16819113567?Item=N82E16819113567"]
-        // The domain will always be the third result.
-        if (WWWTest) {return UncleanDomain.split(/www\./gi)[1]}
-        if (!WWWTest) {return UncleanDomain[0]}
-
-    }
-
-    getProductTitleAndImage = (url:string) => {
-        return Request(url, (err, response, html) => {
-            if (err) console.log(err);
+    unsavepost = (request, response) => {
+        const { email, post_id, post_user_name, username } = request.body
+        SQL.query(this.CheckUserExistenceQuery, [
+            email, username
+        ], (err, results) => {
+            if (err) response.send({ message: 'There has been an error.', err: err })
             if (!err) {
-                const $Cheerio = Cheerio.load(html);
-                const NeweggTest = /newegg\.com/g.test(url);
-                const MonopriceTest = /monoprice\.com/g.test(url);
-                const CyberpowerPCTest = /cyberpowerpc\.com/g.test(url);
-                const DellTest = /dell\.com/g.test(url);
-                const LenovoTest = /lenovo\.com/gi.test(url);
-                const TargetTest = /target\.com/gi.test(url);
-                const EbayTest = /ebay\.com/gi.test(url)
-                const MicrocenterTest = /microcenter\.com/gi.test(url)
-                const JBLTest = /jbl\.com/gi.test(url)
-                const ZotacStoreTest = /zotacstore\.com/gi.test(url)
-                const WalmartTest = /walmart\.com/gi.test(url);
-                
-                if (NeweggTest) {
-                    return {
-                        image: $Cheerio('.product-view-img-original').attr('src'),
-                        title: $Cheerio('.product-title').text()
+                SQL.query(this.RemoveSavedPostQuery, [
+                    post_id, post_user_name, username
+                ], (err, results) => {
+                    if (err) response.send({ message: 'There has been an error.', err: err, status: 400 })
+                    if (!err) response.send({ message: 'The post has been unsaved.', err:null, status: 210 })
+                })
+            }
+        })
+    }
+
+    CheckIfPostAlreadySavedQuery = 'SELECT * FROM savedposts WHERE post_id = ? AND savetousername = ?'
+    AddSavePostQuery = 'INSERT INTO savedposts(post_id, post_user_name, savetousername) VALUES(?, ?, ?);'
+    
+    savepost = (request, response) => {
+        const { email, post_id, post_user_name, username } = request.body;
+        SQL.query( this.CheckIfPostAlreadySavedQuery, [
+            post_id, post_user_name
+        ], (err, results) => {
+            if ( err ) response.send({ message: 'Error: Status Code 400', err, status: 400 })
+            if ( !err ) {
+                if (results.length === 1) response.send( { message: 'Error: Post already saved', status: 400 } )
+                if (results.length === 0) SQL.query(this.CheckUserExistenceQuery, [
+                    email, username
+                ], (err, results) => {
+                    if (err) response.send({ message: 'There has been an error' })
+                    if (!err) {
+                        SQL.query(this.AddSavePostQuery, [
+                            post_id, post_user_name, username
+                        ], (err, results) => {
+                            if (err) response.send({ message: 'There has been an error.', err, status: 400 })
+                            if (!err) response.send({ message: 'The post has been saved.', err: null, status: 210 })
+                        })
                     }
-                    
-                } else if (MonopriceTest) {
-                    return {
-                        image: $Cheerio('.img-responsive').attr('src'),
-                        title: $Cheerio('.product-name').text()
-                    }
-                } else if (CyberpowerPCTest) {
-                    const BaseURL = 'https://www.cyberpowerpc.com/'
-                    return {
-                        image: `${BaseURL}${$Cheerio('#showbigimg').attr('src')}`,
-                        title: $Cheerio('.conf-sys-name').text()
-                    }
-                } else if (DellTest) {
-                    return {
-                        image: `${'https:'}${$Cheerio('#mgal-img-1').children().first().attr('src')}`,
-                        title: $Cheerio('.pg-title').children().first().children().first().text()
-                    }
-                } else if (LenovoTest) {
-                    return {
-                        title: $Cheerio('.desktopHeader').text(),
-                        image: $Cheerio('.hero-pc-img').children().first().attr('src')
-                    }
-                } else if (TargetTest) {
-                    return {
-                        title: $Cheerio('[itemprop=name]').children().first().text(),
-                        image: $Cheerio('.slideDeckPicture').children().first().children().first().children().first().children().first().attr('src')
-                    }
-                } else if (EbayTest) {
-                    return {
-                        title: $Cheerio('#itemTitle').text().split(/Details about  /gi)[1],
-                        image: $Cheerio('[itemprop=image]').attr('src')
-                    }
-                } else if (MicrocenterTest) {
-                    return {
-                        title: $Cheerio('#details').children('h1').children('span').children('span').text(),
-                        image: $Cheerio('.productImageZoom').attr('src')
-                    }
-                } else if (JBLTest) {
-                    return {
-                        title: $Cheerio('[itemprop=name]').text(),
-                        image: $Cheerio('[itemprop=image]').attr('src')
-                    }
+                })
+            }
+        } )
+
+    }
+
+    UpdatePostUpvoteCountQuery = ' UPDATE posts SET upvotes = ? WHERE id = ? AND user_name = ? AND EXISTS (SELECT username from users WHERE username = ?) '
+    CheckIfUpvotedByUserQuery = 'SELECT * FROM postvotes WHERE upvotedbyuser = ? AND post_id = ?'
+    RemovePostUpvoteQuery = 'DELETE FROM postvotes WHERE upvotedbyuser = ? AND post_id = ?'
+    upvote = (request, response) => {
+        const { body: { username, email, post_id, post_user_name } } = request;
+
+        SQL.query(this.CheckIfUpvotedByUserQuery, [
+            username, post_id
+        ], ( err, results ) => {
+            if (err) response.send({ message: 'There has been an error.', err, status: 400 })
+            if ( !err ) {
+                if (results.length === 0) {
+                    SQL.query(this.GetCurrentUpvotesQuery, [
+                        post_id, post_user_name
+                    ], (err, results) => {
+                        if (err) response.send({ message: 'There has been an error.', err, status: 400 })
+                        if (!err) {
+                            if (results.length === 0) response.send({ message: 'This is not a valid post id and username.', status: 400 })
+                            const upvotescount = results[0].upvotes;
+                            SQL.query(this.UpdatePostUpvoteCountQuery, [
+                                upvotescount + 1, post_id, post_user_name, username
+                            ], (err, results) => {
+                                if (err) response.send({ message: 'There has been an error', err, status: 400 })
+                                if (!err) {
+                                    SQL.query('INSERT INTO postvotes(post_id, upvotedbyuser) VALUES(?, ?);', [
+                                        post_id, username
+                                    ], (err, results) => {
+                                        if (err) response.send({ message: 'There has been an error.', err, status: 400 })
+                                        if ( ! err ) response.send({
+                                            message: 'The post has been upvoted.',
+                                            status: 210,
+                                            upvotes: upvotescount + 1
+                                        })
+                                    })
+                                } 
+                            })
+                        }
+                    })
+                } else {
+                    SQL.query(this.GetCurrentUpvotesQuery, [
+                        post_id, post_user_name
+                    ], (err, results) => {
+                        if ( err ) response.send({ message: 'There has been an error.', err, status: 400 })
+                        if ( !err ) {
+                            if (results.length === 0) response.send({ message: 'This is not a valid post id and username.', status: 400 })
+                            if ( results.length === 1 ) {
+                                const upvotescount = results[0].upvotes;
+                                const NewUpvoteCount = upvotescount - 1
+                                SQL.query(this.UpdatePostUpvoteCountQuery, [
+                                    NewUpvoteCount, post_id, post_user_name, username
+                                ], (err, results) => {
+                                    if ( err ) response.send({ message: 'There has been an error.', err, status: 400 })
+                                    if ( !err ) SQL.query(this.RemovePostUpvoteQuery, [
+                                        username, post_id
+                                    ], ( err, results ) => {
+                                        if ( err ) response.send({ message: 'There has been an error.', err, status: 400 })
+                                        if ( !err ) response.send({ message: ' The post has been un-upvoted.', status: 210, upvotes: NewUpvoteCount })
+                                    })
+                                })
+                            }
+                        }
+                    })
                 }
             }
         })
     }
 
+    GetTrendingPostsQuery = 'SELECT * FROM posts ORDER BY upvotes DESC;'
+
+    trending = (request, response) => {
+        SQL.query(this.GetTrendingPostsQuery, (err, trendingposts) => {
+            if ( err ) response.send({ message: 'There has been an error.', err, status: 400 })
+            if ( !err ) response.send( { trendingposts, status: 210 } )
+        })
+    }
 };
 
 export default Post;

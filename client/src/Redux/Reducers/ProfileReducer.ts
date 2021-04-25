@@ -1,33 +1,16 @@
-import { ActionInt} from '../../TypeScript/App Interfaces'
-import { SET_PROFILE_BIO, SET_PROFILE_DATA, SET_PROFILE_NAMEHEAD, SET_PROFILE_USERNAME, SET_PROFILE_LOADING } from '../types';
+import { ActionInt, profileReducer} from '../../TypeScript/App Interfaces'
+import { SET_PROFILE_DATA, SET_PROFILE_LOADING } from '../types';
 
-const InitialState:{LOADING:boolean, DATA: any, username: string | null, bio:string | null, namehead:string | null} = {
+const InitialState:profileReducer  = {
     LOADING: false,
-    DATA: null,
-    username: null,
-    bio: null,
-    namehead: null
+    DATA:null,
+    REDIRECT: false
 }
 
 const ProfileReducer = (state = InitialState, action:ActionInt) => {
     switch(action.type) {
         default:
             return state;
-        case SET_PROFILE_USERNAME:
-            return {
-                ...state,
-                username: action.payload
-            }
-        case SET_PROFILE_BIO:
-            return {
-                ...state,
-                bio: action.payload
-            }
-        case SET_PROFILE_NAMEHEAD:
-            return {
-                ...state,
-                namehead: action.payload
-            }
         case SET_PROFILE_DATA:
             return {
                 ...state,
@@ -37,6 +20,11 @@ const ProfileReducer = (state = InitialState, action:ActionInt) => {
             return {
                 ...state,
                 LOADING: action.payload
+            }
+        case 'SET_PROFILE_REDIRECT':
+            return {
+                ...state,
+                REDIRECT: action.payload
             }
     }
 }

@@ -1,19 +1,19 @@
 declare var require:any;
 const CategoryRoute = require('./API Routes/CategoryRoute');
 const SearchRoute = require('./API Routes/SearchRoute');
-import PostClass from './API Routes/Objects/Post'
-var Post = new PostClass();
 const PostsRoute = require('./API Routes/PostsRoute');
 const UsersRoute = require('./API Routes/UserRoute');
-
 const InitialAuthRoute = require('./API Routes/InitialAuthRoute');
-
 const Cron = require('node-cron');
 const cors = require('cors');
+declare var require:any
+declare var module:any
+declare var process:any
 var Express = require('express');
 const AWS = require('aws-sdk');
 const App = Express();
-const Port = 6001;
+require('dotenv').config()
+const Port = 6667;
 
 App.use(Express.json());
 App.use(Express.urlencoded({extended: true}));
@@ -26,7 +26,7 @@ App.use('/api/users', UsersRoute);
 App.use('/api', InitialAuthRoute);
 
 Cron.schedule('*/59 * * * *', () => {
-    Post.getNewPosts();
+    
 })
 
-App.listen(Port, () => {console.log(`Listening on port ${Port}.`)});
+App.listen(process.env.PORT || Port, () => {console.log(`Listening on port ${Port}.`)});

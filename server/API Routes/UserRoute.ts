@@ -1,7 +1,9 @@
+declare var require:any
+declare var module:any
 var Router = require('express').Router();
 import UserClass from './Objects/User';
 var JWTAuthMiddleware = require('./Middleware/Authentication');
-
+var PFPUploadMiddleware = require('./Middleware/PFPUpload');
 var User = new UserClass();
 
 
@@ -27,8 +29,48 @@ Router.put('/changename', JWTAuthMiddleware, (request:any, response:any) => {
     User.changename(request, response)
 });
 
-Router.get('/profile/:username', (request:any, response:any) => {
+Router.get('/profile/:usernameparam', JWTAuthMiddleware, (request:any, response:any) => {
     User.profile(request, response);
 })
 
+
+Router.get('/upvotedposts', JWTAuthMiddleware, (request:any, response:any) => {
+    User.getupvotedposts(request, response);
+})
+
+Router.get('/postlookup/:username/:post_id', JWTAuthMiddleware, (request:any, response:any) => {
+    User.getuserpost(request, response)
+})
+
+Router.post('/follow', JWTAuthMiddleware, (request:any, response:any) => {
+    User.follow(request, response);
+})
+
+Router.post('/unfollow', JWTAuthMiddleware, (request:any, response:any) => {
+    User.unfollow(request, response);
+})
+
+Router.get('/timeline', JWTAuthMiddleware, (request:any, response) => {
+    User.getusertimeline(request, response)
+})
+
+Router.post('/uploadinitialpfp', [PFPUploadMiddleware, JWTAuthMiddleware], (request, response) => {
+    User.uploadinitialpfp(request, response);
+})
+
+Router.post('/uploadnewpfp', [PFPUploadMiddleware, JWTAuthMiddleware], (request, response) => {
+    User.uploadnewpfp(request, response)
+})
+
+Router.get('/removecurrentpfp', JWTAuthMiddleware, (request, response) => {
+    User.removecurrentpfp(request, response)
+})
+
+Router.post('/settings', JWTAuthMiddleware, (request, response) => {
+    User.getusersettingsdata(request, response);
+})
+
+Router.post('/editprofileinfo', JWTAuthMiddleware, (request, response) => {
+    User.editprofileinfo(request, response);
+})
 module.exports = Router;

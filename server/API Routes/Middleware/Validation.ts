@@ -1,4 +1,6 @@
+declare var require:any
 var SQL = require('../../DBConnection');
+declare var module:any
 
 type EnteringParameter = string | undefined;
 
