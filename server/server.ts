@@ -11,10 +11,10 @@ const App = Express();
 require('dotenv').config()
 const Port = 6667;
 
-if ( process.env.NODE_ENV === 'production' ) {
+/* if ( process.env.NODE_ENV === 'production' ) {
     App.use( Express.static( '../client/build' ) );
     App.get( '*', ( request, response ) => { response.sendFile( path.resolve( '../client/build/index.html' ) ) } )
-}
+} */
 
 App.use(Express.json());
 App.use(Express.urlencoded({extended: true}));
