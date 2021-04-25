@@ -12,7 +12,7 @@ require('dotenv').config()
 const Port = 6667;
 
 if ( process.env.NODE_ENV === 'production' ) {
-    App.use( Express.static( 'client/build' ) );
+    App.use( Express.static( '../client/build' ) );
     App.get( '*', ( request, response ) => { response.sendFile( path.resolve( '../client/build/index.html' ) ) } )
 }
 
