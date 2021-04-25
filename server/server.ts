@@ -1,13 +1,10 @@
-declare var require:any;
+
 const CategoryRoute = require('./API Routes/CategoryRoute');
 const SearchRoute = require('./API Routes/SearchRoute');
 const PostsRoute = require('./API Routes/PostsRoute');
 const UsersRoute = require('./API Routes/UserRoute');
 const InitialAuthRoute = require('./API Routes/InitialAuthRoute');
 const cors = require('cors');
-declare var require:any
-declare var module:any
-declare var process:any
 var Express = require('express');
 const AWS = require('aws-sdk');
 const App = Express();
