@@ -7,6 +7,7 @@ export const RegisterUser = (namehead:string, username:string, email:string, pas
         dispatch(dispatchRegisterLoading(true));
         await Axios.post('/api/users/signup', {
             email,
+            
             username,
             password,
             namehead

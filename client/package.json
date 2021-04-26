@@ -2,8 +2,9 @@
   "name": "dealmoola-frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://www.savememoney.io",
   
-  
+
   "dependencies": {
     "@craco/craco": "^6.1.1",
     "@material-ui/core": "^4.11.3",
@@ -68,5 +69,5 @@
   "devDependencies": {
     "redux-devtools-extension": "^2.13.9"
   },
-  "proxy": "https://savememoneyio.herokuapp.com"
+  "proxy": "http://localhost:6667"
 }

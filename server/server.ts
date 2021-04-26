@@ -9,7 +9,7 @@ var Express = require('express');
 const AWS = require('aws-sdk');
 const App = Express();
 require('dotenv').config()
-const Port = 6667;
+const Port = 10500;
 
 /* if ( process.env.NODE_ENV === 'production' ) {
     App.use( Express.static( '../client/build' ) );
