@@ -241,52 +241,21 @@ class User {
                                     ], (err, following) => {
                                         if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
                                         if (!err) {
-                                            SQL.query(this.GetUpvotedPostsQuery, [
-                                                LOGGEDINUSERNAME
-                                            ], (err, savedpostsresults) => {
-                                                if (err) response.send({ message: 'Error: Status Code 400', err, status: 400 })
-                                                if ( !err ) {
-                                                    const FilterForIfLoggedInUserIsAFollower = followers.filter((follower, idx) => {
-                                                        if (follower.followinguser !== LOGGEDINUSERNAME) return follower.followedbyuser === LOGGEDINUSERNAME
-                                                    });
-                                                    const isLoggedInUserAFollowerStatus = FilterForIfLoggedInUserIsAFollower.length !== 0 ? true : false
-                                                    if (savedpostsresults.length > 0) {
-
-                                                        const PostsWithIfSavedStatus = posts.map((post, i) => {
-                                                            if (savedpostsresults[i].post_id === posts[i].id) {
-                                                                return { ...post, savedbyloggedinuser: true }
-                                                            } else if (savedpostsresults[i].post_id !== posts[i].id) {
-                                                                return { ...post, savedbyloggedinuser: false }
-                                                            }
-                                                        })
-                                                        response.send({
-                                                            message: 'Here is the user data.',
-                                                            foruser: usernameparam,
-                                                            posts: PostsWithIfSavedStatus,
-                                                            userdata: userdata[0],
-                                                            followdata: {
-                                                                followers,
-                                                                following,
-                                                                loggedinuserisfollower: isLoggedInUserAFollowerStatus
-                                                            },
-                                                            status: 210
-                                                        })
-                                                    } else {
-                                                        const NoSavedPostsWithSavedStatus = posts.map(post => { return { ...post, savedbyloggedinuser: false } })
-                                                        response.send({
-                                                            message: 'Here is the user data.',
-                                                            foruser: usernameparam,
-                                                            posts:NoSavedPostsWithSavedStatus,
-                                                            userdata: userdata[0],
-                                                            followdata: {
-                                                                followers,
-                                                                following,
-                                                                loggedinuserisfollower: isLoggedInUserAFollowerStatus
-                                                            },
-                                                            status: 210
-                                                        })
-                                                    }
-                                                }
+                                            const FilterForIfLoggedInUserIsAFollower = followers.filter((follower, idx) => {
+                                                if (follower.followinguser !== LOGGEDINUSERNAME) return follower.followedbyuser === LOGGEDINUSERNAME
+                                            });
+                                            const isLoggedInUserAFollowerStatus = FilterForIfLoggedInUserIsAFollower.length !== 0 ? true : false
+                                            response.send({
+                                                message: 'Here is the user data.',
+                                                foruser: usernameparam,
+                                                posts,
+                                                userdata: userdata[0],
+                                                followdata: {
+                                                    followers,
+                                                    following,
+                                                    loggedinuserisfollower: isLoggedInUserAFollowerStatus
+                                                },
+                                                status: 210
                                             })
                                         }
                                     })
